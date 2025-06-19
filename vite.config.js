@@ -1,10 +1,13 @@
 import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [],
+  root: '.', // use current directory (where index.html is)
+  build: {
+    outDir: 'dist'
+  },
   server: {
-    host: '0.0.0.0',
-    hmr: true, // Change this line to false disable auto-refreshing.
+    open: true
   }
-})
+});
+
+

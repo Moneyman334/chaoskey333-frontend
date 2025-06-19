@@ -8,12 +8,12 @@ channel = "stable-23_05"
 
 [deployment]
 deploymentTarget = "static"
-build = ["npm", "run", "build"]
-publicDir = "dist"
+publicDir = "public"
 
 [[ports]]
 localPort = 5173
 externalPort = 80
+exposeLocalhost = true
 
 [workflows]
 runButton = "Dev Server"
