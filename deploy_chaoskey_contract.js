@@ -1,22 +1,36 @@
-// deploy_chaoskey_contract.js
+
+require("dotenv").config(); // Load environment variables
 const { ethers } = require("ethers");
-require("dotenv").config();
+const fs = require("fs");
 
-const CONTRACT_ABI = [/* Paste ABI here */];
-const CONTRACT_BYTECODE = "0x..."; // Your compiled bytecode here
+// ✅ STEP 1: Set up provider
+const provider = new ethers.JsonRpcProvider(process.env.INFURA_URL); // OR use Alchemy/Ankr/etc
 
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-async function deploy() {
-  console.log("⛓ Deploying ChaosKey333 contract...");
-
-  const factory = new ethers.ContractFactory(CONTRACT_ABI, CONTRACT_BYTECODE, wallet);
-  const contract = await factory.deploy();
-
-  console.log("✅ Contract deployed at:", contract.target);
+// ✅ STEP 2: Load wallet from PRIVATE_KEY (make sure it's in .env)
+const privateKey = process.env.PRIVATE_KEY;
+if (!privateKey || privateKey.length < 64) {
+  throw new Error("🚨 Invalid PRIVATE_KEY in .env. Make sure it's present and doesn't include '0x'");
 }
 
-deploy().catch(err => {
+const wallet = new ethers.Wallet(privateKey, provider);
+
+// ✅ STEP 3: Load compiled contract ABI and bytecode
+const abi = JSON.parse(fs.readFileSync("./artifacts/YourContract.sol/YourContract.json")).abi;
+const bytecode = JSON.parse(fs.readFileSync("./artifacts/YourContract.sol/YourContract.json")).bytecode;
+
+// ✅ STEP 4: Deploy
+async function deploy() {
+  console.log("🚀 Starting contract deployment...");
+
+  const factory = new ethers.ContractFactory(abi, bytecode, wallet);
+  const contract = await factory.deploy(); // You can pass constructor args here if needed
+
+  console.log("⏳ Waiting for deployment confirmation...");
+  await contract.deployed();
+
+  console.log("✅ Contract deployed at:", contract.address);
+}
+
+deploy().catch((err) => {
   console.error("❌ Deployment failed:", err);
 });
