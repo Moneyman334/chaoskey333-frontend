@@ -1,28 +1,11 @@
 
-function resurrect() {
-  const audio = document.getElementById("bassDrop");
-  const vault = document.querySelector(".resurrection-container");
-
-  audio.volume = 1;
-  audio.currentTime = 0;
-  audio.play();
-
-  vault.classList.add("pulse");
-
-  setTimeout(() => {
-    vault.classList.remove("pulse");
-  }, 1000);
-
-  alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
-}
+// Configuration
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_key_here'; // Replace with your actual Stripe publishable key
 
 // Global variables
 let userWalletAddress = null;
 let isWalletConnected = false;
 let connectedWalletType = null;
-
-// Stripe configuration
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_key_here'; // Replace with your actual Stripe publishable key
 let stripe = null;
 
 // Initialize Stripe
@@ -52,7 +35,6 @@ async function connectMetaMask() {
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
       
-      // Check if we have a successful Stripe payment
       checkStripeAndMint();
       
     } catch (err) {
@@ -67,7 +49,7 @@ async function connectMetaMask() {
 
 // Connect Coinbase Wallet
 async function connectCoinbaseWallet() {
-  const connectWalletBtn = document.getElementById("connectWallet");
+  const connectCoinbaseBtn = document.getElementById("connectCoinbase");
   const mintStatus = document.getElementById("mintStatus");
 
   if (window.ethereum && window.ethereum.isCoinbaseWallet) {
@@ -78,10 +60,9 @@ async function connectCoinbaseWallet() {
       connectedWalletType = "Coinbase";
       
       console.log("🔵 Coinbase Wallet Connected:", userWalletAddress);
-      connectWalletBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+      connectCoinbaseBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
       
-      // Check if we have a successful Stripe payment
       checkStripeAndMint();
       
     } catch (err) {
@@ -102,7 +83,6 @@ async function connectWallet() {
     } else if (window.ethereum.isCoinbaseWallet) {
       await connectCoinbaseWallet();
     } else {
-      // Generic wallet connection
       try {
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         userWalletAddress = accounts[0];
@@ -127,8 +107,8 @@ async function connectWallet() {
 
 // Mint Relic Function
 async function mintRelic() {
-  if (!userWalletAddress) {
-    alert("🚨 Please connect your wallet first!");
+  if (!userWalletAddress || !isWalletConnected) {
+    console.log("⚠️ No wallet connected for minting");
     return;
   }
 
@@ -136,41 +116,32 @@ async function mintRelic() {
   const mintStatus = document.getElementById("mintStatus");
 
   if (mintStatus) {
-    mintStatus.innerText = "🌀 Minting relic to vault...";
+    mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
-  // Simulate vault minting process (replace with actual contract interaction)
   setTimeout(() => {
-    console.log("🧬 Relic Successfully Minted to Vault for", userWalletAddress);
+    console.log("🧬 Vault Relic Minted for", userWalletAddress);
     if (mintStatus) {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
     }
-    
-    // Add visual feedback to vault
-    const vault = document.querySelector(".resurrection-container");
-    vault.style.boxShadow = "0 0 50px #00ff00";
-    
-    alert("🎉 Relic successfully minted to your vault! 🧿");
   }, 2000);
 }
 
-// Create Stripe Payment Session
+// Create Stripe Payment
 async function createStripePayment() {
-  if (!userWalletAddress) {
-    alert("🚨 Please connect your wallet first!");
+  if (!isWalletConnected || !userWalletAddress) {
+    alert("🔌 Please connect your wallet first!");
     return;
   }
 
   if (!stripe) {
-    alert("🚨 Stripe not initialized. Please refresh the page.");
+    alert("❌ Stripe not initialized. Please refresh and try again.");
     return;
   }
 
   try {
-    console.log("💳 Creating Stripe payment session...");
-    document.getElementById("mintStatus").innerText = "💳 Creating payment session...";
-
-    // Create checkout session on your backend
+    console.log("💳 Creating Stripe checkout session...");
+    
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
@@ -186,22 +157,23 @@ async function createStripePayment() {
     });
 
     const session = await response.json();
+    
+    if (session.sessionId) {
+      console.log("🔄 Redirecting to Stripe checkout...");
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.sessionId,
+      });
 
-    if (session.error) {
-      throw new Error(session.error);
-    }
-
-    // Redirect to Stripe Checkout
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.sessionId,
-    });
-
-    if (result.error) {
-      throw new Error(result.error.message);
+      if (result.error) {
+        console.error("❌ Stripe checkout error:", result.error);
+        alert("Payment error: " + result.error.message);
+      }
+    } else {
+      throw new Error("No session ID received");
     }
 
   } catch (error) {
-    console.error("❌ Stripe payment error:", error);
+    console.error("❌ Payment creation failed:", error);
     document.getElementById("mintStatus").innerText = "❌ Payment failed: " + error.message;
     alert("Payment failed: " + error.message);
   }
@@ -224,12 +196,25 @@ function checkStripeAndMint() {
   }
 }
 
+// Resurrection function
+function resurrect() {
+  const audio = document.getElementById("bassDrop");
+  if (audio) {
+    audio.play();
+  }
+
+  setTimeout(() => {
+    document.body.style.animation = "none";
+    document.body.style.filter = "brightness(3) contrast(2)";
+  }, 1000);
+
+  alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
+}
+
 // Initialize on page load
 window.onload = async function () {
-  // Initialize Stripe
   await initializeStripe();
 
-  // Hide terminal overlay after 3 seconds
   setTimeout(() => {
     const overlay = document.getElementById("terminalOverlay");
     if (overlay) {
@@ -237,7 +222,6 @@ window.onload = async function () {
     }
   }, 3000);
 
-  // Set up wallet connection buttons
   const connectWalletBtn = document.getElementById("connectWallet");
   const connectCoinbaseBtn = document.getElementById("connectCoinbase");
   const paymentBtn = document.getElementById("paymentBtn");
@@ -254,25 +238,22 @@ window.onload = async function () {
     paymentBtn.onclick = createStripePayment;
   }
 
-  // Check for existing Stripe payment on page load
   checkStripeAndMint();
 
-  // Listen for account changes in any connected wallet
   if (window.ethereum) {
     window.ethereum.on('accountsChanged', function (accounts) {
       if (accounts.length === 0) {
-        // User disconnected wallet
         userWalletAddress = null;
         isWalletConnected = false;
         connectedWalletType = null;
         document.getElementById("connectWallet").innerText = "🔌 Connect Wallet";
         document.getElementById("mintStatus").innerText = "🔒 Wallet disconnected";
       } else {
-        // User switched accounts
         userWalletAddress = accounts[0];
         const walletIcon = connectedWalletType === "MetaMask" ? "🦊" : 
                           connectedWalletType === "Coinbase" ? "🔵" : "✅";
         document.getElementById("connectWallet").innerText = walletIcon + " " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        checkStripeAndMint();
       }
     });
   }
