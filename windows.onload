@@ -1,3 +1,0 @@
-window.onload = function () {
-  // your code like Stripe listener or MetaMask functions
-};
