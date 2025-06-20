@@ -1,18 +1,10 @@
 
-// Configuration
-const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RFLDMF9LrhrVgdzrr19FEVOryk1CpFgXg2NpNEohOh5WaJFgBylgMHdykCHb2wvwte3K7GMg9JqVKSZfUVEPTOZ00hulSpVrt'; // Your Stripe live publishable key
-
 // Global variables
 let userWalletAddress = null;
 let isWalletConnected = false;
 let connectedWalletType = null;
-// Stripe public key will be fetched from server
 let STRIPE_PUBLISHABLE_KEY = null;
-
 let stripe = null;
-let userWalletAddress = null;
-let isWalletConnected = false;
-let connectedWalletType = null;
 
 // Initialize Stripe
 async function initializeStripe() {
