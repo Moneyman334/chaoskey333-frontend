@@ -121,7 +121,7 @@ async function mintRelic() {
     return;
   }
 
-  console.log("⚙️ Initiating relic mint for wallet:", userWalletAddress);r:", userWalletAddress);
+  console.log("⚙️ Initiating relic mint for wallet:", userWalletAddress);
   const mintStatus = document.getElementById("mintStatus");
 
   if (mintStatus) {
