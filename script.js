@@ -21,6 +21,21 @@ let userWalletAddress = null;
 let isWalletConnected = false;
 let connectedWalletType = null;
 
+// Stripe configuration
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_key_here'; // Replace with your actual Stripe publishable key
+let stripe = null;
+
+// Initialize Stripe
+async function initializeStripe() {
+  try {
+    const stripeModule = await import('https://js.stripe.com/v3/');
+    stripe = stripeModule.Stripe(STRIPE_PUBLISHABLE_KEY);
+    console.log("🔑 Stripe initialized successfully");
+  } catch (error) {
+    console.error("❌ Failed to initialize Stripe:", error);
+  }
+}
+
 // Connect MetaMask Wallet
 async function connectMetaMask() {
   const connectWalletBtn = document.getElementById("connectWallet");
@@ -139,6 +154,59 @@ async function mintRelic() {
   }, 2000);
 }
 
+// Create Stripe Payment Session
+async function createStripePayment() {
+  if (!userWalletAddress) {
+    alert("🚨 Please connect your wallet first!");
+    return;
+  }
+
+  if (!stripe) {
+    alert("🚨 Stripe not initialized. Please refresh the page.");
+    return;
+  }
+
+  try {
+    console.log("💳 Creating Stripe payment session...");
+    document.getElementById("mintStatus").innerText = "💳 Creating payment session...";
+
+    // Create checkout session on your backend
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        walletAddress: userWalletAddress,
+        connectedWalletType: connectedWalletType,
+        amount: 3333, // $33.33 in cents
+        currency: 'usd',
+        productName: 'Frankenstein Vault Relic 333'
+      }),
+    });
+
+    const session = await response.json();
+
+    if (session.error) {
+      throw new Error(session.error);
+    }
+
+    // Redirect to Stripe Checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.sessionId,
+    });
+
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
+  } catch (error) {
+    console.error("❌ Stripe payment error:", error);
+    document.getElementById("mintStatus").innerText = "❌ Payment failed: " + error.message;
+    alert("Payment failed: " + error.message);
+  }
+}
+
 // Check Stripe Payment and Trigger Mint
 function checkStripeAndMint() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -146,7 +214,7 @@ function checkStripeAndMint() {
   const sessionId = urlParams.get("session_id");
 
   if (paymentSuccess && isWalletConnected && userWalletAddress) {
-    console.log("✅ Stripe payment success + MetaMask connected - minting to vault...");
+    console.log("✅ Stripe payment success + Wallet connected - minting to vault...");
     mintRelic();
   } else if (paymentSuccess && !isWalletConnected) {
     console.log("⚠️ Stripe payment success but wallet not connected");
@@ -158,6 +226,9 @@ function checkStripeAndMint() {
 
 // Initialize on page load
 window.onload = async function () {
+  // Initialize Stripe
+  await initializeStripe();
+
   // Hide terminal overlay after 3 seconds
   setTimeout(() => {
     const overlay = document.getElementById("terminalOverlay");
@@ -169,6 +240,7 @@ window.onload = async function () {
   // Set up wallet connection buttons
   const connectWalletBtn = document.getElementById("connectWallet");
   const connectCoinbaseBtn = document.getElementById("connectCoinbase");
+  const paymentBtn = document.getElementById("paymentBtn");
   
   if (connectWalletBtn) {
     connectWalletBtn.onclick = connectWallet;
@@ -176,6 +248,10 @@ window.onload = async function () {
   
   if (connectCoinbaseBtn) {
     connectCoinbaseBtn.onclick = connectCoinbaseWallet;
+  }
+
+  if (paymentBtn) {
+    paymentBtn.onclick = createStripePayment;
   }
 
   // Check for existing Stripe payment on page load
