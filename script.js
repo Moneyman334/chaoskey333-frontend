@@ -106,10 +106,11 @@ async function connectCoinbaseWallet() {
 // Auto-detect and connect available wallet
 async function connectWallet() {
   console.log("🔍 Checking for Web3 wallets...");
-  console.log("window.ethereum exists:", !!window.ethereum);
   
-  // Wait a moment for wallet extensions to load
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Wait longer for wallet extensions to load (they can take time)
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  console.log("window.ethereum exists:", !!window.ethereum);
   
   if (typeof window.ethereum !== 'undefined') {
     console.log("✅ Ethereum provider detected");
@@ -151,9 +152,9 @@ async function connectWallet() {
     }
   } else {
     console.error("❌ No Web3 provider found");
-    const errorMsg = "🚨 No Web3 wallet detected!\n\nPlease install one of these:\n• MetaMask: https://metamask.io\n• Coinbase Wallet: https://wallet.coinbase.com\n\nThen refresh this page.";
+    const errorMsg = "🚨 No Web3 wallet detected!\n\nTo use this app, please install one of these browser extensions:\n\n• MetaMask: Visit chrome://extensions or firefox addons\n• Coinbase Wallet: Visit chrome://extensions or firefox addons\n\nAfter installation, refresh this page and click 'Connect Wallet'";
     alert(errorMsg);
-    document.getElementById("mintStatus").innerText = "🚨 Install MetaMask or Coinbase Wallet to continue";
+    document.getElementById("mintStatus").innerText = "🚨 Install MetaMask or Coinbase Wallet browser extension first";
   }
 }
 
@@ -340,17 +341,29 @@ function resurrect() {
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
   
-  // Check for Web3 wallets immediately
-  setTimeout(() => {
-    console.log("🔍 Checking wallet availability...");
-    if (typeof window.ethereum === 'undefined') {
-      console.warn("⚠️ No Web3 wallet detected on page load");
-      document.getElementById("mintStatus").innerText = "🔌 Install MetaMask or Coinbase Wallet to connect";
-    } else {
-      console.log("✅ Web3 wallet available");
-      document.getElementById("mintStatus").innerText = "🔌 Click 'Connect Wallet' to begin";
+  // Check for Web3 wallets with multiple attempts (extensions take time to load)
+  let checkAttempts = 0;
+  const maxAttempts = 5;
+  
+  const checkWalletAvailability = () => {
+    checkAttempts++;
+    console.log(`🔍 Checking wallet availability... (attempt ${checkAttempts}/${maxAttempts})`);
+    
+    if (typeof window.ethereum !== 'undefined') {
+      console.log("✅ Web3 wallet detected!");
+      document.getElementById("mintStatus").innerText = "🔌 Web3 wallet detected - Click 'Connect Wallet' to begin";
+      return;
     }
-  }, 500);
+    
+    if (checkAttempts < maxAttempts) {
+      setTimeout(checkWalletAvailability, 1000); // Check again in 1 second
+    } else {
+      console.warn("⚠️ No Web3 wallet detected after multiple attempts");
+      document.getElementById("mintStatus").innerText = "🚨 No wallet extension found - Install MetaMask or Coinbase Wallet";
+    }
+  };
+  
+  setTimeout(checkWalletAvailability, 500);
   
   await initializeStripe();
 
