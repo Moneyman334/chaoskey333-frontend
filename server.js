@@ -176,9 +176,7 @@ app.get('/config', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
-});const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-require('dotenv').config();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+});
 require('dotenv').config();
 const express = require("express");
 const app = express();
