@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet + Stripe Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a1a; color: #fff; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #333; border-radius: 8px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #2d5a2d; }
+        .error { background: #5a2d2d; }
+        .warning { background: #5a5a2d; }
+        button { padding: 10px 20px; margin: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Wallet + Stripe Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>🔌 Wallet Detection</h2>
+        <div id="walletStatus" class="status">Checking wallet...</div>
+        <button onclick="testWallet()">Test Wallet Connection</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>💳 Stripe Integration</h2>
+        <div id="stripeStatus" class="status">Checking Stripe...</div>
+        <button onclick="testStripe()">Test Stripe Connection</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔄 Complete Flow Test</h2>
+        <div id="flowStatus" class="status">Ready to test complete flow</div>
+        <button onclick="testCompleteFlow()">Test Complete Flow</button>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+    <script>
+        let stripe = null;
+        let walletAddress = null;
+
+        async function testWallet() {
+            const status = document.getElementById('walletStatus');
+            
+            // Check if wallet extensions are available
+            if (typeof window.ethereum === 'undefined') {
+                status.className = 'status error';
+                status.innerHTML = `
+                    ❌ No Web3 wallet detected<br>
+                    📱 Install one of these browser extensions:<br>
+                    • <a href="https://metamask.io" target="_blank">MetaMask</a><br>
+                    • <a href="https://wallet.coinbase.com" target="_blank">Coinbase Wallet</a><br>
+                    📄 Then refresh this page and test again
+                `;
+                return;
+            }
+
+            try {
+                // Request wallet connection
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                walletAddress = accounts[0];
+                
+                // Detect wallet type
+                let walletType = 'Generic Web3';
+                if (window.ethereum.isMetaMask) walletType = 'MetaMask';
+                if (window.ethereum.isCoinbaseWallet) walletType = 'Coinbase Wallet';
+                
+                status.className = 'status success';
+                status.innerHTML = `
+                    ✅ Wallet Connected Successfully<br>
+                    🔌 Type: ${walletType}<br>
+                    👤 Address: ${walletAddress}<br>
+                    🌐 Network: ${await getNetworkName()}
+                `;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Wallet connection failed: ${error.message}`;
+            }
+        }
+
+        async function getNetworkName() {
+            try {
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                const networks = {
+                    '0x1': 'Ethereum Mainnet',
+                    '0x5': 'Goerli Testnet',
+                    '0xaa36a7': 'Sepolia Testnet',
+                    '0x89': 'Polygon Mainnet'
+                };
+                return networks[chainId] || `Unknown (${chainId})`;
+            } catch {
+                return 'Unknown';
+            }
+        }
+
+        async function testStripe() {
+            const status = document.getElementById('stripeStatus');
+            
+            try {
+                // Test server connection
+                const configResponse = await fetch('/config');
+                const config = await configResponse.json();
+                
+                if (!config.publicKey) {
+                    throw new Error('No Stripe public key received from server');
+                }
+                
+                // Initialize Stripe
+                stripe = Stripe(config.publicKey);
+                
+                // Test server Stripe connection
+                const testResponse = await fetch('/api/test-stripe');
+                const testResult = await testResponse.json();
+                
+                if (testResult.success) {
+                    status.className = 'status success';
+                    status.innerHTML = `
+                        ✅ Stripe Integration Working<br>
+                        🔑 Public Key: ${config.publicKey.substring(0, 20)}...<br>
+                        🏦 Account ID: ${testResult.accountId}<br>
+                        💰 Currency: ${testResult.currency.toUpperCase()}
+                    `;
+                } else {
+                    throw new Error(testResult.error);
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Stripe test failed: ${error.message}`;
+            }
+        }
+
+        async function testCompleteFlow() {
+            const status = document.getElementById('flowStatus');
+            
+            if (!walletAddress) {
+                status.className = 'status warning';
+                status.innerHTML = '⚠️ Please test wallet connection first';
+                return;
+            }
+            
+            if (!stripe) {
+                status.className = 'status warning';
+                status.innerHTML = '⚠️ Please test Stripe connection first';
+                return;
+            }
+            
+            try {
+                status.className = 'status warning';
+                status.innerHTML = '🔄 Testing complete payment flow...';
+                
+                // Create checkout session
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        walletAddress: walletAddress,
+                        connectedWalletType: 'Test Wallet',
+                        amount: 3333,
+                        currency: 'usd',
+                        productName: 'Frankenstein Vault Relic 333 - TEST'
+                    })
+                });
+                
+                const session = await response.json();
+                
+                if (session.sessionId) {
+                    status.className = 'status success';
+                    status.innerHTML = `
+                        ✅ Complete Flow Test Successful!<br>
+                        🎫 Session ID: ${session.sessionId.substring(0, 20)}...<br>
+                        💳 Stripe checkout session created<br>
+                        🔌 Wallet integrated: ${walletAddress}<br>
+                        🚀 Ready for live payments!
+                    `;
+                } else {
+                    throw new Error('No session ID received');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Complete flow test failed: ${error.message}`;
+            }
+        }
+
+        // Auto-run tests on page load
+        window.onload = async function() {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for extensions
+            await testStripe();
+            
+            if (typeof window.ethereum !== 'undefined') {
+                document.getElementById('walletStatus').innerHTML = '✅ Web3 wallet detected - Click "Test Wallet Connection"';
+                document.getElementById('walletStatus').className = 'status success';
+            }
+        };
+    </script>
+</body>
+</html>
