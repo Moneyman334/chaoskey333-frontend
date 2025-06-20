@@ -1,10 +1,15 @@
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path = require('path');
 
+// Load environment variables from Replit Secrets
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+
+const stripe = require('stripe')(STRIPE_SECRET_KEY);
+
 console.log('🔑 Checking Stripe API keys...');
-console.log('Public key exists:', !!process.env.STRIPE_PUBLIC_KEY);
-console.log('Secret key exists:', !!process.env.STRIPE_SECRET_KEY);
+console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
+console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -154,18 +159,18 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
 
 // Config endpoint to provide Stripe public key
 app.get('/config', (req, res) => {
-  const publicKey = process.env.STRIPE_PUBLIC_KEY;
-  
-  if (!publicKey) {
+  console.log('🔑 Checking Stripe API keys...');
+  console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
+  console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+
+  if (!STRIPE_PUBLIC_KEY) {
     console.error('❌ STRIPE_PUBLIC_KEY not found in environment variables');
-    return res.status(500).json({ 
-      error: 'Stripe public key not configured',
-      publicKey: null 
-    });
+    return res.status(500).json({ error: 'Stripe public key not configured' });
   }
-  
-  console.log('✅ Serving Stripe public key to frontend');
-  res.json({ publicKey: publicKey });
+
+  res.json({
+    publicKey: STRIPE_PUBLIC_KEY
+  });
 });
 
 app.listen(PORT, '0.0.0.0', () => {

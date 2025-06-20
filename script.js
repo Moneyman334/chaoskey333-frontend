@@ -105,13 +105,29 @@ async function connectCoinbaseWallet() {
 
 // Auto-detect and connect available wallet
 async function connectWallet() {
-  if (window.ethereum) {
-    if (window.ethereum.isMetaMask) {
-      await connectMetaMask();
-    } else if (window.ethereum.isCoinbaseWallet) {
-      await connectCoinbaseWallet();
-    } else {
-      try {
+  console.log("🔍 Checking for Web3 wallets...");
+  console.log("window.ethereum exists:", !!window.ethereum);
+  
+  // Wait a moment for wallet extensions to load
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  if (typeof window.ethereum !== 'undefined') {
+    console.log("✅ Ethereum provider detected");
+    
+    try {
+      // Check if MetaMask is available
+      if (window.ethereum.isMetaMask) {
+        console.log("🦊 MetaMask detected");
+        await connectMetaMask();
+      } 
+      // Check if Coinbase Wallet is available
+      else if (window.ethereum.isCoinbaseWallet) {
+        console.log("🔵 Coinbase Wallet detected");
+        await connectCoinbaseWallet();
+      }
+      // Generic Web3 provider
+      else {
+        console.log("🔌 Generic Web3 provider detected");
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         userWalletAddress = accounts[0];
         isWalletConnected = true;
@@ -127,14 +143,17 @@ async function connectWallet() {
         document.getElementById("mintStatus").innerText = "🧿 Wallet Connected – Ready for Stripe payment";
         
         checkStripeAndMint();
-      } catch (err) {
-        console.error("⚠️ Wallet connection error:", err);
-        document.getElementById("mintStatus").innerText = "❌ Wallet connection failed";
       }
+    } catch (err) {
+      console.error("⚠️ Wallet connection error:", err);
+      document.getElementById("mintStatus").innerText = "❌ Wallet connection failed: " + err.message;
+      alert("❌ Wallet connection failed: " + err.message);
     }
   } else {
-    alert("🚨 No Web3 wallet detected. Please install MetaMask or Coinbase Wallet.");
-    document.getElementById("mintStatus").innerText = "🚨 Web3 wallet required for vault access";
+    console.error("❌ No Web3 provider found");
+    const errorMsg = "🚨 No Web3 wallet detected!\n\nPlease install one of these:\n• MetaMask: https://metamask.io\n• Coinbase Wallet: https://wallet.coinbase.com\n\nThen refresh this page.";
+    alert(errorMsg);
+    document.getElementById("mintStatus").innerText = "🚨 Install MetaMask or Coinbase Wallet to continue";
   }
 }
 
@@ -319,6 +338,20 @@ function resurrect() {
 
 // Initialize on page load
 window.onload = async function () {
+  console.log("🚀 Initializing Frankenstein Vault...");
+  
+  // Check for Web3 wallets immediately
+  setTimeout(() => {
+    console.log("🔍 Checking wallet availability...");
+    if (typeof window.ethereum === 'undefined') {
+      console.warn("⚠️ No Web3 wallet detected on page load");
+      document.getElementById("mintStatus").innerText = "🔌 Install MetaMask or Coinbase Wallet to connect";
+    } else {
+      console.log("✅ Web3 wallet available");
+      document.getElementById("mintStatus").innerText = "🔌 Click 'Connect Wallet' to begin";
+    }
+  }, 500);
+  
   await initializeStripe();
 
   setTimeout(() => {
