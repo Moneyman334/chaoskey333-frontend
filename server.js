@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const path = require('path');
 
@@ -173,41 +174,48 @@ app.get('/config', (req, res) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
-  console.log(`💳 Stripe integration ready for payments`);
-});
-require('dotenv').config();
 const cors = require("cors");
 
 app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 
-app.post("/create-checkout-session", async (req, res) => {
+// 🧪 Test route to check server
+app.get("/health", (req, res) => {
+  res.send("✅ Server is alive and kickin'");
+});
+
+// 🔐 Stripe checkout endpoint (test)
+app.post("/create-checkout-session2", async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: [{
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: "ChaosKey333 Relic Drop"
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "ChaosKey333 Relic Mint",
+              description: "Unlock your VIP relic drop 🔐",
+            },
+            unit_amount: 33300,
           },
-          unit_amount: 3300, // $33.00 in cents
+          quantity: 1,
         },
-        quantity: 1,
-      }],
+      ],
       mode: "payment",
-      success_url: "https://chaoskey333.web.app/vault?payment=success",
-      cancel_url: "https://chaoskey333.web.app/vault?payment=cancel",
+      success_url: "https://chaoskey333.web.app/vault?success=true",
+      cancel_url: "https://chaoskey333.web.app/vault?canceled=true",
     });
 
     res.json({ id: session.id });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+  } catch (error) {
+    console.error("Stripe error:", error);
+    res.status(500).send("Something went wrong");
   }
 });
 
-const PORT2 = process.env.PORT || 3000;
-app.listen(PORT2, () => console.log(`Server running on port ${PORT2}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
+  console.log(`💳 Stripe integration ready for payments`);
+});
