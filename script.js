@@ -1,3 +1,4 @@
+
 function resurrect() {
   const audio = document.getElementById("bassDrop");
   const vault = document.querySelector(".resurrection-container");
