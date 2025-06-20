@@ -36,35 +36,36 @@
 
 <script>
   async function mintRelic() {
+    const contractAddress = "0xYourDeployedGoerliAddress"; // 🔁 Replace with your real contract!
+    const abi = [
+      {
+        "inputs": [],
+        "name": "mintRelic",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
     if (!window.ethereum) {
-      alert("⚠️ MetaMask not detected. Please install it to proceed.");
+      alert("⚠️ MetaMask not detected.");
       return;
     }
 
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
+
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-
-      const contractAddress = "PASTE_YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE"; // Update this line with your actual contract address
-      const abi = [
-        {
-          "inputs": [],
-          "name": "mintRelic",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ];
-
       const contract = new ethers.Contract(contractAddress, abi, signer);
+
       const tx = await contract.mintRelic();
       await tx.wait();
 
-      alert("✅ Relic minted successfully! Welcome to the Syndicate.");
+      alert("✅ Relic minted successfully! You're officially part of the ChaosKey Syndicate.");
     } catch (err) {
-      console.error("Mint error:", err);
-      alert("❌ Minting failed. Please check your wallet and try again.");
+      console.error("❌ Mint failed:", err);
+      alert("Minting failed. Double-check wallet & gas.");
     }
   }
 
