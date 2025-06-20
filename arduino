@@ -1,3 +1,6 @@
 https://chaoskey333.web.app
 npm run build
+https://your-replit-username.repl.co/vault
+https://chaoskey333.web.app/vault
+npm install && export STRIPE_SECRET_KEY=sk_live_your_key && export STRIPE_PUBLIC_KEY=pk_live_your_key && node server.js
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 Vault Drop</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <style>
+    body {
+      background: #0d001a;
+      color: white;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .vault-btn {
+      background: #33ccff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 20px 40px;
+      font-size: 24px;
+      margin-top: 30px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .vault-btn:hover {
+      background: #00aaff;
+      color: white;
+    }
+    .mint-status {
+      margin-top: 40px;
+      font-size: 20px;
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 ChaosKey333 Vault Drop 🔥</h1>
+  <p>Mint your VIP Relic for $33</p>
+
+  <button class="vault-btn" id="stripeBtn">💸 Mint with Stripe</button>
+
+  <div class="mint-status" id="mintStatus">🔒 Awaiting payment...</div>
+
+  <script>
+    const stripe = Stripe("pk_live_YOUR_PUBLIC_KEY"); // Replace with your real key
+
+    document.getElementById("stripeBtn").onclick = () => {
+      fetch("/create-checkout-session")
+        .then((res) => res.json())
+        .then((session) => {
+          stripe.redirectToCheckout({ sessionId: session.
+            /public
+              └── vault.html   ✅ ← this exact name and location
+            firebase.json

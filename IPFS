@@ -1,0 +1,12 @@
+{
+  "name": "ChaosKey333 Relic",
+  "description": "An ultra-rare forged relic from the ChaosKey Vault Drop. Minted through fire, fate, and frequency.",
+  "image": "https://gateway.pinata.cloud/ipfs/QmPlaceholderImageHash",
+  "external_url": "https://chaoskey333.web.app/vault",
+  "attributes": [
+    { "trait_type": "Drop Type", "value": "Crowned in Chaos" },
+    { "trait_type": "Power Level", "value": "333" },
+    { "trait_type": "Origin", "value": "FrankensteinVault333" },
+    { "trait_type": "Forged", "value": "2025-06-20T20:26:50.209702Z" }
+  ]
+}

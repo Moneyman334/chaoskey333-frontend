@@ -3,6 +3,7 @@ npm run build
 firebase deploy
 npm init -y
 npm install express stripe cors
+npm install express stripe dotenv ethers
 
 
 
