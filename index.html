@@ -34,6 +34,34 @@
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
   <script src="script.js"></script>
+
+<script>
+  async function mintRelic() {
+    if (!window.ethereum) {
+      alert("MetaMask not detected. Please install MetaMask.");
+      return;
+    }
+
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+    const abi = [/* paste your ABI here */];
+
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const tx = await contract.mintRelic(); // or whatever your function is
+    await tx.wait();
+
+    alert("🎉 Relic minted successfully!");
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("success") === "true") {
+    mintRelic(); // Automatically mint after payment
+  }
+</script>
 </body>
 </html>
 
