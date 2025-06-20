@@ -87,7 +87,7 @@ window.onload = async function () {
   const paymentSuccess = urlParams.get("payment") === "success";
 
   if (paymentSuccess && userAddress) {
-    console.log("✅ Stripe payment success detected!");
+    console.log("✅ Stripe payment success detected on load");
     mintRelic(userAddress);
   }
 };
