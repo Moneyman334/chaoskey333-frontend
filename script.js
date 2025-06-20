@@ -49,6 +49,11 @@ async function connectMetaMask() {
       isWalletConnected = true;
       connectedWalletType = "MetaMask";
       
+      // Initialize ethers signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      userAddress = accounts[0];
+      
       console.log("🦊 MetaMask Connected:", userWalletAddress);
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
@@ -76,6 +81,11 @@ async function connectCoinbaseWallet() {
       userWalletAddress = accounts[0];
       isWalletConnected = true;
       connectedWalletType = "Coinbase";
+      
+      // Initialize ethers signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      userAddress = accounts[0];
       
       console.log("🔵 Coinbase Wallet Connected:", userWalletAddress);
       connectCoinbaseBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
@@ -107,6 +117,11 @@ async function connectWallet() {
         isWalletConnected = true;
         connectedWalletType = "Generic";
         
+        // Initialize ethers signer
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        userAddress = accounts[0];
+        
         console.log("🔌 Wallet Connected:", userWalletAddress);
         document.getElementById("connectWallet").innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
         document.getElementById("mintStatus").innerText = "🧿 Wallet Connected – Ready for Stripe payment";
@@ -137,6 +152,7 @@ async function mintRelic() {
     mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
+  // Simulate minting process
   setTimeout(() => {
     console.log("🧬 Vault Relic Minted for", userWalletAddress);
     if (mintStatus) {
@@ -283,10 +299,13 @@ window.onload = async function () {
         userWalletAddress = null;
         isWalletConnected = false;
         connectedWalletType = null;
+        signer = null;
+        userAddress = null;
         document.getElementById("connectWallet").innerText = "🔌 Connect Wallet";
         document.getElementById("mintStatus").innerText = "🔒 Wallet disconnected";
       } else {
         userWalletAddress = accounts[0];
+        userAddress = accounts[0];
         const walletIcon = connectedWalletType === "MetaMask" ? "🦊" : 
                           connectedWalletType === "Coinbase" ? "🔵" : "✅";
         document.getElementById("connectWallet").innerText = walletIcon + " " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
