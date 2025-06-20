@@ -1,6 +1,6 @@
 
 // Configuration
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51QO4VkJCzT36JpwDKmhPNmZqrGz9tHKNBnBj7fqHfLu7cKQe6fK7eF2yG8qL3zH5f6cG7h8J9k0L1m2N3o4P5q6R7s8T9u0V'; // Your Stripe publishable key
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RFLDMF9LrhrVgdzrr19FEVOryk1CpFgXg2NpNEohOh5WaJFgBylgMHdykCHb2wvwte3K7GMg9JqVKSZfUVEPTOZ00hulSpVrt'; // Your Stripe live publishable key
 
 // Global variables
 let userWalletAddress = null;
