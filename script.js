@@ -1,6 +1,6 @@
 
 // Configuration
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_key_here'; // Replace with your actual Stripe publishable key
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_51QO4VkJCzT36JpwDKmhPNmZqrGz9tHKNBnBj7fqHfLu7cKQe6fK7eF2yG8qL3zH5f6cG7h8J9k0L1m2N3o4P5q6R7s8T9u0V'; // Your Stripe publishable key
 
 // Global variables
 let userWalletAddress = null;
@@ -11,9 +11,18 @@ let stripe = null;
 // Initialize Stripe
 async function initializeStripe() {
   try {
-    const stripeModule = await import('https://js.stripe.com/v3/');
-    stripe = stripeModule.Stripe(STRIPE_PUBLISHABLE_KEY);
-    console.log("🔑 Stripe initialized successfully");
+    if (typeof Stripe !== 'undefined') {
+      stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+      console.log("🔑 Stripe initialized successfully");
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.onload = () => {
+        stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+        console.log("🔑 Stripe initialized successfully");
+      };
+      document.head.appendChild(script);
+    }
   } catch (error) {
     console.error("❌ Failed to initialize Stripe:", error);
   }
