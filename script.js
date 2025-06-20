@@ -115,7 +115,7 @@ async function connectWallet() {
 }
 
 // Mint Relic Function
-async function mintRelic() {
+function mintRelic() {
   if (!userWalletAddress || !isWalletConnected) {
     console.log("⚠️ No wallet connected for minting");
     return;
