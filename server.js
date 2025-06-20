@@ -120,4 +120,6 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
+});app.get("/config", (req, res) => {
+  res.send({ publicKey: process.env.STRIPE_PUBLIC_KEY });
 });
