@@ -6,11 +6,26 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RFLDMF9LrhrVgdzrr19FEVOryk1CpFgXg2NpNE
 let userWalletAddress = null;
 let isWalletConnected = false;
 let connectedWalletType = null;
+// Stripe public key will be fetched from server
+let STRIPE_PUBLISHABLE_KEY = null;
+
 let stripe = null;
+let userWalletAddress = null;
+let isWalletConnected = false;
+let connectedWalletType = null;
 
 // Initialize Stripe
 async function initializeStripe() {
   try {
+    // Fetch public key from server
+    const response = await fetch('/config');
+    const config = await response.json();
+    STRIPE_PUBLISHABLE_KEY = config.publicKey;
+    
+    if (!STRIPE_PUBLISHABLE_KEY) {
+      throw new Error("No Stripe public key received from server");
+    }
+    
     if (typeof Stripe !== 'undefined') {
       stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
       console.log("🔑 Stripe initialized successfully");
@@ -115,7 +130,7 @@ async function connectWallet() {
 }
 
 // Mint Relic Function (handles post-payment minting)
-function mintRelic() {
+async function mintRelic() {
   if (!userWalletAddress || !isWalletConnected) {
     console.log("⚠️ No wallet connected for minting");
     return;
