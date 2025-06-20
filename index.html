@@ -32,34 +32,39 @@
   </div>
   
   <script src="https://js.stripe.com/v3/"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="script.js"></script>
 
 <script>
   async function mintRelic() {
     if (!window.ethereum) {
-      alert("MetaMask not detected. Please install MetaMask.");
+      alert("⚠️ MetaMask not detected. Please install it to proceed.");
       return;
     }
 
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+      const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+      const abi = [ /* PASTE_ABI_HERE */ ];
 
-    const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
-    const abi = [/* paste your ABI here */];
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const tx = await contract.mintRelic(); // Replace with actual function if different
+      await tx.wait();
 
-    const contract = new ethers.Contract(contractAddress, abi, signer);
-    const tx = await contract.mintRelic(); // or whatever your function is
-    await tx.wait();
-
-    alert("🎉 Relic minted successfully!");
+      alert("✅ Relic minted successfully! Welcome to the Syndicate.");
+    } catch (err) {
+      console.error("Mint error:", err);
+      alert("❌ Minting failed. Please check your wallet and try again.");
+    }
   }
 
+  // Auto-trigger mint if Stripe checkout was successful
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("success") === "true") {
-    mintRelic(); // Automatically mint after payment
+    mintRelic();
   }
 </script>
 </body>
