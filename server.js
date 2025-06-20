@@ -1,6 +1,6 @@
 
 const express = require('express');
-const stripe = require('stripe')('sk_test_51QO4VkJCzT36JpwDtest_secret_key_placeholder'); // Your Stripe secret key
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Your Stripe secret key from environment
 const path = require('path');
 
 const app = express();
