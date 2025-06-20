@@ -1,1 +1,14 @@
-const stripe = Stripe('pk_live_YourActualPublicKeyHere');
+if (paymentSuccess && signer) {
+  const contract = new ethers.Contract(
+    "0xYourContractAddress", // Replace with your deployed contract address
+    ["function mint(address to, string memory tokenURI) public"],
+    signer
+  );
+
+  const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash"; // Replace with actual metadata
+
+  document.getElementById("mintStatus").innerText = "🌀 Minting your relic...";
+  const tx = await contract.mint(userAddress, tokenURI);
+  await tx.wait();
+  document.getElementById("mintStatus").innerText = `✅ Relic minted to ${userAddress}`;
+}
