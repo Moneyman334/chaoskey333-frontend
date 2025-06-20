@@ -16,6 +16,37 @@ function resurrect() {
   alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
 }
 
+// Mint Relic Function
+async function mintRelic(walletAddress) {
+  console.log("⚙️ Initiating relic mint for:", walletAddress);
+  const mintStatus = document.getElementById("mintStatus");
+
+  if (mintStatus) {
+    mintStatus.innerText = "🌀 Minting in progress...";
+  }
+
+  // Simulated mint process (replace with actual contract interaction)
+  setTimeout(() => {
+    console.log("🧬 Relic Minted for", walletAddress);
+    if (mintStatus) {
+      mintStatus.innerText = `🧿 Relic Minted to: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+    }
+  }, 2000);
+}
+
+// Stripe + Mint Trigger
+async function checkStripeAndMint(walletAddress) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paymentSuccess = urlParams.get("payment") === "success";
+
+  if (paymentSuccess && walletAddress) {
+    console.log("✅ Stripe payment detected – minting now...");
+    await mintRelic(walletAddress);
+  } else {
+    console.log("⏳ Awaiting Stripe success flag...");
+  }
+}
+
 window.onload = async function () {
   // Hide terminal overlay after 3 seconds
   setTimeout(() => {
@@ -60,34 +91,3 @@ window.onload = async function () {
     mintRelic(userAddress);
   }
 };
-
-// Stripe + Mint Trigger
-async function checkStripeAndMint(walletAddress) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paymentSuccess = urlParams.get("payment") === "success";
-
-  if (paymentSuccess && walletAddress) {
-    console.log("✅ Stripe payment detected – minting now...");
-    await mintRelic(walletAddress);
-  } else {
-    console.log("⏳ Awaiting Stripe success flag...");
-  }
-}
-
-// Mint Relic Function
-async function mintRelic(walletAddress) {
-  console.log("⚙️ Initiating relic mint for:", walletAddress);
-  const mintStatus = document.getElementById("mintStatus");
-
-  if (mintStatus) {
-    mintStatus.innerText = "🌀 Minting in progress...";
-  }
-
-  // Simulated mint process (replace with actual contract interaction)
-  setTimeout(() => {
-    console.log("🧬 Relic Minted for", walletAddress);
-    if (mintStatus) {
-      mintStatus.innerText = `🧿 Relic Minted to: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
-    }
-  }, 2000);
-}
