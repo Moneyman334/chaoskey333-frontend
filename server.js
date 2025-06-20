@@ -2,6 +2,10 @@ const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path = require('path');
 
+console.log('🔑 Checking Stripe API keys...');
+console.log('Public key exists:', !!process.env.STRIPE_PUBLIC_KEY);
+console.log('Secret key exists:', !!process.env.STRIPE_SECRET_KEY);
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -42,6 +46,37 @@ app.get('/api/test-stripe', async (req, res) => {
       message: 'Stripe connection failed'
     });
   }
+});
+
+// Comprehensive test endpoint for all connections
+app.get('/api/test-all', async (req, res) => {
+  const results = {
+    server: { status: 'running', timestamp: new Date().toISOString() },
+    stripe: { connected: false, error: null },
+    environment: {
+      publicKey: !!process.env.STRIPE_PUBLIC_KEY,
+      secretKey: !!process.env.STRIPE_SECRET_KEY,
+      port: PORT
+    }
+  };
+
+  // Test Stripe
+  try {
+    const account = await stripe.accounts.retrieve();
+    results.stripe = {
+      connected: true,
+      accountId: account.id,
+      currency: account.default_currency
+    };
+  } catch (error) {
+    results.stripe = {
+      connected: false,
+      error: error.message
+    };
+  }
+
+  console.log('🔄 Full system test results:', results);
+  res.json(results);
 });
 
 // Create Stripe checkout session
@@ -119,7 +154,18 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
 
 // Config endpoint to provide Stripe public key
 app.get('/config', (req, res) => {
-  res.json({ publicKey: process.env.STRIPE_PUBLIC_KEY });
+  const publicKey = process.env.STRIPE_PUBLIC_KEY;
+  
+  if (!publicKey) {
+    console.error('❌ STRIPE_PUBLIC_KEY not found in environment variables');
+    return res.status(500).json({ 
+      error: 'Stripe public key not configured',
+      publicKey: null 
+    });
+  }
+  
+  console.log('✅ Serving Stripe public key to frontend');
+  res.json({ publicKey: publicKey });
 });
 
 app.listen(PORT, '0.0.0.0', () => {

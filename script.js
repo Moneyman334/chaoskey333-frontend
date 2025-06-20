@@ -180,6 +180,59 @@ async function testStripeConnection() {
   }
 }
 
+// Test All Connections
+async function testAllConnections() {
+  try {
+    console.log("🔄 Testing all system connections...");
+    
+    const response = await fetch('/api/test-all');
+    const results = await response.json();
+    
+    let statusMessage = "🔄 SYSTEM CONNECTION TEST RESULTS:\n\n";
+    
+    // Server status
+    statusMessage += `🖥️ SERVER: ${results.server.status.toUpperCase()}\n`;
+    statusMessage += `⏰ Timestamp: ${results.server.timestamp}\n\n`;
+    
+    // Environment variables
+    statusMessage += `🔑 ENVIRONMENT:\n`;
+    statusMessage += `• Public Key: ${results.environment.publicKey ? '✅ Set' : '❌ Missing'}\n`;
+    statusMessage += `• Secret Key: ${results.environment.secretKey ? '✅ Set' : '❌ Missing'}\n`;
+    statusMessage += `• Port: ${results.environment.port}\n\n`;
+    
+    // Stripe connection
+    statusMessage += `💳 STRIPE CONNECTION:\n`;
+    if (results.stripe.connected) {
+      statusMessage += `• Status: ✅ Connected\n`;
+      statusMessage += `• Account ID: ${results.stripe.accountId}\n`;
+      statusMessage += `• Currency: ${results.stripe.currency}\n`;
+    } else {
+      statusMessage += `• Status: ❌ Failed\n`;
+      statusMessage += `• Error: ${results.stripe.error}\n`;
+    }
+    
+    // Wallet status
+    statusMessage += `\n🔌 WALLET CONNECTION:\n`;
+    statusMessage += `• Status: ${isWalletConnected ? '✅ Connected' : '❌ Not Connected'}\n`;
+    if (isWalletConnected) {
+      statusMessage += `• Type: ${connectedWalletType}\n`;
+      statusMessage += `• Address: ${userWalletAddress}\n`;
+    }
+    
+    // Frontend Stripe status
+    statusMessage += `\n🌐 FRONTEND STRIPE:\n`;
+    statusMessage += `• Initialized: ${stripe ? '✅ Yes' : '❌ No'}\n`;
+    statusMessage += `• Public Key: ${STRIPE_PUBLISHABLE_KEY ? '✅ Loaded' : '❌ Missing'}\n`;
+    
+    alert(statusMessage);
+    console.log("📊 Full test results:", results);
+    
+  } catch (error) {
+    alert("❌ Connection Test Error: " + error.message);
+    console.error("❌ Full test error:", error);
+  }
+}
+
 // Create Stripe Payment
 async function createStripePayment() {
   if (!isWalletConnected || !userWalletAddress) {
