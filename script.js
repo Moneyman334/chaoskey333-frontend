@@ -5,6 +5,8 @@ let isWalletConnected = false;
 let connectedWalletType = null;
 let STRIPE_PUBLISHABLE_KEY = null;
 let stripe = null;
+let signer;
+let userAddress;
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -291,25 +293,5 @@ window.onload = async function () {
         checkStripeAndMint();
       }
     });
-  }
-};
-let signer;
-let userAddress;
-
-document.getElementById("connectWalletBtn").onclick = async function () {
-  if (typeof window.ethereum === "undefined") {
-    alert("MetaMask not found! Please install MetaMask.");
-    return;
-  }
-
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    signer = provider.getSigner();
-    userAddress = await signer.getAddress();
-    document.getElementById("walletStatus").innerText = `✅ Connected: ${userAddress}`;
-  } catch (err) {
-    console.error("Wallet connection failed:", err);
-    document.getElementById("walletStatus").innerText = "❌ Failed to connect wallet";
   }
 };
