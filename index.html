@@ -36,3 +36,16 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+<button id="checkout">Mint ChaosKey Relic</button>
+
+<script>
+  const stripe = Stripe("pk_live_XXXXXXXXXXXXXXXXXXXXXXXX");
+
+  document.getElementById("checkout").addEventListener("click", async () => {
+    const res = await fetch("/create-checkout-session", { method: "POST" });
+    const session = await res.json();
+    await stripe.redirectToCheckout({ sessionId: session.id });
+  });
+</script>
+
