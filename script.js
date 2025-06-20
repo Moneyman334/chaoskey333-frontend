@@ -5,8 +5,8 @@ let isWalletConnected = false;
 let connectedWalletType = null;
 let STRIPE_PUBLISHABLE_KEY = null;
 let stripe = null;
-let signer;
-let userAddress;
+let signer = null;
+let userAddress = null;
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -108,7 +108,7 @@ async function connectWallet() {
   console.log("🔍 Checking for Web3 wallets...");
   
   // Wait longer for wallet extensions to load (they can take time)
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 1500));
   
   console.log("window.ethereum exists:", !!window.ethereum);
   
@@ -116,35 +116,40 @@ async function connectWallet() {
     console.log("✅ Ethereum provider detected");
     
     try {
-      // Check if MetaMask is available
-      if (window.ethereum.isMetaMask) {
-        console.log("🦊 MetaMask detected");
-        await connectMetaMask();
-      } 
-      // Check if Coinbase Wallet is available
-      else if (window.ethereum.isCoinbaseWallet) {
-        console.log("🔵 Coinbase Wallet detected");
-        await connectCoinbaseWallet();
-      }
-      // Generic Web3 provider
-      else {
-        console.log("🔌 Generic Web3 provider detected");
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        userWalletAddress = accounts[0];
-        isWalletConnected = true;
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      userWalletAddress = accounts[0];
+      isWalletConnected = true;
+      
+      // Initialize ethers signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      userAddress = accounts[0];
+      
+      // Detect wallet type
+      if (window.ethereum.isMetaMask && window.ethereum.isCoinbaseWallet) {
+        connectedWalletType = "Coinbase via MetaMask";
+        console.log("🔵🦊 Coinbase Wallet connected via MetaMask");
+        document.getElementById("connectWallet").innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        document.getElementById("mintStatus").innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
+      } else if (window.ethereum.isMetaMask) {
+        connectedWalletType = "MetaMask";
+        console.log("🦊 MetaMask detected and connected");
+        document.getElementById("connectWallet").innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        document.getElementById("mintStatus").innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
+      } else if (window.ethereum.isCoinbaseWallet) {
+        connectedWalletType = "Coinbase";
+        console.log("🔵 Coinbase Wallet detected and connected");
+        document.getElementById("connectWallet").innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        document.getElementById("mintStatus").innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
+      } else {
         connectedWalletType = "Generic";
-        
-        // Initialize ethers signer
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = provider.getSigner();
-        userAddress = accounts[0];
-        
-        console.log("🔌 Wallet Connected:", userWalletAddress);
+        console.log("🔌 Generic Web3 provider connected");
         document.getElementById("connectWallet").innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
         document.getElementById("mintStatus").innerText = "🧿 Wallet Connected – Ready for Stripe payment";
-        
-        checkStripeAndMint();
       }
+      
+      checkStripeAndMint();
+      
     } catch (err) {
       console.error("⚠️ Wallet connection error:", err);
       document.getElementById("mintStatus").innerText = "❌ Wallet connection failed: " + err.message;
