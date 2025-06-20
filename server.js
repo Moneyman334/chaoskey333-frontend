@@ -15,6 +15,36 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Test Stripe connection endpoint
+app.get('/api/test-stripe', async (req, res) => {
+  try {
+    console.log('🧪 Testing Stripe connection...');
+    
+    // Test Stripe connection by retrieving account info
+    const account = await stripe.accounts.retrieve();
+    
+    console.log('✅ Stripe connection successful');
+    console.log('Account ID:', account.id);
+    console.log('Default currency:', account.default_currency);
+    
+    res.json({
+      success: true,
+      accountId: account.id,
+      currency: account.default_currency,
+      message: 'Stripe connection successful'
+    });
+    
+  } catch (error) {
+    console.error('❌ Stripe connection test failed:', error.message);
+    
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: 'Stripe connection failed'
+    });
+  }
+});
+
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {

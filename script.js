@@ -136,6 +136,25 @@ async function mintRelic() {
   }, 2000);
 }
 
+// Test Stripe Connection
+async function testStripeConnection() {
+  try {
+    const response = await fetch('/api/test-stripe');
+    const result = await response.json();
+    
+    if (result.success) {
+      alert("✅ Stripe Connection Test Successful!\n\nAccount ID: " + result.accountId + "\nCurrency: " + result.currency);
+      console.log("✅ Stripe test successful:", result);
+    } else {
+      alert("❌ Stripe Connection Test Failed: " + result.error);
+      console.error("❌ Stripe test failed:", result.error);
+    }
+  } catch (error) {
+    alert("❌ Stripe Connection Test Error: " + error.message);
+    console.error("❌ Stripe test error:", error);
+  }
+}
+
 // Create Stripe Payment
 async function createStripePayment() {
   if (!isWalletConnected || !userWalletAddress) {
