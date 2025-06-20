@@ -16,3 +16,32 @@ contract ChaosRelicMint is ERC721URIStorage, Ownable {
         nextTokenId++;
     }
 }
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ChaosKeyVaultRelic {
+    string public name = "ChaosKey333 Relic";
+    string public symbol = "CK333";
+
+    mapping(uint256 => address) public owners;
+    mapping(address => uint256) public balances;
+    uint256 public totalSupply;
+
+    mapping(uint256 => string) private _tokenURIs;
+
+    event Minted(address indexed to, uint256 indexed tokenId, string tokenURI);
+
+    function mint(address to, string memory tokenURI) public {
+        uint256 tokenId = totalSupply + 1;
+        owners[tokenId] = to;
+        balances[to] += 1;
+        _tokenURIs[tokenId] = tokenURI;
+        totalSupply = tokenId;
+        emit Minted(to, tokenId, tokenURI);
+    }
+
+    function tokenURI(uint256 tokenId) public view returns (string memory) {
+        require(owners[tokenId] != address(0), "Token does not exist");
+        return _tokenURIs[tokenId];
+    }
+}
