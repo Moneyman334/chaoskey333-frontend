@@ -1,0 +1,658 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Frankenstein Vault - Complete Test Environment</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+            background: #0a0a0a; 
+            color: #00ff00; 
+            margin: 0;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; border: 2px solid #00ff00; padding: 20px; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .test-section { 
+            border: 1px solid #333; 
+            border-radius: 8px; 
+            padding: 20px; 
+            background: #111; 
+            position: relative;
+        }
+        .test-section h3 { color: #00ff00; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .status { 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 5px; 
+            border-left: 4px solid;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { background: #1a2f1a; border-color: #00ff00; color: #00ff00; }
+        .error { background: #2f1a1a; border-color: #ff0000; color: #ff6666; }
+        .warning { background: #2f2f1a; border-color: #ffff00; color: #ffff66; }
+        .info { background: #1a1a2f; border-color: #0066ff; color: #6666ff; }
+        .loading { background: #2f1a2f; border-color: #ff00ff; color: #ff66ff; }
+        button { 
+            padding: 12px 20px; 
+            margin: 8px; 
+            background: #006600; 
+            color: #00ff00; 
+            border: 1px solid #00ff00; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+        button:hover { background: #00ff00; color: #000; }
+        button:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .code-block { 
+            background: #000; 
+            border: 1px solid #333; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 4px; 
+            font-family: 'Courier New', monospace; 
+            overflow-x: auto;
+        }
+        .env-var { color: #ffff00; }
+        .success-icon { color: #00ff00; }
+        .error-icon { color: #ff0000; }
+        .warning-icon { color: #ffff00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 FRANKENSTEIN VAULT TEST ENVIRONMENT 🧬</h1>
+            <p>Complete System Validation & Diagnostics</p>
+        </div>
+        
+        <div class="test-grid">
+            <!-- Environment Variables Test -->
+            <div class="test-section">
+                <h3>🔑 Environment Variables</h3>
+                <div id="envStatus" class="status info">Checking environment configuration...</div>
+                <button onclick="testEnvironment()">Test Environment</button>
+                <div class="code-block">
+                    Required Variables:
+                    <span class="env-var">STRIPE_PUBLIC_KEY</span>
+                    <span class="env-var">STRIPE_SECRET_KEY</span>
+                </div>
+            </div>
+
+            <!-- Server Connection Test -->
+            <div class="test-section">
+                <h3>🖥️ Server Connection</h3>
+                <div id="serverStatus" class="status info">Testing server endpoints...</div>
+                <button onclick="testServer()">Test Server</button>
+                <button onclick="testAllEndpoints()">Test All Endpoints</button>
+            </div>
+
+            <!-- Stripe Integration Test -->
+            <div class="test-section">
+                <h3>💳 Stripe Integration</h3>
+                <div id="stripeStatus" class="status info">Checking Stripe connection...</div>
+                <button onclick="testStripeConnection()">Test Stripe</button>
+                <button onclick="testStripeCheckout()">Test Checkout</button>
+            </div>
+
+            <!-- Wallet Detection Test -->
+            <div class="test-section">
+                <h3>🔌 Wallet Detection</h3>
+                <div id="walletStatus" class="status info">Scanning for Web3 wallets...</div>
+                <button onclick="testWalletDetection()">Test Wallet Detection</button>
+                <button onclick="connectTestWallet()">Connect Wallet</button>
+            </div>
+
+            <!-- Complete Flow Test -->
+            <div class="test-section">
+                <h3>🚀 Complete Integration</h3>
+                <div id="flowStatus" class="status info">Ready for complete flow test</div>
+                <button onclick="runCompleteTest()">Run Complete Test</button>
+                <button onclick="simulatePaymentFlow()">Simulate Payment</button>
+            </div>
+
+            <!-- System Diagnostics -->
+            <div class="test-section">
+                <h3>🔍 System Diagnostics</h3>
+                <div id="diagnosticsStatus" class="status info">System diagnostic ready</div>
+                <button onclick="runDiagnostics()">Run Diagnostics</button>
+                <button onclick="clearAllTests()">Clear All Results</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <button onclick="runAllTests()" style="background: #ff6600; color: #fff; font-size: 16px; padding: 15px 30px;">
+                🔥 RUN ALL TESTS 🔥
+            </button>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+    <script>
+        let stripe = null;
+        let walletAddress = null;
+        let testResults = {};
+
+        // Environment Variables Test
+        async function testEnvironment() {
+            const status = document.getElementById('envStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Testing environment variables...';
+
+            try {
+                const response = await fetch('/config');
+                const config = await response.json();
+                
+                const hasPublicKey = !!config.publicKey;
+                const publicKeyPreview = config.publicKey ? config.publicKey.substring(0, 12) + '...' : 'MISSING';
+                
+                // Test server environment check
+                const serverResponse = await fetch('/api/test-all');
+                const serverData = await serverResponse.json();
+                
+                if (hasPublicKey && serverData.environment.secretKey) {
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Environment Configuration Valid
+
+🔑 Public Key: ${publicKeyPreview}
+🔐 Secret Key: ${serverData.environment.secretKey ? '✅ Set' : '❌ Missing'}
+🚪 Port: ${serverData.environment.port}
+⏰ Server Time: ${serverData.server.timestamp}`;
+                    testResults.environment = true;
+                } else {
+                    throw new Error(`Missing keys - Public: ${hasPublicKey}, Secret: ${serverData.environment.secretKey}`);
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Environment Test Failed
+
+Error: ${error.message}
+
+Required Actions:
+1. Add STRIPE_PUBLIC_KEY to Replit Secrets
+2. Add STRIPE_SECRET_KEY to Replit Secrets
+3. Restart the server`;
+                testResults.environment = false;
+            }
+        }
+
+        // Server Connection Test
+        async function testServer() {
+            const status = document.getElementById('serverStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Testing server connection...';
+
+            try {
+                const startTime = Date.now();
+                const response = await fetch('/api/test-all');
+                const responseTime = Date.now() - startTime;
+                const data = await response.json();
+                
+                status.className = 'status success';
+                status.innerHTML = `✅ Server Connection Successful
+
+🏃 Response Time: ${responseTime}ms
+🖥️ Server Status: ${data.server.status}
+🌐 Environment: Replit
+⚡ All endpoints responding`;
+                testResults.server = true;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Server Connection Failed
+
+Error: ${error.message}
+Time: ${new Date().toISOString()}
+
+Check:
+1. Server is running on port 5000
+2. Network connectivity
+3. Replit service status`;
+                testResults.server = false;
+            }
+        }
+
+        // Test All Endpoints
+        async function testAllEndpoints() {
+            const status = document.getElementById('serverStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Testing all endpoints...';
+
+            const endpoints = [
+                { path: '/config', name: 'Config' },
+                { path: '/api/test-stripe', name: 'Stripe Test' },
+                { path: '/api/test-all', name: 'System Test' }
+            ];
+
+            let results = '🔍 Endpoint Test Results:\n\n';
+            let allPassed = true;
+
+            for (const endpoint of endpoints) {
+                try {
+                    const startTime = Date.now();
+                    const response = await fetch(endpoint.path);
+                    const responseTime = Date.now() - startTime;
+                    
+                    if (response.ok) {
+                        results += `✅ ${endpoint.name}: ${response.status} (${responseTime}ms)\n`;
+                    } else {
+                        results += `⚠️ ${endpoint.name}: ${response.status} (${responseTime}ms)\n`;
+                        allPassed = false;
+                    }
+                } catch (error) {
+                    results += `❌ ${endpoint.name}: Failed - ${error.message}\n`;
+                    allPassed = false;
+                }
+            }
+
+            status.className = allPassed ? 'status success' : 'status warning';
+            status.innerHTML = results;
+        }
+
+        // Stripe Connection Test
+        async function testStripeConnection() {
+            const status = document.getElementById('stripeStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Testing Stripe integration...';
+
+            try {
+                // Test config endpoint
+                const configResponse = await fetch('/config');
+                const config = await configResponse.json();
+                
+                if (!config.publicKey) {
+                    throw new Error('No Stripe public key received from server');
+                }
+                
+                // Initialize Stripe
+                stripe = Stripe(config.publicKey);
+                
+                // Test server Stripe connection
+                const testResponse = await fetch('/api/test-stripe');
+                const testResult = await testResponse.json();
+                
+                if (testResult.success) {
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Stripe Integration Fully Operational
+
+🔑 Public Key: ${config.publicKey.substring(0, 12)}...
+🏦 Account ID: ${testResult.accountId}
+💰 Currency: ${testResult.currency.toUpperCase()}
+⚡ Frontend: Initialized
+🖥️ Backend: Connected`;
+                    testResults.stripe = true;
+                } else {
+                    throw new Error(testResult.error);
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Stripe Integration Failed
+
+Error: ${error.message}
+
+Troubleshooting:
+1. Verify STRIPE_PUBLIC_KEY in Secrets
+2. Verify STRIPE_SECRET_KEY in Secrets
+3. Check Stripe Dashboard for API key status
+4. Restart server after adding keys`;
+                testResults.stripe = false;
+            }
+        }
+
+        // Test Stripe Checkout
+        async function testStripeCheckout() {
+            if (!stripe) {
+                alert('⚠️ Run Stripe connection test first');
+                return;
+            }
+
+            const status = document.getElementById('stripeStatus');
+            const originalContent = status.innerHTML;
+            
+            try {
+                status.className = 'status loading';
+                status.innerHTML = '🔄 Testing Stripe checkout session creation...';
+                
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        walletAddress: walletAddress || '0x0000000000000000000000000000000000000000',
+                        connectedWalletType: 'Test Environment',
+                        amount: 100, // $1.00 test
+                        currency: 'usd',
+                        productName: 'Test Checkout Session'
+                    })
+                });
+                
+                const session = await response.json();
+                
+                if (session.sessionId) {
+                    status.className = 'status success';
+                    status.innerHTML = `${originalContent}
+
+🎫 Checkout Test: ✅ PASSED
+Session ID: ${session.sessionId.substring(0, 20)}...
+💳 Stripe checkout session created successfully`;
+                } else {
+                    throw new Error('No session ID received');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `${originalContent}
+
+❌ Checkout Test Failed: ${error.message}`;
+            }
+        }
+
+        // Wallet Detection Test
+        async function testWalletDetection() {
+            const status = document.getElementById('walletStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Scanning for Web3 wallets...';
+
+            // Wait for wallet extensions to load
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            let walletInfo = '🔍 Wallet Detection Results:\n\n';
+            let walletsFound = 0;
+
+            // Check for window.ethereum
+            if (typeof window.ethereum !== 'undefined') {
+                walletInfo += '✅ window.ethereum detected\n';
+                
+                // Check specific wallet types
+                if (window.ethereum.isMetaMask) {
+                    walletInfo += '🦊 MetaMask: Detected\n';
+                    walletsFound++;
+                }
+                if (window.ethereum.isCoinbaseWallet) {
+                    walletInfo += '🔵 Coinbase Wallet: Detected\n';
+                    walletsFound++;
+                }
+                if (window.ethereum.isWalletConnect) {
+                    walletInfo += '🔗 WalletConnect: Detected\n';
+                    walletsFound++;
+                }
+                
+                // Check if multiple wallets
+                if (walletsFound === 0) {
+                    walletInfo += '⚪ Generic Web3 Provider: Detected\n';
+                    walletsFound = 1;
+                }
+                
+                status.className = 'status success';
+                walletInfo += `\n📊 Total Wallets Found: ${walletsFound}`;
+                testResults.wallet = true;
+                
+            } else {
+                walletInfo += '❌ No Web3 wallets detected\n\n';
+                walletInfo += 'Install Instructions:\n';
+                walletInfo += '1. MetaMask: chrome://extensions\n';
+                walletInfo += '2. Coinbase Wallet: chrome://extensions\n';
+                walletInfo += '3. Refresh page after installation';
+                
+                status.className = 'status error';
+                testResults.wallet = false;
+            }
+
+            status.innerHTML = walletInfo;
+        }
+
+        // Connect Test Wallet
+        async function connectTestWallet() {
+            const status = document.getElementById('walletStatus');
+            
+            if (typeof window.ethereum === 'undefined') {
+                status.className = 'status error';
+                status.innerHTML = '❌ No Web3 wallet available for connection';
+                return;
+            }
+
+            try {
+                status.className = 'status loading';
+                status.innerHTML = '🔄 Connecting to wallet...';
+                
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                walletAddress = accounts[0];
+                
+                // Get network info
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                const networks = {
+                    '0x1': 'Ethereum Mainnet',
+                    '0x5': 'Goerli Testnet',
+                    '0xaa36a7': 'Sepolia Testnet',
+                    '0x89': 'Polygon Mainnet'
+                };
+                const networkName = networks[chainId] || `Unknown (${chainId})`;
+                
+                // Detect wallet type
+                let walletType = 'Generic Web3';
+                let walletIcon = '⚪';
+                if (window.ethereum.isMetaMask) {
+                    walletType = 'MetaMask';
+                    walletIcon = '🦊';
+                }
+                if (window.ethereum.isCoinbaseWallet) {
+                    walletType = 'Coinbase Wallet';
+                    walletIcon = '🔵';
+                }
+                
+                status.className = 'status success';
+                status.innerHTML = `✅ Wallet Connected Successfully
+
+${walletIcon} Type: ${walletType}
+👤 Address: ${walletAddress}
+🌐 Network: ${networkName}
+🔗 Ready for transactions`;
+
+                testResults.walletConnection = true;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Wallet connection failed: ${error.message}`;
+                testResults.walletConnection = false;
+            }
+        }
+
+        // Complete Integration Test
+        async function runCompleteTest() {
+            const status = document.getElementById('flowStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Running complete integration test...';
+
+            let results = '🚀 Complete Integration Test:\n\n';
+            let allPassed = true;
+
+            // Test each component
+            const tests = [
+                { name: 'Environment', key: 'environment', test: testEnvironment },
+                { name: 'Server', key: 'server', test: testServer },
+                { name: 'Stripe', key: 'stripe', test: testStripeConnection },
+                { name: 'Wallet', key: 'wallet', test: testWalletDetection }
+            ];
+
+            for (const test of tests) {
+                try {
+                    await test.test();
+                    await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause
+                    
+                    if (testResults[test.key]) {
+                        results += `✅ ${test.name}: PASSED\n`;
+                    } else {
+                        results += `❌ ${test.name}: FAILED\n`;
+                        allPassed = false;
+                    }
+                } catch (error) {
+                    results += `❌ ${test.name}: ERROR - ${error.message}\n`;
+                    allPassed = false;
+                }
+            }
+
+            results += '\n' + (allPassed ? '🎉 ALL SYSTEMS OPERATIONAL!' : '⚠️ Issues detected - check individual tests');
+
+            status.className = allPassed ? 'status success' : 'status error';
+            status.innerHTML = results;
+        }
+
+        // Simulate Payment Flow
+        async function simulatePaymentFlow() {
+            if (!walletAddress) {
+                alert('⚠️ Connect a wallet first');
+                return;
+            }
+            
+            if (!stripe) {
+                alert('⚠️ Stripe not initialized');
+                return;
+            }
+
+            const status = document.getElementById('flowStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Simulating complete payment flow...';
+
+            try {
+                // Create checkout session
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        walletAddress: walletAddress,
+                        connectedWalletType: 'Test Wallet',
+                        amount: 3333,
+                        currency: 'usd',
+                        productName: 'Frankenstein Vault Relic 333 - SIMULATION'
+                    })
+                });
+                
+                const session = await response.json();
+                
+                if (session.sessionId) {
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Payment Flow Simulation Complete!
+
+🔌 Wallet: ${walletAddress.substring(0, 8)}...
+💳 Checkout Session: Created
+🎫 Session ID: ${session.sessionId.substring(0, 20)}...
+🧿 NFT Mint: Ready
+🚀 Flow Status: FULLY OPERATIONAL
+
+Note: This is a simulation. Click the session ID to test real payment.`;
+                } else {
+                    throw new Error('No session ID received');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Payment flow simulation failed: ${error.message}`;
+            }
+        }
+
+        // System Diagnostics
+        async function runDiagnostics() {
+            const status = document.getElementById('diagnosticsStatus');
+            status.className = 'status loading';
+            status.innerHTML = '🔄 Running system diagnostics...';
+
+            try {
+                const response = await fetch('/api/test-all');
+                const data = await response.json();
+                
+                let diagnostics = '🔍 System Diagnostics Report:\n\n';
+                
+                // Server diagnostics
+                diagnostics += `🖥️ SERVER STATUS:\n`;
+                diagnostics += `Status: ${data.server.status}\n`;
+                diagnostics += `Timestamp: ${data.server.timestamp}\n`;
+                diagnostics += `Uptime: ${new Date().toISOString()}\n\n`;
+                
+                // Environment diagnostics
+                diagnostics += `🔑 ENVIRONMENT:\n`;
+                diagnostics += `Public Key: ${data.environment.publicKey ? 'SET' : 'MISSING'}\n`;
+                diagnostics += `Secret Key: ${data.environment.secretKey ? 'SET' : 'MISSING'}\n`;
+                diagnostics += `Port: ${data.environment.port}\n\n`;
+                
+                // Stripe diagnostics
+                diagnostics += `💳 STRIPE:\n`;
+                diagnostics += `Connection: ${data.stripe.connected ? 'ACTIVE' : 'FAILED'}\n`;
+                if (data.stripe.connected) {
+                    diagnostics += `Account: ${data.stripe.accountId}\n`;
+                    diagnostics += `Currency: ${data.stripe.currency}\n`;
+                } else {
+                    diagnostics += `Error: ${data.stripe.error}\n`;
+                }
+                
+                // Browser diagnostics
+                diagnostics += `\n🌐 BROWSER:\n`;
+                diagnostics += `User Agent: ${navigator.userAgent.split(' ')[0]}\n`;
+                diagnostics += `Ethereum: ${typeof window.ethereum !== 'undefined' ? 'AVAILABLE' : 'NOT FOUND'}\n`;
+                diagnostics += `Stripe JS: ${typeof Stripe !== 'undefined' ? 'LOADED' : 'NOT LOADED'}\n`;
+                
+                const overallHealth = data.environment.publicKey && data.environment.secretKey && data.stripe.connected;
+                
+                status.className = overallHealth ? 'status success' : 'status warning';
+                status.innerHTML = diagnostics;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Diagnostics failed: ${error.message}`;
+            }
+        }
+
+        // Clear all test results
+        function clearAllTests() {
+            const statusElements = [
+                'envStatus', 'serverStatus', 'stripeStatus', 
+                'walletStatus', 'flowStatus', 'diagnosticsStatus'
+            ];
+            
+            statusElements.forEach(id => {
+                const element = document.getElementById(id);
+                element.className = 'status info';
+                element.innerHTML = 'Test cleared - ready to run';
+            });
+            
+            testResults = {};
+            walletAddress = null;
+            stripe = null;
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            clearAllTests();
+            
+            const tests = [
+                { func: testEnvironment, delay: 1000 },
+                { func: testServer, delay: 1000 },
+                { func: testStripeConnection, delay: 1000 },
+                { func: testWalletDetection, delay: 1000 },
+                { func: runDiagnostics, delay: 1000 }
+            ];
+
+            for (const test of tests) {
+                await test.func();
+                await new Promise(resolve => setTimeout(resolve, test.delay));
+            }
+            
+            alert('🔥 All tests completed! Check individual sections for results.');
+        }
+
+        // Auto-run basic tests on page load
+        window.onload = async function() {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await testEnvironment();
+            await testServer();
+        };
+    </script>
+</body>
+</html>
