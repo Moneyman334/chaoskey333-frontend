@@ -19,32 +19,94 @@ function resurrect() {
 // Global variables
 let userWalletAddress = null;
 let isWalletConnected = false;
+let connectedWalletType = null;
 
 // Connect MetaMask Wallet
-async function connectWallet() {
+async function connectMetaMask() {
   const connectWalletBtn = document.getElementById("connectWallet");
   const mintStatus = document.getElementById("mintStatus");
 
-  if (window.ethereum) {
+  if (window.ethereum && window.ethereum.isMetaMask) {
     try {
       const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
       userWalletAddress = accounts[0];
       isWalletConnected = true;
+      connectedWalletType = "MetaMask";
       
-      console.log("🔌 Connected Wallet:", userWalletAddress);
-      connectWalletBtn.innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
-      mintStatus.innerText = "🧿 Wallet Connected – Ready for Stripe payment";
+      console.log("🦊 MetaMask Connected:", userWalletAddress);
+      connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+      mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
       
       // Check if we have a successful Stripe payment
       checkStripeAndMint();
       
     } catch (err) {
-      console.error("⚠️ Wallet connection error:", err);
-      mintStatus.innerText = "❌ Wallet connection failed";
+      console.error("⚠️ MetaMask connection error:", err);
+      mintStatus.innerText = "❌ MetaMask connection failed";
     }
   } else {
     alert("🚨 MetaMask not detected. Please install MetaMask extension.");
     mintStatus.innerText = "🚨 MetaMask required for vault access";
+  }
+}
+
+// Connect Coinbase Wallet
+async function connectCoinbaseWallet() {
+  const connectWalletBtn = document.getElementById("connectWallet");
+  const mintStatus = document.getElementById("mintStatus");
+
+  if (window.ethereum && window.ethereum.isCoinbaseWallet) {
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      userWalletAddress = accounts[0];
+      isWalletConnected = true;
+      connectedWalletType = "Coinbase";
+      
+      console.log("🔵 Coinbase Wallet Connected:", userWalletAddress);
+      connectWalletBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+      mintStatus.innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
+      
+      // Check if we have a successful Stripe payment
+      checkStripeAndMint();
+      
+    } catch (err) {
+      console.error("⚠️ Coinbase Wallet connection error:", err);
+      mintStatus.innerText = "❌ Coinbase Wallet connection failed";
+    }
+  } else {
+    alert("🚨 Coinbase Wallet not detected. Please install Coinbase Wallet extension.");
+    mintStatus.innerText = "🚨 Coinbase Wallet required for vault access";
+  }
+}
+
+// Auto-detect and connect available wallet
+async function connectWallet() {
+  if (window.ethereum) {
+    if (window.ethereum.isMetaMask) {
+      await connectMetaMask();
+    } else if (window.ethereum.isCoinbaseWallet) {
+      await connectCoinbaseWallet();
+    } else {
+      // Generic wallet connection
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        userWalletAddress = accounts[0];
+        isWalletConnected = true;
+        connectedWalletType = "Generic";
+        
+        console.log("🔌 Wallet Connected:", userWalletAddress);
+        document.getElementById("connectWallet").innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        document.getElementById("mintStatus").innerText = "🧿 Wallet Connected – Ready for Stripe payment";
+        
+        checkStripeAndMint();
+      } catch (err) {
+        console.error("⚠️ Wallet connection error:", err);
+        document.getElementById("mintStatus").innerText = "❌ Wallet connection failed";
+      }
+    }
+  } else {
+    alert("🚨 No Web3 wallet detected. Please install MetaMask or Coinbase Wallet.");
+    document.getElementById("mintStatus").innerText = "🚨 Web3 wallet required for vault access";
   }
 }
 
@@ -104,28 +166,37 @@ window.onload = async function () {
     }
   }, 3000);
 
-  // Set up wallet connection button
+  // Set up wallet connection buttons
   const connectWalletBtn = document.getElementById("connectWallet");
+  const connectCoinbaseBtn = document.getElementById("connectCoinbase");
+  
   if (connectWalletBtn) {
     connectWalletBtn.onclick = connectWallet;
+  }
+  
+  if (connectCoinbaseBtn) {
+    connectCoinbaseBtn.onclick = connectCoinbaseWallet;
   }
 
   // Check for existing Stripe payment on page load
   checkStripeAndMint();
 
-  // Listen for account changes in MetaMask
+  // Listen for account changes in any connected wallet
   if (window.ethereum) {
     window.ethereum.on('accountsChanged', function (accounts) {
       if (accounts.length === 0) {
         // User disconnected wallet
         userWalletAddress = null;
         isWalletConnected = false;
+        connectedWalletType = null;
         document.getElementById("connectWallet").innerText = "🔌 Connect Wallet";
         document.getElementById("mintStatus").innerText = "🔒 Wallet disconnected";
       } else {
         // User switched accounts
         userWalletAddress = accounts[0];
-        document.getElementById("connectWallet").innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+        const walletIcon = connectedWalletType === "MetaMask" ? "🦊" : 
+                          connectedWalletType === "Coinbase" ? "🔵" : "✅";
+        document.getElementById("connectWallet").innerText = walletIcon + " " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       }
     });
   }
