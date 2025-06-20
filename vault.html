@@ -12,3 +12,34 @@ if (paymentSuccess && signer) {
   await tx.wait();
   document.getElementById("mintStatus").innerText = `✅ Relic minted to ${userAddress}`;
 }
+window.onload = async function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paymentSuccess = urlParams.get("payment") === "success";
+
+  if (paymentSuccess && typeof window.ethereum !== "undefined") {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        "0xYourContractAddress", // TODO: Replace with your live Goerli contract
+        ["function mint(address to, string memory tokenURI) public"],
+        signer
+      );
+
+      const walletAddress = await signer.getAddress();
+      const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash"; // TODO: Replace with real metadata
+
+      const mintStatus = document.getElementById("mintStatus");
+      mintStatus.innerText = "🌀 Minting your relic...";
+
+      const tx = await contract.mint(walletAddress, tokenURI);
+      await tx.wait();
+
+      mintStatus.innerText = `✅ Relic minted to ${walletAddress}`;
+    } catch (err) {
+      console.error("Minting failed:", err);
+      document.getElementById("mintStatus").innerText = "❌ Mint failed. See console.";
+    }
+  }
+};
