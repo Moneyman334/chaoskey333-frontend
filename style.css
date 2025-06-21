@@ -47,6 +47,16 @@ button {
   background-color: black;
   color: #00ff00;
   border: 2px solid #00ff00;
+
+.glitch-timer {
+  animation: glitch 1.5s infinite, pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { text-shadow: 0 0 5px cyan; }
+  100% { text-shadow: 0 0 20px magenta; }
+}
+
   padding: 12px 20px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 1.1rem;
