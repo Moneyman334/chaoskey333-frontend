@@ -1,0 +1,75 @@
+<!-- Include Stripe and Ethers.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+<script>
+  const stripe = Stripe("pk_live_YOUR_REAL_PUBLIC_KEY"); // 🔁 Replace with your real Stripe public key
+
+  async function createStripeCheckoutSession() {
+    if (!window.ethereum) {
+      alert("⚠️ MetaMask not detected.");
+      return;
+    }
+
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const walletAddress = accounts[0];
+
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress,
+          connectedWalletType: 'MetaMask',
+          amount: 33300,
+          currency: 'usd',
+          productName: 'ChaosKey333 Relic Mint'
+        }),
+      });
+
+      const session = await response.json();
+      if (session.sessionId) {
+        await stripe.redirectToCheckout({ sessionId: session.sessionId });
+      } else {
+        alert('❌ Failed to create a Stripe session.');
+        console.error(session.error);
+      }
+    } catch (error) {
+      console.error('Stripe Checkout Error:', error);
+      alert('❌ Stripe checkout failed.');
+    }
+  }
+
+  async function mintRelic() {
+    const contractAddress = "0xYourDeployedGoerliAddress"; // 🔁 Replace with your Goerli contract address
+    const abi = [{
+      "inputs": [],
+      "name": "mintRelic",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }];
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      const tx = await contract.mintRelic();
+      await tx.wait();
+      alert("✅ Relic minted successfully!");
+    } catch (err) {
+      console.error("❌ Mint Error:", err);
+      alert("Minting failed. Please check wallet and network.");
+    }
+  }
+
+  // Auto-trigger minting on Stripe success
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("success") === "true") {
+    window.addEventListener("load", mintRelic);
+  }
+</script>
+
+<!-- 🔘 Trigger Button -->
+<button onclick="createStripeCheckoutSession()">Mint ChaosKey Relic</button>

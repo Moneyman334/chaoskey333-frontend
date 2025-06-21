@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ChaosKey Relic Minting</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+  <!-- 🔘 Mint Trigger Button -->
+  <button onclick="createStripeCheckoutSession()">Mint ChaosKey Relic</button>
+
+  <script>
+    const stripe = Stripe("pk_live_YOUR_PUBLIC_KEY"); // ⛳️ Replace with your live public Stripe key
+
+    async function createStripeCheckoutSession() {
+      if (!window.ethereum) {
+        alert("⚠️ MetaMask not detected.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const walletAddress = accounts[0];
+
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            walletAddress,
+            connectedWalletType: 'MetaMask',
+            amount: 33300,
+            currency: 'usd',
+            productName: 'ChaosKey333 Relic Mint'
+          }),
+        });
+
+        const session = await response.json();
+        if (session.sessionId) {
+          await stripe.redirectToCheckout({ sessionId: session.sessionId });
+        } else {
+          alert('❌ Failed to create checkout session.');
+        }
+      } catch (error) {
+        console.error('⚠️ Stripe Error:', error);
+        alert('Checkout failed.');
+      }
+    }
+
+    async function mintRelic() {
+      const contractAddress = "0xYourDeployedGoerliAddress"; // 🧬 Replace with your deployed Goerli contract
+      const abi = [{
+        "inputs": [],
+        "name": "mintRelic",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }];
+
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+        const tx = await contract.mintRelic();
+        await tx.wait();
+        alert("✅ Relic minted successfully!");
+      } catch (err) {
+        console.error("❌ Mint error:", err);
+        alert("Relic mint failed.");
+      }
+    }
+
+    // 🚀 Auto-mint when redirected from Stripe
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("success") === "true") {
+      window.addEventListener('load', mintRelic); // 🧠 Important: triggers auto mint on success
+    }
+  </script>
+</body>
+</html>
