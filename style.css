@@ -49,7 +49,21 @@ button {
   border: 2px solid #00ff00;
 
 .glitch-timer {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+  margin-top: 20px;
   animation: glitch 1.5s infinite, pulseGlow 2s infinite alternate;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 0 red, -2px 0 blue; }
+  20% { text-shadow: -2px 2px red, 2px -2px blue; }
+  40% { text-shadow: 2px -2px red, -2px 2px blue; }
+  60% { text-shadow: -2px -2px red, 2px 2px blue; }
+  80% { text-shadow: 2px 2px red, -2px -2px blue; }
+  100% { text-shadow: 0 0 red, 0 0 blue; }
 }
 
 @keyframes pulseGlow {
