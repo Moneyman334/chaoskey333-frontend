@@ -37,6 +37,56 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="script.js"></script>
 
+  <script>
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("🦊 MetaMask not detected. Please install it.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        window.walletAddress = accounts[0];
+        document.getElementById("mint-status").innerText = `🟢 Wallet Connected: ${window.walletAddress}`;
+      } catch (err) {
+        alert("⚠️ Wallet connection failed.");
+      }
+    }
+
+    async function sendMintRequest() {
+      if (!window.walletAddress) {
+        alert("⚠️ Please connect your wallet first.");
+        return;
+      }
+
+      document.getElementById("mint-status").innerText = "⏳ Sending mint request...";
+
+      fetch("/api/mint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: window.walletAddress })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("mint-status").innerText = `🎉 Relic minted! Tx: ${data.txHash}`;
+          alert(`✅ Mint Successful!\nTransaction: ${data.txHash}`);
+        } else {
+          throw new Error(data.error);
+        }
+      })
+      .catch(err => {
+        document.getElementById("mint-status").innerText = "❌ Mint failed";
+        alert(`❌ Error: ${err.message}`);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      connectWallet(); // Auto-trigger wallet connection
+      document.getElementById("mint-button").addEventListener("click", sendMintRequest);
+    });
+  </script>
+
 <script>
   async function mintRelic() {
     const contractAddress = "0xYourDeployedGoerliAddress"; // 🔁 Replace with your real contract!
