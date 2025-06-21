@@ -159,7 +159,16 @@
 <button id="checkout">Mint ChaosKey Relic</button>
 
 <script>
-  const stripe = Stripe("pk_live_XXXXXXXXXXXXXXXXXXXXXXXX");
+  fetch('/config')
+  .then(response => response.json())
+  .then(config => {
+    if (config.publicKey) {
+      const stripe = Stripe(config.publicKey);
+    } else {
+      console.error("Stripe public key not found in config.");
+    }
+  })
+  .catch(err => console.error("Error loading Stripe config:", err));
 
   document.getElementById("checkout").addEventListener("click", async () => {
     const res = await fetch("/create-checkout-session", { method: "POST" });
