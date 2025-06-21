@@ -1,15 +1,40 @@
 body {
-  margin: 0;
-  padding: 0;
   background-color: #000;
-  font-family: 'Orbitron', sans-serif;
-  color: #00ffcc;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   animation: backgroundFlash 6s infinite alternate;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.glitch-timer {
+  animation: glitch 1.5s infinite, pulseGlow 2s infinite alternate;
+  font-size: 2rem;
+  color: #fff;
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px dashed #ff00ff;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #00ffff;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 0 red, -2px 0 blue; }
+  20% { text-shadow: -2px 2px red, 2px -2px blue; }
+  40% { text-shadow: 2px -2px red, -2px 2px blue; }
+  60% { text-shadow: -2px -2px red, 2px 2px blue; }
+  80% { text-shadow: 2px 2px red, -2px -2px blue; }
+  100% { text-shadow: 0 0 red, 0 0 blue; }
+}
+
+@keyframes pulseGlow {
+  0% { text-shadow: 0 0 5px cyan; }
+  100% { text-shadow: 0 0 20px magenta; }
 }
 
 @keyframes backgroundFlash {
@@ -54,29 +79,6 @@ button {
   background-color: black;
   color: #00ff00;
   border: 2px solid #00ff00;
-
-.glitch-timer {
-  animation: glitch 1.5s infinite, pulseGlow 2s infinite alternate;
-  font-size: 1.5rem;
-  color: #fff;
-  text-align: center;
-  margin-top: 50px;
-}
-
-@keyframes glitch {
-  0% { text-shadow: 2px 0 red, -2px 0 blue; }
-  20% { text-shadow: -2px 2px red, 2px -2px blue; }
-  40% { text-shadow: 2px -2px red, -2px 2px blue; }
-  60% { text-shadow: -2px -2px red, 2px 2px blue; }
-  80% { text-shadow: 2px 2px red, -2px -2px blue; }
-  100% { text-shadow: 0 0 red, 0 0 blue; }
-}
-
-@keyframes pulseGlow {
-  0% { text-shadow: 0 0 5px cyan; }
-  100% { text-shadow: 0 0 20px magenta; }
-}
-
   padding: 12px 20px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 1.1rem;
