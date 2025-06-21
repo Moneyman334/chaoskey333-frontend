@@ -72,6 +72,24 @@
           document.getElementById("mint-status").innerText = `🎉 Relic minted! Tx: ${data.txHash}`;
           alert(`✅ Mint Successful!\nTransaction: ${data.txHash}`);
         } else {
+
+<script>
+  window.addEventListener("load", async () => {
+    if (typeof window.ethereum === "undefined") {
+      alert("🦊 MetaMask not detected. Please install the extension.");
+      return;
+    }
+
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      window.walletAddress = accounts[0];
+      console.log("✅ Wallet Connected:", window.walletAddress);
+    } catch (err) {
+      console.error("❌ Connection error:", err.message);
+    }
+  });
+</script>
+
           throw new Error(data.error);
         }
       })
