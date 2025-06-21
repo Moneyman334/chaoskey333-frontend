@@ -96,6 +96,14 @@
       .catch(err => {
         document.getElementById("mint-status").innerText = "❌ Mint failed";
         alert(`❌ Error: ${err.message}`);
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("success") === "true") {
+    window.addEventListener('load', mintRelic); // 👈 Triggers mint on load
+  }
+</script>
+
       });
     }
 
