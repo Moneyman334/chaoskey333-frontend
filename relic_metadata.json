@@ -2,7 +2,7 @@
 {
   "name": "ChaosKey333 – Origin Flare",
   "description": "The first relic of the Legacy Loop. Forged by Joshua Neiwert in the fires of FrankensteinVault333.",
-  "image": "ipfs://<TO_BE_FILLED>.png",
+  "image": "ipfs://<REPLACE_WITH_IMAGE_CID>",
   "attributes": [
     { "trait_type": "Tier", "value": "Legendary" },
     { "trait_type": "Drop Origin", "value": "FrankensteinVault333" },
