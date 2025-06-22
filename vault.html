@@ -2,6 +2,9 @@ if (paymentSuccess && signer) {
   const contract = new ethers.Contract(
     "0xYourContractAddress", // Replace with your deployed contract address
     ["function mint(address to, string memory tokenURI) public"],
+
+<button onclick="createStripeCheckoutSession()">Mint Origin Flare Relic</button>
+
     signer
   );
 
