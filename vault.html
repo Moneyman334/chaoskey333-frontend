@@ -1,3 +1,43 @@
+
+<!-- 🪙 ChaosKey333 Manual Relic Mint Trigger -->
+<button onclick="mintRelic()">⚡ Manually Mint Origin Flare Relic</button>
+
+<script>
+  async function mintRelic() {
+    try {
+      const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+      const abi = [
+        {
+          "inputs": [],
+          "name": "mintRelic",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ];
+
+      if (!window.ethereum) {
+        alert("⚠️ MetaMask not detected. Please install it to mint.");
+        return;
+      }
+
+      await ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      const tx = await contract.mintRelic();
+      await tx.wait();
+
+      alert("🔥 Origin Flare Relic minted successfully! You’re now encoded in Syndicate history.");
+    } catch (err) {
+      console.error("❌ Minting error:", err);
+      alert("Mint failed. Please check your wallet connection and try again.");
+    }
+  }
+</script>
+
 if (paymentSuccess && signer) {
   const contract = new ethers.Contract(
     "0xYourContractAddress", // Replace with your deployed contract address
