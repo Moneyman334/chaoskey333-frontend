@@ -418,3 +418,40 @@ window.onload = async function () {
     });
   }
 };
+
+async function mintMythic() {
+  const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+  const abi = [
+    {
+      "inputs": [],
+      "name": "mintMythic",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
+
+  if (!window.ethereum) {
+    alert("⚠️ MetaMask not detected. Please install it to mint.");
+    return;
+  }
+
+  try {
+    await ethereum.request({ method: 'eth_requestAccounts' });
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+
+    console.log("⏳ Sending mint transaction...");
+    const tx = await contract.mintMythic();
+    await tx.wait();
+
+    alert("✅ Mythic Relic minted successfully!");
+    window.location.href = "/claim/mythic/claim_mythic_verification.html";
+  } catch (err) {
+    console.error("❌ Minting error:", err);
+    alert("Mint failed. Please check your wallet connection and try again.");
+  }
+}
+
