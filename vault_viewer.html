@@ -1,0 +1,58 @@
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vault Viewer</title>
+</head>
+<body>
+  <h2>🔐 Legacy Relic Vault</h2>
+  <input type="text" id="walletInput" placeholder="Enter your wallet address" />
+  <button onclick="checkVault()">Check Vault</button>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js';
+    import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: 'YOUR_FIREBASE_API_KEY',
+      authDomain: 'your-project-id.firebaseapp.com',
+      projectId: 'your-project-id',
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function checkVault() {
+      const walletAddress = document.getElementById('walletInput').value.trim().toLowerCase();
+      const q = query(collection(db, 'mints'), where('walletAddress', '==', walletAddress));
+
+      const querySnapshot = await getDocs(q);
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      if (querySnapshot.empty) {
+        resultDiv.innerHTML = '❌ No relics found for this wallet.';
+        return;
+      }
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const txHash = data.txHash;
+
+        const relicCard = `
+          <div style="border: 2px solid #333; padding: 10px; margin-bottom: 10px;">
+            <h3>🔥 Legacy Relic</h3>
+            <p><strong>Wallet:</strong> ${walletAddress}</p>
+            <p><strong>Tx Hash:</strong> <a href="https://etherscan.io/tx/${txHash}" target="_blank">${txHash}</a></p>
+          </div>
+        `;
+        resultDiv.innerHTML += relicCard;
+      });
+    }
+  </script>
+</body>
+</html>
+```
