@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Claim Your VIP Relic | ChaosKey333</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+  <div class="claim-container">
+    <h1>🚨 Claim Your VIP Mythic Relic</h1>
+    <p>Unlock the vault. Mint your destiny.</p>
+    <button id="claimRelicBtn">💥 Claim VIP Relic NOW</button>
+  </div>
+
+  <script>
+    let stripe;
+
+    // Dynamically fetch public key
+    fetch('/config')
+      .then(response => response.json())
+      .then(config => {
+        if (config.publicKey) {
+          stripe = Stripe(config.publicKey);
+          console.log("Stripe initialized with:", config.publicKey);
+        } else {
+          throw new Error("Stripe public key not found.");
+        }
+      })
+      .catch(err => console.error("Error loading Stripe config:", err));
+
+    document.getElementById('claimRelicBtn').addEventListener('click', async () => {
+      try {
+        const walletAddress = window.walletAddress || "anonymous_wallet";
+
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            walletAddress,
+            connectedWalletType: "MetaMask",
+            amount: 3333, // 💸 $33.33
+            currency: 'usd',
+            productName: 'VIP Mythic Relic'
+          })
+        });
+
+        const session = await response.json();
+
+        if (session.sessionId) {
+          const { error } = await stripe.redirectToCheckout({ sessionId: session.sessionId });
+          if (error) {
+            console.error("Stripe checkout error:", error.message);
+            alert("Payment error. Please try again.");
+          }
+        } else {
+          throw new Error("No session ID received");
+        }
+      } catch (err) {
+        console.error("Error during checkout:", err);
+        alert("Something went wrong. Please refresh and try again.");
+      }
+    });
+  </script>
+</body>
+</html>

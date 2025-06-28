@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Claim Your Mythic Relic</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2"></script>
+</head>
+<body style="background-color: #000; font-family: Arial, sans-serif; text-align: center; padding-top: 100px; color: #00ffcc;">
+
+  <button id="mint-button" style="padding: 12px 24px; font-size: 18px; background: black; color: #00ffcc; border: none; border-radius: 8px; cursor: pointer;">
+    🗝️ Claim Your Mythic Relic
+  </button>
+  <div id="mint-status" style="margin-top: 12px;"></div>
+
+  <script>
+    const backendURL = "https://chaoskey333.web.app/api/mint-relic"; // Update if backend changes
+
+    document.getElementById('mint-button').addEventListener('click', async () => {
+      if (typeof window.ethereum === 'undefined') {
+        alert("⚠️ MetaMask not detected. Please install MetaMask to continue.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const wallet = accounts[0];
+        document.getElementById('mint-status').textContent = "⏳ Minting in progress...";
+
+        const response = await fetch(backendURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ wallet })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          console.log("✅ Minted successfully:", data);
+          document.getElementById('mint-status').textContent = `✅ Relic minted! TX: ${data.txHash}`;
+        } else {
+          console.error("❌ Minting error:", data.error);
+          document.getElementById('mint-status').textContent = `❌ Minting failed: ${data.error || "Unknown error"}`;
+        }
+      } catch (error) {
+        console.error("❌ An error occurred:", error);
+        document.getElementById('mint-status').textContent = "❌ An error occurred.";
+      }
+    });
+  </script>
+</body>
+</html>
