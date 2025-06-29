@@ -88,7 +88,10 @@ app.get('/api/test-all', async (req, res) => {
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
-    const { walletAddress, connectedWalletType, amount, currency, productName } = req.body;
+    const { walletAddress, connectedWalletType } = req.body;
+    const amount = req.body.amount || 1000; // Default to $10.00 if amount is not provided
+    const currency = req.body.currency || 'usd'; // Default currency
+    const productName = req.body.productName || 'ChaosKey333 Relic'; // Default product name
 
     console.log('🔄 Creating checkout session for wallet:', walletAddress);
 
