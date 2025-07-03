@@ -19,7 +19,8 @@
     "express": "^5.1.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.3.2",
-    "stripe": "^18.2.1"
+    "stripe": "^18.2.1",
+    "twitter-api-v2": "^1.24.0"
   },
   "description": "This template is a starter for building a website with HTML, CSS and JS, powered by [Vite](https://vitejs.dev/). HTML provides the basic structure, CSS controls formatting, and JavaScript controls the behavior of different elements.",
   "main": "deploy_chaoskey_contract.js",
