@@ -1,0 +1,16 @@
+
+{
+  "name": "Legendary Family Wealth Relic",
+  "description": "A sacred vault relic representing generational abundance and legacy energy.",
+  "image": "ipfs://INSERT_CID_HERE/legendary-family-relic.gif",
+  "attributes": [
+    {
+      "trait_type": "Tier",
+      "value": "Legacy Gold"
+    },
+    {
+      "trait_type": "Drop Cycle",
+      "value": "Wave 3"
+    }
+  ]
+}
