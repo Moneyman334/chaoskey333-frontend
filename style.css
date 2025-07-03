@@ -97,6 +97,29 @@ button {
   background: #ff00cc;
   border: none;
   color: white;
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  padding: 2rem;
+}
+
+.vault-container {
+  border: 2px solid #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  background: linear-gradient(to bottom, #111, #333);
+}
+
+.relic-image {
+  width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #FFD700;
+  margin: 1rem auto;
+}
+
   border-radius: 10px;
   box-shadow: 0 0 15px #ff00cc;
   cursor: pointer;
