@@ -15,6 +15,9 @@ console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy for accurate IP detection
+app.set('trust proxy', true);
+
 // Middleware
 app.use(express.json());
 app.use(express.static('.'));
@@ -183,10 +186,11 @@ app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 
-// 🧪 Test route to check server
-app.get("/health", (req, res) => {
-  res.send("✅ Server is alive and kickin'");
-});
+// Enhanced monitoring endpoints with security
+const monitoringRoutes = require('./lib/monitoring');
+app.use('/', monitoringRoutes);
+
+// Note: The enhanced /health endpoint is now handled by monitoring routes
 
 // 🔐 Stripe checkout endpoint (test)
 app.post("/create-checkout-session2", async (req, res) => {
