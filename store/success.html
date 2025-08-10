@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - ChaosKey333</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .success-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .success-card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border-radius: 15px;
+      padding: 40px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+      border: 2px solid rgba(0, 255, 0, 0.3);
+    }
+    .success-icon {
+      font-size: 6rem;
+      color: #00ff00;
+      margin: 20px 0;
+      animation: pulse 2s infinite;
+    }
+    .success-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin: 20px 0;
+      text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+    .success-message {
+      font-size: 1.2rem;
+      color: #ffffff;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    .mint-section {
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+    .mint-button {
+      background: linear-gradient(45deg, #00ff00, #00ffff);
+      border: none;
+      color: #000;
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .mint-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    }
+    .mint-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .transaction-details {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    .back-button {
+      background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+      border: none;
+      color: white;
+      padding: 10px 30px;
+      font-size: 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="vault">
+  <div class="success-container">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      
+      <h1 class="success-title">Payment Successful!</h1>
+      
+      <div class="success-message">
+        Congratulations! Your payment has been successfully processed. 
+        You are now ready to mint your <strong>Superman Unstoppable Relic</strong> NFT.
+      </div>
+      
+      <div class="transaction-details" id="transactionDetails">
+        <strong>Transaction Details:</strong><br/>
+        Loading payment information...
+      </div>
+      
+      <div class="mint-section">
+        <h3 style="color: #00ffff; margin-bottom: 15px;">🎯 Ready to Mint Your Relic</h3>
+        <p style="margin: 15px 0;">
+          Your payment has been confirmed. Click below to mint your exclusive Superman Unstoppable Relic NFT 
+          directly to your connected wallet.
+        </p>
+        
+        <button id="mintButton" class="mint-button">
+          ⚙️ Mint Relic Now
+        </button>
+        
+        <div id="mintStatus" style="margin-top: 15px; font-size: 1rem;">
+          🔒 Connect wallet to mint your relic
+        </div>
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <button onclick="window.location.href='/store'" class="back-button">
+          🛍️ Back to Store
+        </button>
+        <button onclick="window.location.href='/'" class="back-button">
+          🏠 Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    let walletAddress = null;
+    let sessionId = null;
+    let provider = null;
+
+    // Extract URL parameters
+    function getUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      sessionId = urlParams.get('session_id');
+      provider = urlParams.get('provider');
+      
+      console.log('Success page params:', { sessionId, provider });
+      
+      // Update transaction details
+      if (sessionId && provider) {
+        document.getElementById('transactionDetails').innerHTML = `
+          <strong>Transaction Details:</strong><br/>
+          Payment ID: ${sessionId}<br/>
+          Provider: ${provider.toUpperCase()}<br/>
+          Status: Confirmed ✅
+        `;
+      }
+    }
+
+    // Connect wallet for minting
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("🦊 MetaMask not detected. Please install MetaMask or Coinbase Wallet.");
+        return false;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        walletAddress = accounts[0];
+        
+        document.getElementById("mintStatus").innerHTML = `🟢 Wallet Connected: ${walletAddress}`;
+        document.getElementById("mintButton").textContent = "⚙️ Mint Relic Now";
+        
+        console.log('✅ Wallet connected for minting:', walletAddress);
+        return true;
+      } catch (err) {
+        console.error('❌ Wallet connection failed:', err);
+        alert("⚠️ Wallet connection failed.");
+        return false;
+      }
+    }
+
+    // Mint NFT function
+    async function mintRelic() {
+      if (!walletAddress) {
+        const connected = await connectWallet();
+        if (!connected) return;
+      }
+
+      document.getElementById("mintButton").disabled = true;
+      document.getElementById("mintButton").textContent = "Minting...";
+      document.getElementById("mintStatus").innerHTML = "⏳ Minting your relic...";
+
+      try {
+        // This is a placeholder for the actual minting logic
+        // In a real implementation, you would:
+        // 1. Call your smart contract minting function
+        // 2. Use the claim token generated by the webhook
+        // 3. Verify the payment before minting
+
+        console.log('🔄 Starting mint process...');
+        
+        // Simulated minting delay
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // For demo purposes, we'll show success
+        // In production, replace this with actual smart contract interaction
+        const demoTxHash = '0x' + Math.random().toString(16).substr(2, 40);
+        
+        document.getElementById("mintStatus").innerHTML = `
+          🎉 Relic Minted Successfully!<br/>
+          <small>Transaction: ${demoTxHash}</small>
+        `;
+        
+        document.getElementById("mintButton").textContent = "✅ Minted!";
+        document.getElementById("mintButton").style.background = "linear-gradient(45deg, #00ff00, #32ff32)";
+        
+        // Show celebration
+        setTimeout(() => {
+          alert("🎉 Congratulations! Your Superman Unstoppable Relic has been minted to your wallet!");
+        }, 1000);
+        
+      } catch (error) {
+        console.error('❌ Mint failed:', error);
+        document.getElementById("mintStatus").innerHTML = "❌ Minting failed. Please try again.";
+        document.getElementById("mintButton").disabled = false;
+        document.getElementById("mintButton").textContent = "⚙️ Retry Mint";
+        alert(`❌ Minting failed: ${error.message}`);
+      }
+    }
+
+    // Event listeners
+    document.getElementById("mintButton").addEventListener("click", mintRelic);
+
+    // Initialize page
+    window.addEventListener('load', async () => {
+      getUrlParams();
+      
+      // Auto-connect wallet if already connected
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            walletAddress = accounts[0];
+            document.getElementById("mintStatus").innerHTML = `🟢 Wallet Connected: ${walletAddress}`;
+            document.getElementById("mintButton").textContent = "⚙️ Mint Relic Now";
+          }
+        } catch (err) {
+          console.log('No wallet auto-connection:', err);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
