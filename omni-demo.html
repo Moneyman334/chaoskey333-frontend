@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Omni-Singularity Architecture Demo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div id="terminalOverlay">Initializing Omni-Singularity Architecture...</div>
+  <div class="resurrection-container">
+    <h1 class="glow">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
+    <p class="pulse">Bass Surge Incoming...</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Frankenstein_Dracula.jpg" alt="Frankenstein" class="frank-img" />
+    
+    <audio id="bassDrop" autoplay loop>
+      <source src="https://frankenstein333.33.amazonaws.com/resurrect_bass.mp3" type="audio/mp3" />
+    </audio>
+    
+    <button onclick="resurrect()">⚡ Ignite Vault ⚡</button>
+    <button id="connectWallet">🔌 Connect Wallet</button>
+    <button id="testGlyphOverride" style="background-color: #ff00cc; color: white;">🔮 Test Glyph Override</button>
+    <button id="testMutation" style="background-color: #00ff99; color: black;">🧬 Test Relic Mutation</button>
+    
+    <div id="mintStatus">🌀 Omni-Singularity Architecture loading...</div>
+    <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;">
+      💡 Cosmic Replay Terminal v2.0 - Ascension Edition Integration
+    </div>
+    <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
+      🌀 Experience the next evolution of the Frankenstein Vault
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script type="module" src="omni-singularity-architecture.js"></script>
+  <script type="module">
+    // Demo script for Omni-Singularity Architecture
+    
+    // Global variables
+    let userWalletAddress = null;
+    let isWalletConnected = false;
+    let connectedWalletType = null;
+    
+    // Simulation functions for demo
+    async function connectWallet() {
+      // Simulate wallet connection
+      userWalletAddress = "0x" + Math.random().toString(16).substr(2, 40);
+      isWalletConnected = true;
+      connectedWalletType = "Demo";
+      
+      document.getElementById("connectWallet").innerText = "✅ " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
+      document.getElementById("mintStatus").innerText = "🟢 Demo Wallet Connected - Omni-Singularity Active";
+      
+      // Trigger wallet connection event for Omni-Singularity
+      document.dispatchEvent(new CustomEvent('walletConnected', {
+        detail: {
+          address: userWalletAddress,
+          walletType: connectedWalletType
+        }
+      }));
+    }
+    
+    // Resurrection function
+    function resurrect() {
+      const audio = document.getElementById("bassDrop");
+      if (audio) {
+        audio.play().catch(e => console.log("Audio play failed:", e));
+      }
+
+      setTimeout(() => {
+        document.body.style.animation = "none";
+        document.body.style.filter = "brightness(3) contrast(2)";
+      }, 1000);
+
+      alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
+      
+      // Trigger manual glyph activation
+      document.dispatchEvent(new CustomEvent('manualGlyphActivation', {
+        detail: {
+          type: 'resurrection_trigger',
+          source: 'vault_ignition',
+          timestamp: Date.now()
+        }
+      }));
+    }
+    
+    // Test functions for demo
+    function testGlyphOverride() {
+      // Trigger multiple glyph activations to test override
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('manualGlyphActivation', {
+            detail: {
+              type: 'test_glyph_' + i,
+              source: 'manual_test',
+              timestamp: Date.now()
+            }
+          }));
+        }, i * 500);
+      }
+    }
+    
+    function testMutation() {
+      // Simulate relic mutation
+      document.dispatchEvent(new CustomEvent('relicMinted', {
+        detail: {
+          walletAddress: userWalletAddress || 'demo_wallet',
+          relicId: 'relic_' + Date.now(),
+          timestamp: Date.now()
+        }
+      }));
+    }
+    
+    // Make functions global
+    window.connectWallet = connectWallet;
+    window.resurrect = resurrect;
+    
+    // Initialize on page load
+    window.onload = async function () {
+      console.log("🚀 Initializing Omni-Singularity Demo...");
+      
+      setTimeout(() => {
+        const overlay = document.getElementById("terminalOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }, 3000);
+
+      const connectWalletBtn = document.getElementById("connectWallet");
+      const testGlyphBtn = document.getElementById("testGlyphOverride");
+      const testMutationBtn = document.getElementById("testMutation");
+      
+      if (connectWalletBtn) {
+        connectWalletBtn.onclick = connectWallet;
+      }
+      
+      if (testGlyphBtn) {
+        testGlyphBtn.onclick = testGlyphOverride;
+      }
+      
+      if (testMutationBtn) {
+        testMutationBtn.onclick = testMutation;
+      }
+
+      // Initialize Omni-Singularity Architecture
+      setTimeout(async () => {
+        if (typeof window.initializeOmniSingularityArchitecture === 'function') {
+          console.log("🌀 Initializing Omni-Singularity Architecture...");
+          await window.initializeOmniSingularityArchitecture();
+          document.getElementById("mintStatus").innerText = "🌀 Omni-Singularity Architecture Online";
+        }
+      }, 2000);
+    };
+  </script>
+</body>
+</html>

@@ -417,6 +417,14 @@ window.onload = async function () {
       }
     });
   }
+
+  // Initialize Omni-Singularity Architecture after a delay to ensure DOM is ready
+  setTimeout(async () => {
+    if (typeof window.initializeOmniSingularityArchitecture === 'function') {
+      console.log("🌀 Initializing Omni-Singularity Architecture...");
+      await window.initializeOmniSingularityArchitecture();
+    }
+  }, 2000);
 };
 
 async function mintMythic() {

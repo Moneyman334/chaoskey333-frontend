@@ -1,3 +1,8 @@
 STRIPE_SECRET_KEY=sk_live_your_secret_key_here
 PRIVATE_KEY=your_actual_wallet_private_key_here_without_0x
 
+# Omni-Singularity Architecture - Cosmic Replay Terminal v2.0 Feature Flags
+NEXT_PUBLIC_REPLAY_RECURSIVE=off
+NEXT_PUBLIC_REPLAY_RATE_LIMIT=60
+NEXT_PUBLIC_REPLAY_RETENTION=30d
+
