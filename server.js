@@ -2,6 +2,9 @@ require("dotenv").config();
 const express = require('express');
 const path = require('path');
 
+// Add fetch polyfill for Node.js
+const fetch = require('node-fetch');
+
 // Load environment variables from Replit Secrets
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
@@ -11,6 +14,31 @@ const stripe = require('stripe')(STRIPE_SECRET_KEY);
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
 console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+
+// Function to trigger Watchtower events
+async function triggerWatchtowerEvent(eventData) {
+  try {
+    // Use fetch to call the Next.js API endpoint
+    const response = await fetch('http://localhost:3000/api/watchtower/emit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.WATCHTOWER_AUTH_SECRET || 'default-auth-secret'}`
+      },
+      body: JSON.stringify(eventData)
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('🚨 Watchtower event triggered:', result.event?.id, result.event?.type);
+      console.log('📡 Multi-channel pulse results:', result.pulseResults);
+    } else {
+      console.error('❌ Failed to trigger Watchtower event:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('❌ Error triggering Watchtower event:', error.message);
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -156,6 +184,20 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
 
     // For now, we'll just log it
     console.log('🎉 Relic minting process initiated for:', session.metadata.walletAddress);
+
+    // Trigger Watchtower multi-channel pulse for relic mint event
+    triggerWatchtowerEvent({
+      type: 'relic_mint',
+      data: {
+        metadata: {
+          walletAddress: session.metadata.walletAddress,
+          connectedWalletType: session.metadata.connectedWalletType,
+          sessionId: session.id,
+          amount: session.amount_total
+        }
+      },
+      channels: ['twitter', 'email', 'sms']
+    });
   }
 
   res.json({ received: true });
