@@ -1,16 +1,27 @@
 require("dotenv").config();
 const express = require('express');
 const path = require('path');
+const CoinbaseCommerce = require('./lib/coinbase-commerce');
 
 // Load environment variables from Replit Secrets
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+const COINBASE_API_KEY = process.env.COINBASE_API_KEY;
+const COINBASE_WEBHOOK_SECRET = process.env.COINBASE_WEBHOOK_SECRET;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+const stripe = require('stripe')(STRIPE_SECRET_KEY || 'dummy_key');
 
-console.log('🔑 Checking Stripe API keys...');
-console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
-console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+// Initialize Coinbase Commerce only if API key is provided
+let coinbaseCommerce = null;
+if (COINBASE_API_KEY && COINBASE_WEBHOOK_SECRET) {
+  coinbaseCommerce = new CoinbaseCommerce(COINBASE_API_KEY, COINBASE_WEBHOOK_SECRET);
+}
+
+console.log('🔑 Checking API keys...');
+console.log('Stripe public key exists:', !!STRIPE_PUBLIC_KEY);
+console.log('Stripe secret key exists:', !!STRIPE_SECRET_KEY);
+console.log('Coinbase API key exists:', !!COINBASE_API_KEY);
+console.log('Coinbase webhook secret exists:', !!COINBASE_WEBHOOK_SECRET);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -85,7 +96,80 @@ app.get('/api/test-all', async (req, res) => {
   res.json(results);
 });
 
-// Create Stripe checkout session
+// Create Coinbase Commerce charge
+app.post('/api/commerce/create-charge', async (req, res) => {
+  try {
+    if (!coinbaseCommerce) {
+      return res.status(500).json({ 
+        error: 'Coinbase Commerce not configured. Please set COINBASE_API_KEY and COINBASE_WEBHOOK_SECRET environment variables.' 
+      });
+    }
+
+    const { walletAddress, amount, currency, productName } = req.body;
+
+    if (!walletAddress) {
+      return res.status(400).json({ 
+        error: 'Wallet address is required for metadata' 
+      });
+    }
+
+    console.log('🪙 Creating Coinbase Commerce charge for wallet:', walletAddress);
+
+    const charge = await coinbaseCommerce.createCharge({
+      walletAddress,
+      amount: amount || '19.99',
+      currency: currency || 'USD',
+      productName: productName || 'Superman Relic',
+      successUrl: `${req.headers.origin}/store/success`,
+      cancelUrl: `${req.headers.origin}/store/cancel`
+    });
+
+    console.log('✅ Coinbase Commerce charge created:', charge.id);
+    res.json({ 
+      charge: charge,
+      hostedUrl: charge.hosted_url 
+    });
+
+  } catch (error) {
+    console.error('❌ Error creating Coinbase Commerce charge:', error);
+    res.status(500).json({ 
+      error: error.message || 'Failed to create charge' 
+    });
+  }
+});
+
+// Coinbase Commerce webhook handler
+app.post('/api/commerce/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    if (!coinbaseCommerce) {
+      return res.status(500).json({ 
+        error: 'Coinbase Commerce not configured' 
+      });
+    }
+
+    const signature = req.headers['x-cc-webhook-signature'];
+    const body = req.body.toString();
+
+    // Verify webhook signature
+    if (!coinbaseCommerce.verifyWebhookSignature(body, signature)) {
+      console.log('❌ Invalid Coinbase Commerce webhook signature');
+      return res.status(400).send('Invalid signature');
+    }
+
+    const event = JSON.parse(body);
+    console.log('📡 Received Coinbase Commerce webhook:', event.type);
+
+    // Process the webhook
+    const result = await coinbaseCommerce.processWebhook(event);
+    console.log('✅ Webhook processed:', result);
+
+    res.json({ received: true, result });
+
+  } catch (error) {
+    console.error('❌ Error processing Coinbase Commerce webhook:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
     const { walletAddress, connectedWalletType } = req.body;
