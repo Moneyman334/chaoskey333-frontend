@@ -3,9 +3,9 @@ import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "ChaosKey333 Casino - Legendary Relics Store",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "Discover legendary relics and artifacts imbued with chaotic energy. Buy rare collectibles and NFTs with crypto payments.",
 };
 
 export default function RootLayout({
