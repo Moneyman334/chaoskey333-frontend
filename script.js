@@ -8,6 +8,10 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Eternal Fusion Core instance
+let fusionCore = null;
+let fusionCoreActive = false;
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -34,6 +38,205 @@ async function initializeStripe() {
     }
   } catch (error) {
     console.error("❌ Failed to initialize Stripe:", error);
+  }
+}
+
+// Initialize Eternal Fusion Core
+async function initializeFusionCore() {
+  if (fusionCoreActive) {
+    console.log("⚡ Fusion Core already active");
+    return;
+  }
+
+  try {
+    console.log("🔥 Initializing Eternal Fusion Core Protocol...");
+    
+    // Create fusion core instance
+    fusionCore = new EternalFusionCore({
+      pulsationFrequency: 0.8, // Sync with bass heartbeat
+      harmonicDroneFrequency: 55, // Low harmonic frequency
+      energyFlareIntensity: 0.7,
+      failSafeThreshold: 0.1
+    });
+    
+    // Activate the fusion core
+    await fusionCore.activate();
+    fusionCoreActive = true;
+    
+    // Set up event listeners for fusion core events
+    setupFusionCoreEventListeners();
+    
+    // Integrate with existing systems
+    integrateFusionCoreWithVault();
+    
+    console.log("✅ Eternal Fusion Core Protocol activated successfully");
+    
+    // Show activation notification
+    showFusionCoreActivation();
+    
+  } catch (error) {
+    console.error("❌ Failed to initialize Fusion Core:", error);
+  }
+}
+
+// Set up fusion core event listeners
+function setupFusionCoreEventListeners() {
+  // Listen for fusion core activation
+  window.addEventListener('fusionCoreActivated', (event) => {
+    console.log('🔥 Fusion Core Activated:', event.detail);
+    updateVaultStatusWithFusionCore(event.detail);
+  });
+  
+  // Listen for power cycle events
+  window.addEventListener('fusionCorePowerCycle', (event) => {
+    // Update power indicators if they exist
+    const powerIndicators = document.querySelectorAll('.power-indicator');
+    powerIndicators.forEach(indicator => {
+      indicator.style.opacity = event.detail.powerLevel / 100;
+    });
+  });
+  
+  // Listen for lore resonance pulses
+  window.addEventListener('loreResonancePulse', (event) => {
+    // Sync audiovisual elements with lore resonance
+    syncElementsWithResonance(event.detail);
+  });
+  
+  // Listen for fail-safe triggers
+  window.addEventListener('fusionCoreFailSafe', (event) => {
+    console.warn('🚨 Fusion Core Fail-Safe Triggered:', event.detail);
+    showFailSafeAlert(event.detail);
+  });
+}
+
+// Integrate fusion core with existing vault systems
+function integrateFusionCoreWithVault() {
+  // Enhance existing animations with fusion core synchronization
+  const existingAnimations = document.querySelectorAll('.glow, .pulse, .flicker');
+  existingAnimations.forEach(element => {
+    element.classList.add('fusion-enhanced');
+  });
+  
+  // Connect relic minting to fusion core energy flares
+  const originalMintFunction = window.mintRelic;
+  if (originalMintFunction) {
+    window.mintRelic = async function(...args) {
+      // Trigger energy flare on mint
+      if (fusionCore) {
+        fusionCore.triggerEnergyFlare();
+      }
+      return originalMintFunction.apply(this, args);
+    };
+  }
+  
+  // Enhance audio with fusion core harmonic drone
+  const existingAudio = document.getElementById('bassDrop');
+  if (existingAudio && fusionCore && fusionCore.audioContext) {
+    // The fusion core's harmonic drone will layer with existing audio
+    console.log('🎵 Fusion Core harmonic drone layered with existing audio');
+  }
+}
+
+// Show fusion core activation notification
+function showFusionCoreActivation() {
+  const notification = document.createElement('div');
+  notification.className = 'fusion-activation-notification';
+  notification.innerHTML = `
+    <div class="notification-content">
+      <h3>⚡ ETERNAL FUSION CORE ACTIVATED ⚡</h3>
+      <p>🔥 Immortal energy now powers the ChaosKey333 vault</p>
+      <p>🧬 DNA binding complete - Core ID integrated</p>
+      <p>🎭 Lore resonance active across all relics</p>
+      <p>🛡️ Fail-safe protocol monitoring vault nodes</p>
+    </div>
+  `;
+  
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #ff6600;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 2000;
+    max-width: 300px;
+    animation: slideInFromRight 0.5s ease-out;
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Remove notification after 8 seconds
+  setTimeout(() => {
+    notification.style.animation = 'slideOutToRight 0.5s ease-in';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 500);
+  }, 8000);
+}
+
+// Sync elements with lore resonance
+function syncElementsWithResonance(resonanceData) {
+  const syncableElements = document.querySelectorAll('.glow, .pulse, .fusion-enhanced');
+  syncableElements.forEach(element => {
+    const intensity = resonanceData.intensity;
+    const currentOpacity = parseFloat(window.getComputedStyle(element).opacity) || 1;
+    element.style.opacity = Math.min(1, currentOpacity * (0.7 + intensity * 0.3));
+  });
+}
+
+// Show fail-safe alert
+function showFailSafeAlert(failSafeData) {
+  const alert = document.createElement('div');
+  alert.className = 'fusion-failsafe-alert';
+  alert.innerHTML = `
+    <div class="alert-content">
+      <h3>🚨 FUSION CORE FAIL-SAFE ACTIVATED 🚨</h3>
+      <p>Compromised nodes: ${failSafeData.compromisedNodes.join(', ')}</p>
+      <p>🔄 Auto-rerouting power and resynchronizing...</p>
+    </div>
+  `;
+  
+  alert.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(139, 0, 0, 0.95);
+    border: 3px solid #ff0000;
+    border-radius: 15px;
+    padding: 30px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 3000;
+    text-align: center;
+    animation: failSafeAlert 0.3s ease-in-out infinite alternate;
+  `;
+  
+  document.body.appendChild(alert);
+  
+  // Remove alert after 5 seconds
+  setTimeout(() => {
+    if (alert.parentNode) {
+      alert.parentNode.removeChild(alert);
+    }
+  }, 5000);
+}
+
+// Update vault status with fusion core information
+function updateVaultStatusWithFusionCore(fusionData) {
+  const mintStatus = document.getElementById("mintStatus");
+  if (mintStatus) {
+    const originalText = mintStatus.textContent;
+    mintStatus.innerHTML = `
+      ${originalText}<br/>
+      <span style="color: #ff6600;">⚡ Powered by Eternal Fusion Core</span><br/>
+      <span style="color: #ffaa00; font-size: 0.8rem;">Core ID: ${fusionData.coreId}</span>
+    `;
   }
 }
 
@@ -371,6 +574,9 @@ window.onload = async function () {
   setTimeout(checkWalletAvailability, 500);
   
   await initializeStripe();
+  
+  // Initialize Eternal Fusion Core Protocol
+  await initializeFusionCore();
 
   setTimeout(() => {
     const overlay = document.getElementById("terminalOverlay");
