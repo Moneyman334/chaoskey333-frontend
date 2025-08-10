@@ -13,7 +13,7 @@
     "test:e2e-commander": "npm run test:e2e:setup && npm run test:e2e && npm run test:e2e:report",
     "test:e2e:setup": "cp .env.test.example .env.test 2>/dev/null || echo 'Using existing .env.test'",
     "test:e2e:report": "playwright show-report",
-    "test:e2e:install": "npx playwright install",
+    "test:e2e:install": "npx playwright install-deps && echo 'Browser installation may be skipped in CI environments'",
     "playwright:codegen": "playwright codegen localhost:5000"
   },
   "devDependencies": {
