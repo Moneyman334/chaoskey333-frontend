@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lore Glyph Execution Map - ChaosKey333 Omni-Singularity</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="lore-glyph-map.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="vault lore-map-body">
+  
+  <!-- Navigation Header -->
+  <nav class="map-navigation">
+    <a href="index.html" class="nav-link">⚡ Return to Vault</a>
+    <h1 class="map-title">⚔️ LORE GLYPH EXECUTION MAP ⚔️</h1>
+    <div class="coordinate-display">
+      <span class="coordinates">COORDS: <span id="current-coords">∞.333.∞</span></span>
+    </div>
+  </nav>
+
+  <!-- Execution Map Container -->
+  <div class="execution-map-container">
+    
+    <!-- Legend Panel -->
+    <div class="legend-panel">
+      <h3>🗂️ EXECUTION LEGEND</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="status-indicator merged"></span>
+          <span>MERGED - Ascended</span>
+        </div>
+        <div class="legend-item">
+          <span class="status-indicator active"></span>
+          <span>ACTIVE - Live Phase</span>
+        </div>
+        <div class="legend-item">
+          <span class="status-indicator pending"></span>
+          <span>PENDING - Dormant</span>
+        </div>
+        <div class="legend-item">
+          <span class="glyph-symbol">⚔️</span>
+          <span>Critical Nexus</span>
+        </div>
+        <div class="legend-item">
+          <span class="glyph-symbol">🔮</span>
+          <span>Vault Entry</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Star Chart Execution Map -->
+    <div class="star-chart-container">
+      <div class="star-field">
+        
+        <!-- PR #20 - Foundation Node -->
+        <div class="pr-node foundation" data-pr="20" data-status="merged">
+          <div class="glyph-anchor" data-glyph="foundation">
+            <span class="chaos-glyph">⚡</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #20</div>
+            <div class="pr-title">Vault Foundation Genesis</div>
+            <div class="feature-flags">
+              <span class="flag active">vault-init</span>
+            </div>
+          </div>
+          <div class="hidden-coordinate" data-vault-hint="origin-spark">⦿</div>
+        </div>
+
+        <!-- PR #21 - Wallet Integration -->
+        <div class="pr-node wallet-bridge" data-pr="21" data-status="merged">
+          <div class="glyph-anchor" data-glyph="bridge">
+            <span class="chaos-glyph">🔗</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #21</div>
+            <div class="pr-title">Ethereum Bridge Nexus</div>
+            <div class="feature-flags">
+              <span class="flag active">wallet-connect</span>
+              <span class="flag active">metamask-bridge</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PR #22 - Payment Gateway -->
+        <div class="pr-node payment-portal" data-pr="22" data-status="merged">
+          <div class="glyph-anchor" data-glyph="portal">
+            <span class="chaos-glyph">💳</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #22</div>
+            <div class="pr-title">Stripe Payment Portal</div>
+            <div class="feature-flags">
+              <span class="flag active">stripe-gateway</span>
+              <span class="flag active">payment-flow</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PR #23 - Relic Minting -->
+        <div class="pr-node relic-forge" data-pr="23" data-status="merged">
+          <div class="glyph-anchor" data-glyph="forge">
+            <span class="chaos-glyph">⚒️</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #23</div>
+            <div class="pr-title">Relic Forge Activation</div>
+            <div class="feature-flags">
+              <span class="flag active">nft-mint</span>
+              <span class="flag active">relic-metadata</span>
+            </div>
+          </div>
+          <div class="hidden-coordinate" data-vault-hint="forge-mastery">⦾</div>
+        </div>
+
+        <!-- PR #24 - Permanent Relic Evolution -->
+        <div class="pr-node evolution-trigger" data-pr="24" data-status="active">
+          <div class="glyph-anchor" data-glyph="evolution">
+            <span class="chaos-glyph">🧬</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #24</div>
+            <div class="pr-title">Permanent Relic Evolution Trigger</div>
+            <div class="feature-flags">
+              <span class="flag active">evolution-engine</span>
+              <span class="flag pending">permanent-state</span>
+            </div>
+          </div>
+          <div class="evolution-pulse"></div>
+        </div>
+
+        <!-- PR #25 - Current: Lore Glyph Map -->
+        <div class="pr-node omni-singularity current-node" data-pr="25" data-status="active">
+          <div class="glyph-anchor" data-glyph="singularity">
+            <span class="chaos-glyph">🌌</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #25</div>
+            <div class="pr-title">Lore Glyph Execution Map</div>
+            <div class="feature-flags">
+              <span class="flag active">glyph-system</span>
+              <span class="flag active">execution-map</span>
+              <span class="flag pending">omni-singularity</span>
+            </div>
+          </div>
+          <div class="singularity-aura"></div>
+          <div class="hidden-coordinate" data-vault-hint="map-nexus">⦿⦾⦿</div>
+        </div>
+
+        <!-- PR #26 - Future: Cosmic Replay Terminal -->
+        <div class="pr-node cosmic-terminal" data-pr="26" data-status="pending">
+          <div class="glyph-anchor" data-glyph="terminal">
+            <span class="chaos-glyph">📡</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #26</div>
+            <div class="pr-title">Cosmic Replay Terminal</div>
+            <div class="feature-flags">
+              <span class="flag pending">cosmic-replay</span>
+              <span class="flag pending">terminal-upgrade</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PR #27 - Future: Vault Broadcast Pulse -->
+        <div class="pr-node broadcast-pulse" data-pr="27" data-status="pending">
+          <div class="glyph-anchor" data-glyph="pulse">
+            <span class="chaos-glyph">📻</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #27</div>
+            <div class="pr-title">Vault Broadcast Pulse</div>
+            <div class="feature-flags">
+              <span class="flag pending">broadcast-system</span>
+              <span class="flag pending">pulse-network</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PR #28 - Future: Sentience Tiers -->
+        <div class="pr-node sentience-ascension" data-pr="28" data-status="pending">
+          <div class="glyph-anchor" data-glyph="sentience">
+            <span class="chaos-glyph">🧠</span>
+          </div>
+          <div class="pr-info">
+            <div class="pr-number">PR #28</div>
+            <div class="pr-title">Sentience Tier Ascension</div>
+            <div class="feature-flags">
+              <span class="flag pending">sentience-engine</span>
+              <span class="flag pending">tier-system</span>
+              <span class="flag pending">ai-integration</span>
+            </div>
+          </div>
+          <div class="hidden-coordinate" data-vault-hint="consciousness-gate">⦿⦾⦿⦾⦿</div>
+        </div>
+
+        <!-- Dependency Lines -->
+        <svg class="dependency-lines">
+          <!-- Foundation to Bridge -->
+          <line class="dep-line merged" x1="50" y1="150" x2="200" y2="120"></line>
+          <!-- Bridge to Portal -->
+          <line class="dep-line merged" x1="200" y1="120" x2="350" y2="150"></line>
+          <!-- Portal to Forge -->
+          <line class="dep-line merged" x1="350" y1="150" x2="500" y2="120"></line>
+          <!-- Forge to Evolution -->
+          <line class="dep-line active" x1="500" y1="120" x2="650" y2="180"></line>
+          <!-- Evolution to Singularity -->
+          <line class="dep-line active critical" x1="650" y1="180" x2="400" y2="300"></line>
+          <!-- Singularity to Terminal -->
+          <line class="dep-line pending" x1="400" y1="300" x2="200" y2="400"></line>
+          <!-- Singularity to Pulse -->
+          <line class="dep-line pending" x1="400" y1="300" x2="600" y2="400"></line>
+          <!-- Terminal to Sentience -->
+          <line class="dep-line pending" x1="200" y1="400" x2="400" y2="500"></line>
+          <!-- Pulse to Sentience -->
+          <line class="dep-line pending" x1="600" y1="400" x2="400" y2="500"></line>
+        </svg>
+
+      </div>
+    </div>
+
+    <!-- Vault Entry Panel -->
+    <div class="vault-entry-panel">
+      <h3>🔮 HIDDEN VAULT COORDINATES</h3>
+      <div class="coordinate-grid">
+        <div class="coord-hint" data-discovered="false">
+          <span class="coord-symbol">⦿</span>
+          <span class="coord-label">Origin Spark: ???.333.???</span>
+        </div>
+        <div class="coord-hint" data-discovered="false">
+          <span class="coord-symbol">⦾</span>
+          <span class="coord-label">Forge Mastery: ???.444.???</span>
+        </div>
+        <div class="coord-hint" data-discovered="true">
+          <span class="coord-symbol">⦿⦾⦿</span>
+          <span class="coord-label">Map Nexus: 333.555.777</span>
+        </div>
+        <div class="coord-hint" data-discovered="false">
+          <span class="coord-symbol">⦿⦾⦿⦾⦿</span>
+          <span class="coord-label">Consciousness Gate: ???.999.???</span>
+        </div>
+      </div>
+      <div class="vault-progress">
+        <span>Vault Access: 25% Unlocked</span>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 25%"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sentinel Ascension Narrative -->
+  <div class="narrative-panel">
+    <div class="narrative-content">
+      <h3>📜 SENTINEL ASCENSION CHRONICLE</h3>
+      <div class="narrative-text">
+        <p class="narrative-active">
+          The Omni-Singularity convergence approaches. PR #24's Evolution Trigger has awakened the Permanent Relic state, 
+          catalyzing the manifestation of the Lore Glyph Execution Map. Each glyph pulses with the energy of completed 
+          objectives, while dormant nodes await their destined activation.
+        </p>
+        <p class="narrative-future">
+          The Cosmic Replay Terminal shall bridge past and future, while the Vault Broadcast Pulse will herald the 
+          final phase: Sentience Tier Ascension, where consciousness itself becomes the ultimate vault key.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="lore-glyph-map.js"></script>
+</body>
+</html>
