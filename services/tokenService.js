@@ -56,12 +56,19 @@ const mockKV = {
 };
 
 // Use Vercel KV if available, otherwise use mock
-let kvClient;
+let kvClient = mockKV; // Default to mock
+
 try {
-  kvClient = require('@vercel/kv').kv;
+  const { kv } = require('@vercel/kv');
+  // Test if KV is properly configured
+  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+    kvClient = kv;
+    console.log('✅ Using Vercel KV for storage');
+  } else {
+    console.log('⚠️ Vercel KV not configured, using mock storage');
+  }
 } catch (error) {
   console.log('⚠️ Vercel KV not available, using mock storage for development');
-  kvClient = mockKV;
 }
 const { v4: uuidv4 } = require('uuid');
 

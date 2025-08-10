@@ -361,6 +361,156 @@ app.get('/mint', async (req, res) => {
       `);
     }
 
+    // Demo token for showcase
+    if (token === 'demo-token-123') {
+      const demoData = {
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        productName: 'Demo ChaosKey333 Relic',
+        expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours from now
+      };
+      
+      // Serve mint page with demo data
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Mint Your ${demoData.productName}</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              margin: 0;
+              padding: 0;
+              background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+              color: white;
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .container {
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border-radius: 20px;
+              padding: 40px;
+              text-align: center;
+              max-width: 500px;
+              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+            .logo {
+              font-size: 32px;
+              font-weight: bold;
+              margin-bottom: 20px;
+              background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+            }
+            .product-name {
+              font-size: 24px;
+              margin-bottom: 30px;
+              color: #ffd93d;
+            }
+            .wallet-info {
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+              padding: 20px;
+              margin: 20px 0;
+            }
+            .mint-button {
+              background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+              color: #000;
+              padding: 15px 40px;
+              border: none;
+              border-radius: 50px;
+              font-weight: bold;
+              font-size: 18px;
+              cursor: pointer;
+              margin: 20px 0;
+              transition: transform 0.2s ease;
+            }
+            .mint-button:hover {
+              transform: translateY(-2px);
+            }
+            .expires {
+              font-size: 14px;
+              color: #ffd93d;
+              margin-top: 20px;
+            }
+            .demo-note {
+              background: rgba(255, 217, 61, 0.2);
+              border: 1px solid #ffd93d;
+              border-radius: 10px;
+              padding: 15px;
+              margin: 20px 0;
+              font-size: 14px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="logo">⚡️ ChaosKey333</div>
+            <div class="product-name">${demoData.productName}</div>
+            
+            <div class="demo-note">
+              🎭 <strong>Demo Mode</strong><br>
+              This is a demonstration of the mint page interface.
+            </div>
+            
+            <div class="wallet-info">
+              <div><strong>Wallet Address:</strong></div>
+              <div style="font-family: monospace; word-break: break-all; margin-top: 10px;">
+                ${demoData.walletAddress}
+              </div>
+            </div>
+            
+            <button class="mint-button" onclick="mintRelic()">
+              🔥 Mint to Vault Now
+            </button>
+            
+            <div class="expires">
+              ⏰ This link expires in ${Math.ceil((demoData.expiresAt - Date.now()) / (1000 * 60 * 60))} hours
+            </div>
+          </div>
+          
+          <script>
+            async function mintRelic() {
+              const button = document.querySelector('.mint-button');
+              const originalText = button.innerHTML;
+              
+              button.innerHTML = '⏳ Minting...';
+              button.disabled = true;
+              
+              try {
+                // Simulate minting process
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                button.innerHTML = '✅ Minted Successfully!';
+                button.style.background = 'linear-gradient(45deg, #6bcf7f, #4d79ff)';
+                setTimeout(() => {
+                  alert('🎉 Your relic has been minted to your vault! Check your wallet.');
+                }, 500);
+              } catch (error) {
+                console.error('Mint error:', error);
+                button.innerHTML = '❌ Mint Failed';
+                button.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8e8e)';
+                alert('Minting failed: ' + error.message);
+                
+                setTimeout(() => {
+                  button.innerHTML = originalText;
+                  button.disabled = false;
+                  button.style.background = 'linear-gradient(45deg, #ff6b6b, #ffd93d)';
+                }, 3000);
+              }
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      return;
+    }
+
     const { validateClaimToken } = require('./services/tokenService');
     const tokenData = await validateClaimToken(token);
     
