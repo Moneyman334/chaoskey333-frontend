@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relic Evolution Chamber - ChaosKey333</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        .evolution-chamber {
+            background: linear-gradient(135deg, #0a0a2e, #2a0845, #1a1a3a);
+            min-height: 100vh;
+            color: #ff6600;
+            font-family: 'Orbitron', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chamber-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .chamber-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .chamber-title {
+            font-size: 3rem;
+            font-weight: 900;
+            text-shadow: 0 0 30px #ff6600;
+            margin-bottom: 10px;
+            animation: evolutionPulse 2.5s infinite;
+        }
+
+        .relic-display {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .evolution-controls {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .relic-viewport {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff6600;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .evolution-status {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 25px;
+            color: #00ffff;
+        }
+
+        .relic-visual {
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(circle, #ff6600, #cc3300, #000);
+            border-radius: 50%;
+            position: relative;
+            margin: 20px 0;
+            animation: relicRotation 10s linear infinite;
+            box-shadow: 0 0 50px rgba(255, 102, 0, 0.8);
+        }
+
+        .relic-visual.evolving {
+            animation: relicEvolution 3s ease-in-out infinite;
+            box-shadow: 0 0 80px rgba(255, 102, 0, 1), 0 0 120px rgba(0, 255, 255, 0.5);
+        }
+
+        .relic-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, #fff, #ff6600);
+            border-radius: 50%;
+            animation: coreRotation 5s linear infinite reverse;
+        }
+
+        .imprint-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(0, 255, 255, 0.3) 45deg,
+                transparent 90deg
+            );
+            animation: imprintSpin 8s linear infinite;
+        }
+
+        .mutation-data {
+            background: rgba(255, 102, 0, 0.1);
+            border: 1px solid #ff6600;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .evolution-stages {
+            margin: 20px 0;
+        }
+
+        .stage {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border-left: 4px solid #333;
+        }
+
+        .stage.active {
+            border-left-color: #ff6600;
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .stage.completed {
+            border-left-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .stage-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .soundscape-visualizer {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sound-wave {
+            position: absolute;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to top, #ff6600, #00ffff);
+            animation: soundWave 1s ease-in-out infinite;
+        }
+
+        .vault-sync-status {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sync-indicator {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .sync-indicator.syncing {
+            border-color: #ff6600;
+            animation: syncPulse 1s ease-in-out infinite;
+        }
+
+        .evolution-button {
+            background: linear-gradient(45deg, #ff6600, #cc3300);
+            border: none;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .evolution-button:hover {
+            background: linear-gradient(45deg, #ff8800, #ff4400);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.7);
+        }
+
+        .evolution-button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @keyframes evolutionPulse {
+            0%, 100% { text-shadow: 0 0 30px #ff6600; }
+            50% { text-shadow: 0 0 60px #ff6600, 0 0 90px #00ffff; }
+        }
+
+        @keyframes relicRotation {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes relicEvolution {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+
+        @keyframes coreRotation {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes imprintSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes soundWave {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+
+        @keyframes syncPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .lore-archive {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .archive-entry {
+            background: rgba(255, 102, 0, 0.1);
+            border-left: 4px solid #ff6600;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            animation: fadeInEntry 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInEntry {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .particle-field {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ff6600;
+            border-radius: 50%;
+            animation: particleFloat 4s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="evolution-chamber">
+    <div class="particle-field" id="particleField"></div>
+
+    <div class="chamber-container">
+        <div class="chamber-header">
+            <h1 class="chamber-title">🔥 RELIC EVOLUTION CHAMBER 🔥</h1>
+            <p style="text-align: center; font-size: 1.2rem; color: #00ffff;">
+                Permanent Transformation Protocol Active
+            </p>
+        </div>
+
+        <div class="relic-display">
+            <div class="evolution-controls">
+                <h3>🧬 Evolution Parameters</h3>
+                
+                <div class="mutation-data" id="mutationData">
+                    <strong>Mutation Seed:</strong><br>
+                    <span id="seedDisplay">Awaiting decode input...</span>
+                </div>
+
+                <div class="evolution-stages" id="evolutionStages">
+                    <div class="stage" id="stage1">
+                        <span class="stage-icon">🔬</span>
+                        <span>Analyzing Mutation Seed</span>
+                    </div>
+                    <div class="stage" id="stage2">
+                        <span class="stage-icon">👤</span>
+                        <span>Embedding Solver Imprint</span>
+                    </div>
+                    <div class="stage" id="stage3">
+                        <span class="stage-icon">🎨</span>
+                        <span>Generating Visual Matrix</span>
+                    </div>
+                    <div class="stage" id="stage4">
+                        <span class="stage-icon">🎵</span>
+                        <span>Crafting Soundscape</span>
+                    </div>
+                    <div class="stage" id="stage5">
+                        <span class="stage-icon">📚</span>
+                        <span>Archiving Lore Data</span>
+                    </div>
+                </div>
+
+                <button class="evolution-button" id="startEvolution" onclick="startEvolution()">
+                    ⚡ Begin Evolution
+                </button>
+
+                <button class="evolution-button" id="replayButton" onclick="launchReplay()" disabled style="background: linear-gradient(45deg, #00ffff, #0088cc);">
+                    🎬 Launch Replay Terminal
+                </button>
+            </div>
+
+            <div class="relic-viewport">
+                <div class="relic-visual" id="relicVisual">
+                    <div class="relic-core"></div>
+                    <div class="imprint-layer" id="imprintLayer"></div>
+                </div>
+
+                <div class="soundscape-visualizer" id="soundscapeViz">
+                    <!-- Sound waves will be generated dynamically -->
+                </div>
+            </div>
+
+            <div class="evolution-status">
+                <h3>🔄 Real-time Sync Status</h3>
+                
+                <div class="vault-sync-status">
+                    <div class="sync-indicator" id="vaultSync">
+                        <div>🏛️ Vault</div>
+                        <div id="vaultStatus">Standby</div>
+                    </div>
+                    <div class="sync-indicator" id="nftSync">
+                        <div>🎨 NFT</div>
+                        <div id="nftStatus">Standby</div>
+                    </div>
+                </div>
+
+                <div id="evolutionProgress">
+                    <h4>Evolution Progress:</h4>
+                    <div style="color: #888;">Ready for activation...</div>
+                </div>
+
+                <div id="imprintInfo">
+                    <h4>Solver Imprint:</h4>
+                    <div id="solverAddress" style="font-family: monospace; font-size: 0.8rem; color: #ff6600;">
+                        Not connected
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lore-archive" id="loreArchive">
+            <h3>📜 Evolution Chronicle</h3>
+            <div id="loreEntries">
+                <div style="color: #888; text-align: center; padding: 20px;">
+                    Chronicle entries will appear here during evolution...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        // Evolution system state
+        let evolutionInProgress = false;
+        let currentStage = 0;
+        let mutationSeed = null;
+        let solverImprint = null;
+        let evolutionData = {};
+
+        // Initialize evolution chamber
+        function initializeEvolutionChamber() {
+            // Check for incoming evolution trigger
+            const evolutionTrigger = sessionStorage.getItem('evolutionTrigger');
+            if (evolutionTrigger) {
+                const triggerData = JSON.parse(evolutionTrigger);
+                mutationSeed = triggerData.mutationSeed;
+                document.getElementById('seedDisplay').textContent = mutationSeed;
+                document.getElementById('startEvolution').disabled = false;
+            }
+
+            // Initialize wallet connection for solver imprint
+            connectWalletForImprint();
+
+            // Initialize particle effects
+            generateParticles();
+
+            // Initialize sound wave visualization
+            generateSoundWaves();
+        }
+
+        async function connectWalletForImprint() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        solverImprint = accounts[0];
+                        document.getElementById('solverAddress').textContent = 
+                            `${solverImprint.substring(0, 8)}...${solverImprint.substring(solverImprint.length - 6)}`;
+                    } else {
+                        // Auto-request connection
+                        const newAccounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        if (newAccounts.length > 0) {
+                            solverImprint = newAccounts[0];
+                            document.getElementById('solverAddress').textContent = 
+                                `${solverImprint.substring(0, 8)}...${solverImprint.substring(solverImprint.length - 6)}`;
+                        }
+                    }
+                } catch (error) {
+                    console.log('Wallet connection optional for evolution');
+                }
+            }
+        }
+
+        function startEvolution() {
+            if (!mutationSeed) {
+                alert('⚠️ No mutation seed available. Please complete spectral decode first.');
+                return;
+            }
+
+            if (evolutionInProgress) return;
+
+            evolutionInProgress = true;
+            currentStage = 0;
+            document.getElementById('startEvolution').disabled = true;
+
+            // Start the evolution process
+            processEvolutionStage();
+        }
+
+        function processEvolutionStage() {
+            const stages = ['stage1', 'stage2', 'stage3', 'stage4', 'stage5'];
+            
+            if (currentStage < stages.length) {
+                // Mark current stage as active
+                if (currentStage > 0) {
+                    document.getElementById(stages[currentStage - 1]).classList.remove('active');
+                    document.getElementById(stages[currentStage - 1]).classList.add('completed');
+                }
+                
+                document.getElementById(stages[currentStage]).classList.add('active');
+
+                // Execute stage-specific logic
+                executeStageLogic(currentStage + 1);
+
+                // Move to next stage after delay
+                setTimeout(() => {
+                    currentStage++;
+                    processEvolutionStage();
+                }, 3000);
+            } else {
+                // Evolution complete
+                completeEvolution();
+            }
+        }
+
+        function executeStageLogic(stageNum) {
+            const relicVisual = document.getElementById('relicVisual');
+            const progressDiv = document.getElementById('evolutionProgress');
+
+            switch (stageNum) {
+                case 1:
+                    progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #ff6600;">🔬 Analyzing mutation seed parameters...</div>';
+                    relicVisual.classList.add('evolving');
+                    break;
+                
+                case 2:
+                    progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #ff6600;">👤 Embedding solver imprint into relic core...</div>';
+                    document.getElementById('vaultSync').classList.add('syncing');
+                    document.getElementById('vaultStatus').textContent = 'Syncing...';
+                    addLoreEntry(`Solver ${solverImprint || 'Anonymous'} imprint embedded at ${new Date().toLocaleTimeString()}`);
+                    break;
+                
+                case 3:
+                    progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #ff6600;">🎨 Generating unique visual matrix...</div>';
+                    generateVisualEffects();
+                    addLoreEntry(`Visual matrix generated with ${mutationSeed.length} complexity factors`);
+                    break;
+                
+                case 4:
+                    progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #ff6600;">🎵 Crafting evolution soundscape...</div>';
+                    document.getElementById('nftSync').classList.add('syncing');
+                    document.getElementById('nftStatus').textContent = 'Updating...';
+                    addLoreEntry(`Soundscape frequency: ${Math.floor(Math.random() * 1000 + 333)}Hz resonance achieved`);
+                    break;
+                
+                case 5:
+                    progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #ff6600;">📚 Archiving transformation data...</div>';
+                    addLoreEntry(`Evolution data archived with timestamp: ${Date.now()}`);
+                    break;
+            }
+        }
+
+        function generateVisualEffects() {
+            const imprintLayer = document.getElementById('imprintLayer');
+            // Add dynamic imprint patterns based on solver address
+            if (solverImprint) {
+                const addressHue = parseInt(solverImprint.substring(2, 4), 16);
+                imprintLayer.style.background = `repeating-conic-gradient(
+                    from 0deg,
+                    transparent 0deg,
+                    hsla(${addressHue}, 80%, 50%, 0.4) 45deg,
+                    transparent 90deg
+                )`;
+            }
+        }
+
+        function generateSoundWaves() {
+            const visualizer = document.getElementById('soundscapeViz');
+            visualizer.innerHTML = '';
+
+            for (let i = 0; i < 30; i++) {
+                const wave = document.createElement('div');
+                wave.className = 'sound-wave';
+                wave.style.left = `${i * 3.33}%`;
+                wave.style.animationDelay = `${i * 0.1}s`;
+                wave.style.animationDuration = `${1 + Math.random()}s`;
+                visualizer.appendChild(wave);
+            }
+        }
+
+        function generateParticles() {
+            const particleField = document.getElementById('particleField');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                particleField.appendChild(particle);
+
+                // Remove particle after animation
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 5000);
+            }, 500);
+        }
+
+        function addLoreEntry(text) {
+            const loreEntries = document.getElementById('loreEntries');
+            
+            // Clear placeholder text on first entry
+            if (loreEntries.children[0] && loreEntries.children[0].style.color === 'rgb(136, 136, 136)') {
+                loreEntries.innerHTML = '';
+            }
+
+            const entry = document.createElement('div');
+            entry.className = 'archive-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            loreEntries.appendChild(entry);
+        }
+
+        function completeEvolution() {
+            const relicVisual = document.getElementById('relicVisual');
+            const progressDiv = document.getElementById('evolutionProgress');
+
+            // Complete final stage
+            document.getElementById('stage5').classList.remove('active');
+            document.getElementById('stage5').classList.add('completed');
+
+            relicVisual.classList.remove('evolving');
+            progressDiv.innerHTML = '<h4>Evolution Progress:</h4><div style="color: #00ff00;">✅ Evolution Complete! Relic permanently transformed.</div>';
+
+            // Update sync status
+            document.getElementById('vaultSync').classList.remove('syncing');
+            document.getElementById('vaultStatus').textContent = 'Synced ✓';
+            document.getElementById('nftSync').classList.remove('syncing');
+            document.getElementById('nftStatus').textContent = 'Updated ✓';
+
+            // Generate final evolution data
+            evolutionData = {
+                mutationSeed: mutationSeed,
+                solverImprint: solverImprint,
+                timestamp: Date.now(),
+                stages: ['analysis', 'imprint', 'visual', 'soundscape', 'archive'],
+                evolutionId: `EVO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            };
+
+            // Store evolution data for replay
+            sessionStorage.setItem('evolutionData', JSON.stringify(evolutionData));
+
+            // Add final lore entry
+            addLoreEntry(`🔥 EVOLUTION COMPLETE: Relic ${evolutionData.evolutionId} permanently transformed`);
+            addLoreEntry(`🎬 Evolution recorded as Cosmic Pulse Memory for replay`);
+
+            // Enable replay button
+            document.getElementById('replayButton').disabled = false;
+
+            evolutionInProgress = false;
+        }
+
+        function launchReplay() {
+            if (!evolutionData.evolutionId) {
+                alert('⚠️ No evolution data available for replay.');
+                return;
+            }
+
+            // Store replay trigger data
+            const replayTrigger = {
+                source: 'relic_evolution',
+                evolutionId: evolutionData.evolutionId,
+                timestamp: Date.now()
+            };
+
+            sessionStorage.setItem('replayTrigger', JSON.stringify(replayTrigger));
+
+            // Launch replay terminal
+            window.location.href = 'cosmic-replay-terminal.html';
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeEvolutionChamber);
+
+        // Handle direct navigation
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from') === 'decode') {
+                // Auto-start if coming from decode
+                setTimeout(() => {
+                    if (mutationSeed && !evolutionInProgress) {
+                        document.getElementById('startEvolution').click();
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
