@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omni-Singularity Architecture Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #0a0a2e 0%, #000000 100%);
+            font-family: 'Orbitron', monospace;
+            color: #00ffaa;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ffaa;
+            text-shadow: 0 0 20px #00ffaa;
+            z-index: 1000;
+        }
+
+        .architecture-svg {
+            width: 90vw;
+            height: 80vh;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 170, 0.3));
+        }
+
+        /* Animation for pulsing ring around PR #10 */
+        .pulsing-ring {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                r: 60;
+                opacity: 0.8;
+                stroke-width: 3;
+            }
+            50% {
+                r: 80;
+                opacity: 0.4;
+                stroke-width: 6;
+            }
+            100% {
+                r: 60;
+                opacity: 0.8;
+                stroke-width: 3;
+            }
+        }
+
+        /* Glow effects for nodes */
+        .pr-node {
+            filter: drop-shadow(0 0 10px currentColor);
+            transition: all 0.3s ease;
+        }
+
+        .pr-node:hover {
+            filter: drop-shadow(0 0 20px currentColor);
+            transform: scale(1.1);
+        }
+
+        /* Conduit animations */
+        .replay-stream {
+            stroke-dasharray: 10, 5;
+            animation: flow 3s linear infinite;
+        }
+
+        @keyframes flow {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: 15;
+            }
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 20, 40, 0.95);
+            color: #00ffaa;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #00ffaa;
+            font-size: 0.8rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2000;
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.3);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Navigation button */
+        .nav-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid #00ffaa;
+            color: #00ffaa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: rgba(0, 255, 170, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+        }
+
+        /* CUT-202 glyph special styling */
+        .cut-202-glyph {
+            fill: #ff6600;
+            filter: drop-shadow(0 0 8px #ff6600);
+        }
+    </style>
+</head>
+<body>
+    <div class="map-container">
+        <a href="index.html" class="nav-button">← Back to Vault</a>
+        <h1 class="map-title">Omni-Singularity Architecture Map</h1>
+        
+        <svg class="architecture-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background grid pattern -->
+            <defs>
+                <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#003333" stroke-width="0.5" opacity="0.3"/>
+                </pattern>
+                
+                <!-- Glow filter for nodes -->
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Background grid -->
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            
+            <!-- Replay Stream Conduits -->
+            <!-- PR #8 to PR #10 -->
+            <line x1="200" y1="150" x2="450" y2="280" 
+                  stroke="#00aaff" stroke-width="3" class="replay-stream"/>
+            <text x="300" y="200" fill="#00aaff" font-size="12" text-anchor="middle">Replay Stream</text>
+            
+            <!-- PR #9 to PR #10 -->
+            <line x1="200" y1="450" x2="450" y2="320" 
+                  stroke="#00aaff" stroke-width="3" class="replay-stream"/>
+            <text x="300" y="400" fill="#00aaff" font-size="12" text-anchor="middle">Replay Stream</text>
+            
+            <!-- PR #23 to PR #10 -->
+            <line x1="800" y1="150" x2="550" y2="280" 
+                  stroke="#00aaff" stroke-width="3" class="replay-stream"/>
+            <text x="700" y="200" fill="#00aaff" font-size="12" text-anchor="middle">Replay Stream</text>
+
+            <!-- PR Nodes -->
+            <!-- PR #8 -->
+            <g class="pr-node" data-tooltip="PR #8: Temporal Sync Module">
+                <circle cx="200" cy="150" r="40" fill="#4a90e2" stroke="#ffffff" stroke-width="2"/>
+                <text x="200" y="155" fill="white" font-size="16" font-weight="bold" text-anchor="middle">PR #8</text>
+            </g>
+            
+            <!-- PR #9 -->
+            <g class="pr-node" data-tooltip="PR #9: Quantum Buffer Enhancement">
+                <circle cx="200" cy="450" r="40" fill="#7b68ee" stroke="#ffffff" stroke-width="2"/>
+                <text x="200" y="455" fill="white" font-size="16" font-weight="bold" text-anchor="middle">PR #9</text>
+            </g>
+            
+            <!-- PR #23 -->
+            <g class="pr-node" data-tooltip="PR #23: Neural Network Integration">
+                <circle cx="800" cy="150" r="40" fill="#32cd32" stroke="#ffffff" stroke-width="2"/>
+                <text x="800" y="155" fill="white" font-size="16" font-weight="bold" text-anchor="middle">PR #23</text>
+            </g>
+            
+            <!-- PR #10 - Broadcast Nexus (Central Node) -->
+            <g class="pr-node" data-tooltip="PR #10: Cosmic Replay Terminal v2.0 – Ascension Edition">
+                <!-- Pulsing ring effect -->
+                <circle cx="500" cy="300" class="pulsing-ring" fill="none" stroke="#ff00ff" opacity="0.6"/>
+                
+                <!-- Main node -->
+                <circle cx="500" cy="300" r="50" fill="#ff1493" stroke="#ffffff" stroke-width="3"/>
+                <text x="500" y="295" fill="white" font-size="14" font-weight="bold" text-anchor="middle">PR #10</text>
+                <text x="500" y="315" fill="#ffff00" font-size="10" font-weight="bold" text-anchor="middle">Broadcast Nexus</text>
+            </g>
+            
+            <!-- CUT-202 Micro-Glyph -->
+            <g class="pr-node cut-202-glyph" data-tooltip="CUT-202: Load-Adaptive Frame Pacing">
+                <!-- Glyph design -->
+                <rect x="600" y="400" width="30" height="30" fill="#ff6600" stroke="#ffffff" stroke-width="1" rx="5"/>
+                <text x="615" y="410" fill="white" font-size="8" font-weight="bold" text-anchor="middle">CUT</text>
+                <text x="615" y="420" fill="white" font-size="8" font-weight="bold" text-anchor="middle">202</text>
+                
+                <!-- Connection line to main system -->
+                <line x1="630" y1="415" x2="540" y2="340" stroke="#ff6600" stroke-width="2" stroke-dasharray="5,3"/>
+            </g>
+            
+            <!-- Additional architectural elements -->
+            <!-- Data flow indicators -->
+            <g>
+                <circle cx="100" cy="300" r="20" fill="#666666" stroke="#999999" stroke-width="1"/>
+                <text x="100" y="305" fill="white" font-size="10" text-anchor="middle">INPUT</text>
+            </g>
+            
+            <g>
+                <circle cx="900" cy="300" r="20" fill="#666666" stroke="#999999" stroke-width="1"/>
+                <text x="900" y="305" fill="white" font-size="10" text-anchor="middle">OUTPUT</text>
+            </g>
+            
+            <!-- Data flow arrows -->
+            <path d="M 120 300 L 180 150" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <path d="M 120 300 L 180 450" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <path d="M 820 150 L 880 300" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+            
+            <!-- Arrow marker definition -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                        refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666666"/>
+                </marker>
+            </defs>
+            
+            <!-- Legend -->
+            <g transform="translate(50, 500)">
+                <rect x="0" y="0" width="200" height="80" fill="rgba(0,0,0,0.7)" stroke="#00ffaa" stroke-width="1" rx="5"/>
+                <text x="10" y="20" fill="#00ffaa" font-size="12" font-weight="bold">Legend:</text>
+                <circle cx="20" cy="35" r="8" fill="#ff1493"/>
+                <text x="35" y="40" fill="#00ffaa" font-size="10">Broadcast Nexus (PR #10)</text>
+                <line x1="10" y1="50" x2="30" y2="50" stroke="#00aaff" stroke-width="2" stroke-dasharray="5,3"/>
+                <text x="35" y="55" fill="#00ffaa" font-size="10">Replay Streams</text>
+                <rect x="10" y="60" width="15" height="10" fill="#ff6600"/>
+                <text x="30" y="70" fill="#00ffaa" font-size="10">CUT-202 Glyph</text>
+            </g>
+        </svg>
+        
+        <!-- Tooltip element -->
+        <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <script>
+        // Tooltip functionality
+        const tooltip = document.getElementById('tooltip');
+        const nodes = document.querySelectorAll('.pr-node');
+
+        nodes.forEach(node => {
+            node.addEventListener('mouseenter', (e) => {
+                const tooltipText = e.currentTarget.getAttribute('data-tooltip');
+                tooltip.textContent = tooltipText;
+                tooltip.classList.add('visible');
+            });
+
+            node.addEventListener('mousemove', (e) => {
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY - 10) + 'px';
+            });
+
+            node.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('visible');
+            });
+        });
+
+        // Add subtle background animation
+        function createStars() {
+            const svg = document.querySelector('.architecture-svg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                star.setAttribute('cx', Math.random() * 1000);
+                star.setAttribute('cy', Math.random() * 600);
+                star.setAttribute('r', Math.random() * 1.5 + 0.5);
+                star.setAttribute('fill', '#ffffff');
+                star.setAttribute('opacity', Math.random() * 0.5 + 0.2);
+                star.style.animation = `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite alternate`;
+                svg.appendChild(star);
+            }
+        }
+
+        // Add twinkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes twinkle {
+                0% { opacity: 0.2; }
+                100% { opacity: 0.8; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize stars
+        createStars();
+
+        console.log('🌌 Omni-Singularity Architecture Map Initialized');
+        console.log('✨ Broadcast Nexus (PR #10) is the central node');
+        console.log('🔗 Replay Streams connect all peripheral nodes');
+        console.log('⚙️ CUT-202 Load-Adaptive Frame Pacing active');
+    </script>
+</body>
+</html>
