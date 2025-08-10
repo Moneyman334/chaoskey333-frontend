@@ -1,6 +1,35 @@
 require("dotenv").config();
 const express = require('express');
 const path = require('path');
+const Ajv = require('ajv');
+const addFormats = require('ajv-formats');
+
+// Initialize JSON schema validator
+const ajv = new Ajv();
+addFormats(ajv); // Add date-time format support
+
+// Health response JSON schema
+const healthSchema = {
+  type: "object",
+  properties: {
+    status: { type: "string", enum: ["healthy", "unhealthy"] },
+    timestamp: { type: "string", format: "date-time" },
+    uptime: {
+      type: "object",
+      properties: {
+        seconds: { type: "number", minimum: 0 },
+        human: { type: "string" }
+      },
+      required: ["seconds", "human"]
+    },
+    version: { type: "string" },
+    service: { type: "string" },
+    message: { type: "string" }
+  },
+  required: ["status", "timestamp", "uptime", "version", "service", "message"]
+};
+
+const validateHealthResponse = ajv.compile(healthSchema);
 
 // Load environment variables from Replit Secrets
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -183,9 +212,107 @@ app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 
-// 🧪 Test route to check server
+// 🧪 Enhanced health check endpoint with JSON schema, timestamp, and uptime
 app.get("/health", (req, res) => {
-  res.send("✅ Server is alive and kickin'");
+  const startTime = process.hrtime.bigint();
+  const uptimeSeconds = process.uptime();
+  const currentTimestamp = new Date().toISOString();
+  
+  const healthResponse = {
+    status: "healthy",
+    timestamp: currentTimestamp,
+    uptime: {
+      seconds: Math.floor(uptimeSeconds),
+      human: formatUptime(uptimeSeconds)
+    },
+    version: "1.0.0",
+    service: "chaoskey333-frontend",
+    message: "✅ Server is alive and kickin'"
+  };
+
+  // Validate response against schema
+  const isValid = validateHealthResponse(healthResponse);
+  if (!isValid) {
+    console.error('Health response validation failed:', validateHealthResponse.errors);
+    return res.status(500).json({
+      status: "unhealthy",
+      error: "Response validation failed",
+      timestamp: currentTimestamp
+    });
+  }
+
+  res.json(healthResponse);
+});
+
+// Helper function to format uptime in human readable format
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+  if (minutes > 0) return `${minutes}m ${secs}s`;
+  return `${secs}s`;
+}
+
+// Helper function to mask sensitive environment variables
+function maskSensitiveEnvVars(envVars) {
+  const sensitiveKeywords = [
+    'SECRET', 'KEY', 'TOKEN', 'PASSWORD', 'PASS', 'API', 'AUTH', 
+    'PRIVATE', 'CREDENTIAL', 'CERT', 'WEBHOOK', 'ENDPOINT'
+  ];
+  
+  const maskedEnv = {};
+  
+  for (const [key, value] of Object.entries(envVars)) {
+    const upperKey = key.toUpperCase();
+    const isSensitive = sensitiveKeywords.some(keyword => upperKey.includes(keyword));
+    
+    if (isSensitive && value) {
+      // Mask sensitive values, showing only first 4 and last 4 characters
+      if (value.length > 8) {
+        maskedEnv[key] = `${value.substring(0, 4)}****${value.substring(value.length - 4)}`;
+      } else {
+        maskedEnv[key] = '****';
+      }
+    } else {
+      maskedEnv[key] = value;
+    }
+  }
+  
+  return maskedEnv;
+}
+
+// 🔐 Debug endpoint for environment variables - REQUIRES AUTHENTICATION
+app.get("/debug/env", (req, res) => {
+  // Check for admin authentication
+  const adminToken = process.env.VAULT_ADMIN_TOKEN || 'vault-admin-debug-token-2024';
+  const providedToken = req.headers.authorization?.replace('Bearer ', '') || 
+                       req.headers['x-admin-token'] || 
+                       req.query.token;
+  
+  if (!providedToken || providedToken !== adminToken) {
+    return res.status(401).json({
+      error: "Unauthorized",
+      message: "Valid admin token required for environment debug access",
+      hint: "Provide token via Authorization header (Bearer <token>), X-Admin-Token header, or ?token=<token> query parameter"
+    });
+  }
+
+  // Return masked environment variables
+  const maskedEnv = maskSensitiveEnvVars(process.env);
+  
+  const debugResponse = {
+    timestamp: new Date().toISOString(),
+    service: "chaoskey333-frontend",
+    environment: maskedEnv,
+    note: "Sensitive values are masked for security",
+    count: Object.keys(maskedEnv).length
+  };
+
+  res.json(debugResponse);
 });
 
 // 🔐 Stripe checkout endpoint (test)
