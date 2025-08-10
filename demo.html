@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ripple-Cascade System Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .demo-container {
+      position: relative;
+      min-height: 100vh;
+      background: #000;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .demo-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #FFD700;
+      text-shadow: 0 0 20px #FFD700;
+    }
+    
+    .demo-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .demo-button {
+      background: linear-gradient(45deg, #8A2BE2, #4B0082);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .demo-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #8A2BE2;
+    }
+    
+    .demo-status {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      background: rgba(255, 215, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="demo-container">
+  <!-- Use the same multilingual overlay system -->
+  <div id="multilingualOverlay" class="multilingual-overlay">
+    <div class="overlay-layer primary-layer" data-lang="en">
+      <div class="glyph-container">
+        <span class="relic-glyph">🧬</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">Eternal Fusion Core Awakening</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="ja">
+      <div class="glyph-container">
+        <span class="relic-glyph">🔮</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">永遠の融合コア覚醒</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="zh">
+      <div class="glyph-container">
+        <span class="relic-glyph">⚡</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">永恒融合核心觉醒</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="ko">
+      <div class="glyph-container">
+        <span class="relic-glyph">🌌</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">영원한 융합 코어 각성</div>
+    </div>
+  </div>
+  
+  <div id="particleBurstContainer" class="particle-burst-container"></div>
+  
+  <h1 class="demo-title">🌊 Ripple-Cascade Multilingual Overlay Demo 🌊</h1>
+  
+  <div class="demo-controls">
+    <button class="demo-button" onclick="demoFullEvolution()">🧬 Full Evolution Sequence</button>
+    <button class="demo-button" onclick="demoRippleOnly()">〰️ Ripple Effects Only</button>
+    <button class="demo-button" onclick="demoParticleTest()">✨ Particle Burst Test</button>
+    <button class="demo-button" onclick="demoSoundTest()">🔊 Sound Effect Test</button>
+    <button class="demo-button" onclick="enableCosmicReplay()">🌌 Cosmic Replay Mode</button>
+    <button class="demo-button" onclick="demoSolverImprint()">🔮 Generate Solver Imprint</button>
+  </div>
+  
+  <div id="demoStatus" class="demo-status">
+    Ready to demonstrate Ripple-Cascade Multilingual Overlay System
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Demo functions
+    function demoFullEvolution() {
+      updateStatus("🧬 Triggering Full Evolution Sequence...");
+      
+      // Set up a demo wallet address
+      userWalletAddress = "0x742d35Cc6661C0532c26916F8B3A4c1c0f50cA1f";
+      isWalletConnected = true;
+      
+      triggerPermanentRelicEvolution();
+      
+      setTimeout(() => {
+        updateStatus("✨ Evolution sequence completed - Eternal Fusion Core activated!");
+      }, 8000);
+    }
+    
+    function demoRippleOnly() {
+      updateStatus("〰️ Demonstrating ripple cascade effects...");
+      
+      const overlay = document.getElementById('multilingualOverlay');
+      const layers = document.querySelectorAll('.overlay-layer');
+      
+      overlay.classList.add('active');
+      layers.forEach(layer => layer.classList.add('active'));
+      
+      // Generate demo imprint
+      const imprint = { resonanceTone: 1000, cascadeDelay: 400 };
+      
+      layers.forEach(layer => {
+        triggerRippleCascade(layer, imprint);
+      });
+      
+      setTimeout(() => {
+        updateStatus("〰️ Ripple demonstration complete");
+      }, 3000);
+    }
+    
+    function demoParticleTest() {
+      updateStatus("✨ Testing particle burst effects...");
+      
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      createParticleBurst(centerX, centerY, 'gold');
+      
+      setTimeout(() => {
+        createParticleBurst(centerX + 100, centerY - 50, 'violet');
+      }, 500);
+      
+      setTimeout(() => {
+        createParticleBurst(centerX - 100, centerY + 50, 'gold');
+      }, 1000);
+      
+      setTimeout(() => {
+        updateStatus("✨ Particle burst demonstration complete");
+      }, 2500);
+    }
+    
+    function demoSoundTest() {
+      updateStatus("🔊 Testing sub-bass water drop sound...");
+      
+      playRippleDropSound();
+      
+      setTimeout(() => {
+        playRippleDropSound();
+      }, 600);
+      
+      setTimeout(() => {
+        playRippleDropSound();
+      }, 1200);
+      
+      setTimeout(() => {
+        updateStatus("🔊 Sound effect demonstration complete");
+      }, 2000);
+    }
+    
+    function demoSolverImprint() {
+      updateStatus("🔮 Generating personalized solver imprint...");
+      
+      const testAddresses = [
+        "0x742d35Cc6661C0532c26916F8B3A4c1c0f50cA1f",
+        "0x1234567890AbCdEf1234567890AbCdEf12345678",
+        "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12"
+      ];
+      
+      const results = testAddresses.map(addr => {
+        const imprint = generateSolverImprint(addr);
+        return `${addr.slice(0,6)}...${addr.slice(-4)}: Tone=${imprint.resonanceTone}ms, Delay=${imprint.cascadeDelay}ms`;
+      });
+      
+      updateStatus("🔮 Solver Imprints Generated:<br>" + results.join('<br>'));
+    }
+    
+    function updateStatus(message) {
+      document.getElementById('demoStatus').innerHTML = message;
+    }
+    
+    // Override the cosmic replay mode function for demo
+    window.enableCosmicReplay = function() {
+      enableCosmicReplayMode();
+      updateStatus("🌌 Cosmic Replay Terminal mode activated - Evolution sequences synchronized");
+    };
+  </script>
+</body>
+</html>
