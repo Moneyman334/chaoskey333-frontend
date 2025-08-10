@@ -31,10 +31,23 @@
     <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
       🔌 No wallet? Install: <a href="https://metamask.io" target="_blank" style="color: #ff6600;">MetaMask</a> | <a href="https://wallet.coinbase.com" target="_blank" style="color: #1652f0;">Coinbase Wallet</a>
     </div>
+    
+    <!-- Smoke Test Results Display -->
+    <div id="smokeTestResults" style="margin-top: 20px;"></div>
+    
+    <!-- Admin Panel Link -->
+    <div style="margin-top: 20px; text-align: center;">
+      <a href="admin-panel.html" target="_blank" style="color: #ef4444; text-decoration: none; font-size: 0.9em;">
+        🛡️ Admin Control Panel
+      </a>
+    </div>
   </div>
 
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="staging-smoke-tests.js"></script>
+  <script src="event-imprint-logger.js"></script>
+  <script src="recursion-monitor.js"></script>
   <script src="script.js"></script>
 
   <script>
