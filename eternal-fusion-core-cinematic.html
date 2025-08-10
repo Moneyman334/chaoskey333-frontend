@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eternal Fusion Core Multilingual Cinematic | ChaosKey333</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="eternal-fusion-core-cinematic.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="cinematic-body">
+  <!-- Cinematic Container -->
+  <div id="cinematicContainer" class="cinematic-container">
+    <!-- Core Fusion Visual -->
+    <div id="fusionCore" class="fusion-core">
+      <div class="core-bloom"></div>
+      <div class="plasma-arc plasma-arc-1"></div>
+      <div class="plasma-arc plasma-arc-2"></div>
+      <div class="plasma-arc plasma-arc-3"></div>
+      <div class="core-center">
+        <div class="core-symbol">⬢</div>
+      </div>
+    </div>
+
+    <!-- Background Aura -->
+    <div id="backgroundAura" class="background-aura"></div>
+
+    <!-- Glyph Whisper Subtitles -->
+    <div id="glyphSubtitles" class="glyph-subtitles">
+      <div id="subtitleText" class="subtitle-text"></div>
+      <div id="subtitleGlyph" class="subtitle-glyph"></div>
+    </div>
+
+    <!-- Language Selector -->
+    <div id="languageSelector" class="language-selector">
+      <div class="language-title">Choose Your Whisper Language</div>
+      <div class="language-options">
+        <button class="lang-btn active" data-lang="en" data-color="#00ffcc">🇺🇸 English</button>
+        <button class="lang-btn" data-lang="es" data-color="#ff6600">🇪🇸 Español</button>
+        <button class="lang-btn" data-lang="jp" data-color="#ff00ff">🇯🇵 日本語</button>
+        <button class="lang-btn" data-lang="ar" data-color="#ffaa00">🇸🇦 العربية</button>
+        <button class="lang-btn" data-lang="ru" data-color="#0099ff">🇷🇺 Русский</button>
+      </div>
+    </div>
+
+    <!-- Cinematic Controls -->
+    <div id="cinematicControls" class="cinematic-controls">
+      <button id="startCinematic" class="control-btn primary">▶ Start Eternal Fusion</button>
+      <button id="pauseCinematic" class="control-btn" disabled>⏸ Pause</button>
+      <button id="syncGlobal" class="control-btn sync">🌍 Global Sync</button>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div id="cinematicProgress" class="cinematic-progress">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div id="progressText" class="progress-text">Awaiting Fusion Initiation...</div>
+    </div>
+
+    <!-- NFT Metadata Panel -->
+    <div id="nftMetadata" class="nft-metadata">
+      <div class="metadata-title">🔮 Eternal Fusion NFT</div>
+      <div id="metadataContent" class="metadata-content">
+        <div class="metadata-item">
+          <span class="metadata-label">Language Pack:</span>
+          <span id="selectedLanguage" class="metadata-value">English</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Fusion Sequence:</span>
+          <span id="fusionSequence" class="metadata-value">Not Started</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Wallet:</span>
+          <span id="connectedWallet" class="metadata-value">Not Connected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Sync Panel -->
+    <div id="globalSyncPanel" class="global-sync-panel hidden">
+      <div class="sync-title">🌍 Global Premiere Sync</div>
+      <div id="syncTime" class="sync-time">Next Premiere: Calculating...</div>
+      <div id="timeZones" class="time-zones">
+        <div class="tz-item">🇺🇸 EST: <span id="tzEST">--:--</span></div>
+        <div class="tz-item">🇬🇧 GMT: <span id="tzGMT">--:--</span></div>
+        <div class="tz-item">🇯🇵 JST: <span id="tzJST">--:--</span></div>
+      </div>
+      <button id="joinPremiere" class="control-btn primary">Join Global Premiere</button>
+    </div>
+
+    <!-- Back to Vault -->
+    <div class="back-nav">
+      <a href="index.html" class="back-link">← Return to Vault</a>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="fusionAudio" preload="auto">
+    <source src="https://frankenstein333.33.amazonaws.com/eternal_fusion_core.mp3" type="audio/mp3" />
+  </audio>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="eternal-fusion-core-cinematic.js"></script>
+</body>
+</html>

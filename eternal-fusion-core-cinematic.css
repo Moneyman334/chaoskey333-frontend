@@ -1,0 +1,502 @@
+/* Eternal Fusion Core Multilingual Cinematic Styles */
+
+.cinematic-body {
+  background: #000;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+.cinematic-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Core Fusion Visual */
+.fusion-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  z-index: 10;
+}
+
+.core-bloom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,204,0.8) 0%, rgba(0,255,204,0.4) 40%, transparent 70%);
+  animation: coreBloom 4s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+.core-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00ffcc, #0099ff, #ff00ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: coreRotation 6s linear infinite;
+  box-shadow: 0 0 40px #00ffcc, 0 0 80px #00ffcc;
+}
+
+.core-symbol {
+  font-size: 2rem;
+  color: #000;
+  font-weight: 900;
+  text-shadow: 0 0 10px #fff;
+}
+
+/* Plasma Arcs */
+.plasma-arc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  width: 2px;
+  height: 150px;
+  background: linear-gradient(to top, transparent, #00ffcc, transparent);
+  animation: plasmaRotation 3s linear infinite;
+  filter: blur(1px);
+}
+
+.plasma-arc-1 {
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation-delay: 0s;
+}
+
+.plasma-arc-2 {
+  transform: translate(-50%, -50%) rotate(120deg);
+  animation-delay: -1s;
+}
+
+.plasma-arc-3 {
+  transform: translate(-50%, -50%) rotate(240deg);
+  animation-delay: -2s;
+}
+
+/* Background Aura */
+.background-aura {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(0,255,204,0.1) 0%, transparent 70%);
+  animation: auraShift 8s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Language-based aura colors */
+.background-aura.en {
+  background: radial-gradient(circle at center, rgba(0,255,204,0.15) 0%, transparent 70%);
+}
+
+.background-aura.es {
+  background: radial-gradient(circle at center, rgba(255,102,0,0.15) 0%, transparent 70%);
+}
+
+.background-aura.jp {
+  background: radial-gradient(circle at center, rgba(255,0,255,0.15) 0%, transparent 70%);
+}
+
+.background-aura.ar {
+  background: radial-gradient(circle at center, rgba(255,170,0,0.15) 0%, transparent 70%);
+}
+
+.background-aura.ru {
+  background: radial-gradient(circle at center, rgba(0,153,255,0.15) 0%, transparent 70%);
+}
+
+/* Glyph Whisper Subtitles */
+.glyph-subtitles {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 20;
+  max-width: 80vw;
+}
+
+.subtitle-text {
+  font-size: 1.5rem;
+  color: #00ffcc;
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: subtitleFadeIn 0.5s ease-in-out forwards;
+  border: 2px solid rgba(0,255,204,0.3);
+  padding: 15px 25px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+}
+
+.subtitle-glyph {
+  font-size: 2rem;
+  color: #fff;
+  text-shadow: 0 0 15px #00ffcc;
+  opacity: 0;
+  animation: glyphPulse 2s ease-in-out infinite;
+}
+
+/* Language Selector */
+.language-selector {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  z-index: 30;
+  background: rgba(0,0,0,0.8);
+  border: 2px solid #00ffcc;
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.language-title {
+  font-size: 1.1rem;
+  color: #00ffcc;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.language-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lang-btn {
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: 1px solid #333;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 10px rgba(0,255,204,0.5);
+}
+
+.lang-btn.active {
+  background: rgba(0,255,204,0.2);
+  border-color: #00ffcc;
+  box-shadow: 0 0 15px rgba(0,255,204,0.7);
+}
+
+/* Cinematic Controls */
+.cinematic-controls {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 30;
+}
+
+.control-btn {
+  background: rgba(0,0,0,0.8);
+  color: #00ffcc;
+  border: 2px solid #00ffcc;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-btn:hover:not(:disabled) {
+  background: rgba(0,255,204,0.2);
+  box-shadow: 0 0 20px rgba(0,255,204,0.7);
+  transform: scale(1.05);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-btn.primary {
+  background: rgba(0,255,204,0.3);
+  animation: primaryGlow 2s ease-in-out infinite;
+}
+
+.control-btn.sync {
+  background: rgba(255,170,0,0.3);
+  border-color: #ffaa00;
+  color: #ffaa00;
+}
+
+/* Progress Indicator */
+.cinematic-progress {
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  z-index: 30;
+  min-width: 300px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #00ffcc;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffcc, #0099ff, #ff00ff);
+  width: 0%;
+  transition: width 0.5s ease;
+  animation: progressShimmer 2s ease-in-out infinite;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #00ffcc;
+  text-shadow: 0 0 5px currentColor;
+}
+
+/* NFT Metadata Panel */
+.nft-metadata {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  z-index: 30;
+  background: rgba(0,0,0,0.8);
+  border: 2px solid #00ffcc;
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  min-width: 250px;
+}
+
+.metadata-title {
+  font-size: 1.1rem;
+  color: #00ffcc;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.metadata-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.metadata-label {
+  color: #aaa;
+}
+
+.metadata-value {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Global Sync Panel */
+.global-sync-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9);
+  border: 2px solid #ffaa00;
+  border-radius: 20px;
+  padding: 30px;
+  z-index: 40;
+  backdrop-filter: blur(15px);
+  min-width: 400px;
+  text-align: center;
+}
+
+.global-sync-panel.hidden {
+  display: none;
+}
+
+.sync-title {
+  font-size: 1.5rem;
+  color: #ffaa00;
+  margin-bottom: 20px;
+}
+
+.sync-time {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.time-zones {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+}
+
+.tz-item {
+  color: #aaa;
+}
+
+/* Back Navigation */
+.back-nav {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 30;
+}
+
+.back-link {
+  color: #00ffcc;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 15px;
+  border: 1px solid #00ffcc;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.7);
+  transition: all 0.3s ease;
+}
+
+.back-link:hover {
+  background: rgba(0,255,204,0.2);
+  box-shadow: 0 0 10px rgba(0,255,204,0.5);
+}
+
+/* Animations */
+@keyframes coreBloom {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1); 
+    opacity: 0.8; 
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.2); 
+    opacity: 1; 
+  }
+}
+
+@keyframes coreRotation {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes plasmaRotation {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes auraShift {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.2; }
+}
+
+@keyframes subtitleFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes glyphPulse {
+  0%, 100% { 
+    opacity: 0.7; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1); 
+  }
+}
+
+@keyframes primaryGlow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0,255,204,0.7); 
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(0,255,204,1), 0 0 50px rgba(0,255,204,0.7); 
+  }
+}
+
+@keyframes progressShimmer {
+  0%, 100% { 
+    background: linear-gradient(90deg, #00ffcc, #0099ff, #ff00ff); 
+  }
+  50% { 
+    background: linear-gradient(90deg, #ff00ff, #00ffcc, #0099ff); 
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .language-selector {
+    top: 20px;
+    right: 20px;
+    padding: 15px;
+  }
+  
+  .cinematic-controls {
+    bottom: 30px;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nft-metadata {
+    bottom: 30px;
+    right: 20px;
+    padding: 15px;
+  }
+  
+  .fusion-core {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .global-sync-panel {
+    min-width: 90vw;
+    padding: 20px;
+  }
+  
+  .glyph-subtitles {
+    bottom: 60px;
+    max-width: 90vw;
+  }
+  
+  .subtitle-text {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+  }
+}

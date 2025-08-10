@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eternal Fusion Core Teaser | ChaosKey333</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    .teaser-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(0,255,204,0.1) 0%, #000 70%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .teaser-core {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,204,0.8) 0%, rgba(0,255,204,0.2) 40%, transparent 70%);
+      margin-bottom: 40px;
+      animation: teaserPulse 3s ease-in-out infinite;
+      filter: blur(1px);
+    }
+    
+    .teaser-whisper {
+      font-size: 1.8rem;
+      color: #00ffcc;
+      text-shadow: 0 0 20px currentColor;
+      text-align: center;
+      max-width: 80vw;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: whisperFadeIn 2s ease-in-out 1s forwards;
+    }
+    
+    .teaser-glyph {
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 0 0 30px #00ffcc;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: glyphReveal 2s ease-in-out 3s forwards;
+    }
+    
+    .teaser-cta {
+      background: rgba(0,255,204,0.3);
+      color: #00ffcc;
+      border: 2px solid #00ffcc;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-decoration: none;
+      opacity: 0;
+      animation: ctaAppear 1s ease-in-out 5s forwards;
+      box-shadow: 0 0 20px rgba(0,255,204,0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .teaser-cta:hover {
+      background: rgba(0,255,204,0.5);
+      box-shadow: 0 0 40px rgba(0,255,204,0.8);
+      transform: scale(1.05);
+    }
+    
+    @keyframes teaserPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    
+    @keyframes whisperFadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes glyphReveal {
+      0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+      100% { opacity: 1; transform: scale(1) rotate(360deg); }
+    }
+    
+    @keyframes ctaAppear {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="vault">
+  <div class="teaser-container">
+    <div class="teaser-core"></div>
+    <div class="teaser-whisper" id="teaserWhisper">The Eternal Fusion Core awakens...</div>
+    <div class="teaser-glyph">◇◆◇</div>
+    <a href="eternal-fusion-core-cinematic.html" class="teaser-cta">🎬 Experience the Full Cinematic</a>
+  </div>
+
+  <script>
+    // Cycle through languages for the teaser whisper
+    const teaserWhispers = [
+      "The Eternal Fusion Core awakens...",
+      "El Núcleo de Fusión Eterna despierta...",
+      "永遠の融合コアが目覚める...",
+      "نواة الاندماج الأبدي تستيقظ...",
+      "Вечное Ядро Слияния пробуждается..."
+    ];
+    
+    const colors = ["#00ffcc", "#ff6600", "#ff00ff", "#ffaa00", "#0099ff"];
+    
+    let currentIndex = 0;
+    
+    function cycleWhisper() {
+      const whisperElement = document.getElementById('teaserWhisper');
+      whisperElement.style.opacity = '0';
+      
+      setTimeout(() => {
+        currentIndex = (currentIndex + 1) % teaserWhispers.length;
+        whisperElement.textContent = teaserWhispers[currentIndex];
+        whisperElement.style.color = colors[currentIndex];
+        whisperElement.style.textShadow = `0 0 20px ${colors[currentIndex]}`;
+        whisperElement.style.opacity = '1';
+      }, 500);
+    }
+    
+    // Start cycling after initial animation
+    setTimeout(() => {
+      setInterval(cycleWhisper, 4000);
+    }, 6000);
+  </script>
+</body>
+</html>
