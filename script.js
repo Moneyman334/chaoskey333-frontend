@@ -7,6 +7,7 @@ let STRIPE_PUBLISHABLE_KEY = null;
 let stripe = null;
 let signer = null;
 let userAddress = null;
+let paymentProvider = 'coinbase'; // Default to Coinbase as specified
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -56,7 +57,7 @@ async function connectMetaMask() {
       
       console.log("🦊 MetaMask Connected:", userWalletAddress);
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
-      mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
+      mintStatus.innerText = "🧿 MetaMask Connected – Ready for crypto payment";
       
       checkStripeAndMint();
       
@@ -310,6 +311,57 @@ async function createStripePayment() {
   }
 }
 
+// Create Coinbase Commerce Payment
+async function createCoinbasePayment() {
+  if (!isWalletConnected || !userWalletAddress) {
+    alert("🔌 Please connect your wallet first!");
+    return;
+  }
+
+  try {
+    console.log("💳 Creating Coinbase Commerce charge...");
+    document.getElementById("mintStatus").innerText = "💳 Creating Coinbase payment...";
+    
+    const response = await fetch('/api/create-coinbase-charge', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        walletAddress: userWalletAddress,
+        connectedWalletType: connectedWalletType,
+        amount: '33.33', // $33.33
+        currency: 'USD',
+        productName: 'Frankenstein Vault Relic 333'
+      }),
+    });
+
+    const charge = await response.json();
+    
+    if (charge.hostedUrl) {
+      console.log("🔄 Redirecting to Coinbase Commerce checkout...");
+      document.getElementById("mintStatus").innerText = "🔄 Redirecting to Coinbase payment...";
+      window.location.href = charge.hostedUrl;
+    } else {
+      throw new Error(charge.error || "No checkout URL received");
+    }
+
+  } catch (error) {
+    console.error("❌ Coinbase payment creation failed:", error);
+    document.getElementById("mintStatus").innerText = "❌ Payment failed: " + error.message;
+    alert("Payment failed: " + error.message);
+  }
+}
+
+// Smart Payment Function - routes to appropriate provider
+async function createPayment() {
+  if (paymentProvider === 'coinbase') {
+    await createCoinbasePayment();
+  } else {
+    await createStripePayment();
+  }
+}
+
 // Check Stripe Payment and Trigger Mint
 function checkStripeAndMint() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -392,7 +444,7 @@ window.onload = async function () {
   }
 
   if (paymentBtn) {
-    paymentBtn.onclick = createStripePayment;
+    paymentBtn.onclick = createPayment;
   }
 
   checkStripeAndMint();

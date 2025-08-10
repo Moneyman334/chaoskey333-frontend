@@ -1,10 +1,13 @@
 require("dotenv").config();
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 
 // Load environment variables from Replit Secrets
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+const COINBASE_API_KEY = process.env.COINBASE_API_KEY;
+const COINBASE_WEBHOOK_SHARED_SECRET = process.env.COINBASE_WEBHOOK_SHARED_SECRET;
 
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
@@ -128,6 +131,69 @@ app.post('/api/create-checkout-session', async (req, res) => {
   }
 });
 
+// Create Coinbase Commerce charge
+app.post('/api/create-coinbase-charge', async (req, res) => {
+  try {
+    const { walletAddress, connectedWalletType } = req.body;
+    const amount = req.body.amount || '33.33'; // Default amount
+    const currency = req.body.currency || 'USD'; // Default currency
+    const productName = req.body.productName || 'ChaosKey333 Relic'; // Default product name
+
+    if (!COINBASE_API_KEY) {
+      return res.status(500).json({ error: 'Coinbase API key not configured' });
+    }
+
+    console.log('🔄 Creating Coinbase Commerce charge for wallet:', walletAddress);
+
+    // Create charge using Coinbase Commerce API
+    const chargeData = {
+      name: productName,
+      description: `Frankenstein Vault Relic for ${connectedWalletType} wallet: ${walletAddress}`,
+      pricing_type: 'fixed_price',
+      local_price: {
+        amount: amount,
+        currency: currency
+      },
+      metadata: {
+        walletAddress: walletAddress,
+        connectedWalletType: connectedWalletType
+      },
+      redirect_url: `${req.headers.origin}/?payment=success`,
+      cancel_url: `${req.headers.origin}/?payment=cancelled`
+    };
+
+    const response = await fetch('https://api.commerce.coinbase.com/charges', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CC-Api-Key': COINBASE_API_KEY,
+        'X-CC-Version': '2018-03-22'
+      },
+      body: JSON.stringify(chargeData)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('❌ Coinbase Commerce API error:', errorData);
+      return res.status(response.status).json({ error: errorData.error || 'Failed to create charge' });
+    }
+
+    const charge = await response.json();
+    console.log('✅ Coinbase Commerce charge created:', charge.data.code);
+    
+    res.json({ 
+      chargeId: charge.data.id,
+      chargeCode: charge.data.code,
+      hostedUrl: charge.data.hosted_url,
+      checkoutUrl: charge.data.hosted_url
+    });
+
+  } catch (error) {
+    console.error('❌ Error creating Coinbase Commerce charge:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Stripe webhook to handle successful payments
 app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -159,6 +225,80 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
   }
 
   res.json({ received: true });
+});
+
+// Coinbase Commerce webhook to handle successful payments
+app.post('/api/webhooks/coinbase', express.raw({ type: 'application/json' }), (req, res) => {
+  const signature = req.headers['x-cc-webhook-signature'];
+  
+  if (!COINBASE_WEBHOOK_SHARED_SECRET) {
+    console.error('❌ COINBASE_WEBHOOK_SHARED_SECRET not configured');
+    return res.status(500).json({ error: 'Webhook secret not configured' });
+  }
+
+  try {
+    // Verify HMAC SHA256 signature
+    const expectedSignature = crypto
+      .createHmac('sha256', COINBASE_WEBHOOK_SHARED_SECRET)
+      .update(req.body)
+      .digest('hex');
+
+    if (signature !== expectedSignature) {
+      console.log('❌ Coinbase webhook signature verification failed');
+      return res.status(400).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    console.log('📨 Coinbase webhook received:', event.type);
+
+    // Handle charge:confirmed events
+    if (event.type === 'charge:confirmed') {
+      const charge = event.data;
+      
+      console.log('💰 Coinbase Commerce payment confirmed!');
+      console.log('🆔 Charge Code:', charge.code);
+      console.log('💰 Amount:', charge.pricing.local.amount, charge.pricing.local.currency);
+      
+      // Extract wallet address from metadata
+      if (charge.metadata && charge.metadata.walletAddress) {
+        console.log('👛 Wallet Address:', charge.metadata.walletAddress);
+        console.log('🧿 Ready to mint relic to vault...');
+        
+        // TODO: Implement claim token creation or mint request enqueueing
+        // This is where you would:
+        // 1. Create a claim token for the confirmed charge
+        // 2. Enqueue a mint request to mint NFT to the wallet
+        // 3. Store the transaction in your database
+        // 4. Send confirmation notification
+        
+        console.log('🎉 Relic minting process initiated for:', charge.metadata.walletAddress);
+        console.log('💳 Charge confirmed, creating claim token...');
+        
+        // Stub implementation for claim token creation
+        const claimToken = {
+          chargeCode: charge.code,
+          walletAddress: charge.metadata.walletAddress,
+          amount: charge.pricing.local.amount,
+          currency: charge.pricing.local.currency,
+          timestamp: new Date().toISOString(),
+          status: 'pending_mint'
+        };
+        
+        console.log('🎫 Claim token created:', claimToken);
+        
+      } else {
+        console.warn('⚠️ No wallet address found in charge metadata');
+      }
+    } else {
+      console.log('ℹ️ Unhandled Coinbase webhook event type:', event.type);
+    }
+
+    res.json({ received: true });
+
+  } catch (error) {
+    console.error('❌ Error processing Coinbase webhook:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
 });
 
 // Config endpoint to provide Stripe public key
