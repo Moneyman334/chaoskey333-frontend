@@ -1,0 +1,20 @@
+{
+  "crons": [
+    {
+      "path": "/api/replay/health",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/replay/health/deep",
+      "schedule": "0 * * * *"
+    }
+  ],
+  "functions": {
+    "src/app/api/replay/health/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/replay/health/deep/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

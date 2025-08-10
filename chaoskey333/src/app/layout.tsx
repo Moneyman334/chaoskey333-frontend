@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
-
-const inter = Inter({ subsets: ["latin"] });
+import { BroadcastBanner } from "../components/BroadcastBanner";
+import { MonitoringProvider } from "../components/MonitoringProvider";
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
-  description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+  title: "ChaosKey333 - Cosmic Replay Terminal",
+  description: "The ultimate blockchain vault and cosmic replay terminal",
 };
 
 export default function RootLayout({
@@ -18,8 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThirdwebProvider>{children}</ThirdwebProvider>
+      <body style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+        <MonitoringProvider>
+          <ThirdwebProvider>
+            <BroadcastBanner />
+            {children}
+          </ThirdwebProvider>
+        </MonitoringProvider>
       </body>
     </html>
   );
