@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Cosmic Replay Terminal v2.0 - Ascension Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: radial-gradient(circle at center, #0a0a1e 0%, #000000 100%);
+            color: #00ffff;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+        
+        /* Cosmic Background Effects */
+        .cosmic-background {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 0, 0.05) 0%, transparent 70%);
+            animation: cosmicPulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes cosmicPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        /* Main Terminal Container */
+        .terminal-container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        /* Header with Echo Engine Status */
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .terminal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px #00ffff;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ffff; }
+            to { text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff; }
+        }
+        
+        .echo-status {
+            display: flex;
+            gap: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: statusPulse 1s ease-in-out infinite;
+        }
+        
+        .status-light.active { background: #00ff00; }
+        .status-light.syncing { background: #ffff00; }
+        .status-light.error { background: #ff0000; }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Main Content Grid */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 140px);
+        }
+        
+        /* Echo Engine Sync Panel */
+        .echo-engine-panel {
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            background: rgba(0, 20, 0, 0.3);
+            backdrop-filter: blur(3px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00ff00;
+            text-align: center;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+        }
+        
+        /* Echo Visualization */
+        .echo-visualization {
+            flex: 1;
+            position: relative;
+            border: 1px solid #333;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .echo-canvas {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Spectral Ranges */
+        .spectral-ranges {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .spectral-bar {
+            width: 30%;
+            height: 40px;
+            border: 1px solid #666;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spectral-fill {
+            height: 100%;
+            background: linear-gradient(to top, 
+                rgba(255, 0, 0, 0.7) 0%,
+                rgba(255, 255, 0, 0.7) 50%,
+                rgba(0, 255, 255, 0.7) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            animation: spectralPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes spectralPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .spectral-label {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        /* HUD Phase Merge Panel */
+        .hud-panel {
+            border: 1px solid #ff00ff;
+            border-radius: 10px;
+            padding: 20px;
+            background: rgba(20, 0, 20, 0.3);
+            backdrop-filter: blur(3px);
+        }
+        
+        .hud-glow-indicator {
+            width: 100%;
+            height: 60px;
+            border: 1px solid #ff00ff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .glow-progress {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 0, 255, 0.3) 30%,
+                rgba(255, 0, 255, 0.8) 50%,
+                rgba(255, 0, 255, 0.3) 70%,
+                transparent 100%);
+            width: 0%;
+            transition: width 5s ease-in-out;
+        }
+        
+        .decode-prompts {
+            flex: 1;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+        
+        .decode-prompt {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.1);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            opacity: 0;
+            animation: promptFadeIn 0.5s ease-in-out forwards;
+        }
+        
+        @keyframes promptFadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Relic Evolution Panel */
+        .evolution-panel {
+            border: 1px solid #ffff00;
+            border-radius: 10px;
+            padding: 20px;
+            background: rgba(20, 20, 0, 0.3);
+            backdrop-filter: blur(3px);
+        }
+        
+        .solver-imprint {
+            width: 100%;
+            height: 80px;
+            border: 2px solid #ffff00;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(255, 255, 0, 0.2) 0%, transparent 70%);
+            overflow: hidden;
+        }
+        
+        .imprint-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffff00;
+            animation: imprintPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes imprintPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px #ffff00; }
+            50% { transform: translate(-50%, -50%) scale(1.5); box-shadow: 0 0 30px #ffff00; }
+        }
+        
+        .convergence-streams {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+        
+        .stream {
+            width: 3px;
+            height: 60px;
+            background: linear-gradient(to top, transparent 0%, #ffff00 100%);
+            animation: streamFlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes streamFlow {
+            0% { height: 0px; }
+            100% { height: 60px; }
+        }
+        
+        /* Replay Artifacts Panel */
+        .replay-panel {
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            background: rgba(0, 20, 20, 0.3);
+            backdrop-filter: blur(3px);
+        }
+        
+        .memory-feed {
+            flex: 1;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            min-height: 120px;
+        }
+        
+        .memory-artifact {
+            margin-bottom: 8px;
+            padding: 6px;
+            border: 1px solid #00ffff;
+            border-radius: 3px;
+            background: rgba(0, 255, 255, 0.1);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            animation: artifactGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes artifactGlow {
+            0%, 100% { border-color: #00ffff; }
+            50% { border-color: #ffffff; box-shadow: 0 0 5px #00ffff; }
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        .control-btn.active {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px #00ffff;
+        }
+        
+        /* Singularity Flash Effect */
+        .singularity-flash {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, 
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 255, 0, 0.4) 30%,
+                transparent 70%);
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .singularity-flash.active {
+            animation: singularityFlash 2s ease-in-out;
+        }
+        
+        @keyframes singularityFlash {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            30% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-background"></div>
+    
+    <div class="terminal-container">
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="terminal-title">🌌 COSMIC REPLAY TERMINAL v2.0 - ASCENSION EDITION</div>
+            <div class="echo-status">
+                <div class="status-indicator">
+                    <div class="status-light active"></div>
+                    <span>ECHO ENGINE</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-light syncing"></div>
+                    <span>BASS SYNC</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-light active"></div>
+                    <span>GLYPH WHISPER</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-light active"></div>
+                    <span>VAULT WIDE</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="main-content">
+            <!-- Echo Engine Sync Panel -->
+            <div class="echo-engine-panel">
+                <div class="panel-title">⚡ ECHO ENGINE SYNC</div>
+                <div class="echo-visualization">
+                    <canvas id="echoCanvas" class="echo-canvas"></canvas>
+                </div>
+                <div class="spectral-ranges">
+                    <div class="spectral-bar">
+                        <div class="spectral-fill" id="lowSpectral"></div>
+                        <div class="spectral-label">LOW</div>
+                    </div>
+                    <div class="spectral-bar">
+                        <div class="spectral-fill" id="midSpectral"></div>
+                        <div class="spectral-label">MID</div>
+                    </div>
+                    <div class="spectral-bar">
+                        <div class="spectral-fill" id="highSpectral"></div>
+                        <div class="spectral-label">HIGH</div>
+                    </div>
+                </div>
+                <div style="text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;">
+                    Millisecond Precision: <span id="precisionCounter">0.001ms</span>
+                </div>
+            </div>
+            
+            <!-- HUD Phase Merge Panel -->
+            <div class="hud-panel">
+                <div class="panel-title">🔮 HUD PHASE MERGE</div>
+                <div class="hud-glow-indicator">
+                    <div class="glow-progress" id="glowProgress"></div>
+                </div>
+                <div style="text-align: center; margin-bottom: 10px; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;">
+                    Glyph Manifestation in: <span id="manifestationTimer">5.000s</span>
+                </div>
+                <div class="decode-prompts" id="decodePrompts">
+                    <div class="decode-prompt">🔍 Initializing solver imprint scan...</div>
+                    <div class="decode-prompt">⚡ Resonance pattern detected: HARMONIC_LOCK</div>
+                    <div class="decode-prompt">🌀 Vault synchronization: 97.3% complete</div>
+                </div>
+            </div>
+            
+            <!-- Relic Evolution Panel -->
+            <div class="evolution-panel">
+                <div class="panel-title">🌟 RELIC EVOLUTION MOMENT</div>
+                <div class="solver-imprint">
+                    <div class="imprint-core"></div>
+                </div>
+                <div class="convergence-streams">
+                    <div class="stream" style="animation-delay: 0s;"></div>
+                    <div class="stream" style="animation-delay: 0.3s;"></div>
+                    <div class="stream" style="animation-delay: 0.6s;"></div>
+                    <div class="stream" style="animation-delay: 0.9s;"></div>
+                    <div class="stream" style="animation-delay: 1.2s;"></div>
+                </div>
+                <div style="text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;">
+                    Echo Convergence: <span id="convergenceLevel">APPROACHING SINGULARITY</span>
+                </div>
+            </div>
+            
+            <!-- Replay Artifacts Panel -->
+            <div class="replay-panel">
+                <div class="panel-title">💾 REPLAY ARTIFACT CAPTURE</div>
+                <div class="memory-feed" id="memoryFeed">
+                    <div class="memory-artifact">📸 HUD Frame captured: 2024.08.10.12:34:56.789</div>
+                    <div class="memory-artifact">🎵 Ambient echo bleed preserved: SPECTRAL_DEPTH_95%</div>
+                    <div class="memory-artifact">👁️ First-person memory locked: SOLVER_PERSPECTIVE_DELTA</div>
+                    <div class="memory-artifact">🔊 Bass pulse synchronization stored: 440Hz_HARMONIC</div>
+                </div>
+                <div style="text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;">
+                    Fidelity: <span id="fidelityLevel">FULL_SPECTRUM_ECHO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="control-btn" id="initializeBtn">🚀 INITIALIZE IGNITION</button>
+        <button class="control-btn" id="echoSyncBtn">⚡ SYNC ECHO ENGINE</button>
+        <button class="control-btn" id="harmoniclockBtn">🔒 HARMONIC LOCK</button>
+        <button class="control-btn" id="singularityBtn">✨ SINGULARITY FLASH</button>
+    </div>
+    
+    <!-- Singularity Flash Effect -->
+    <div class="singularity-flash" id="singularityFlash"></div>
+    
+    <script src="cosmic-replay-terminal-v2.js"></script>
+</body>
+</html>
