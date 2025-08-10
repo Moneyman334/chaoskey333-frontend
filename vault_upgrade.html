@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 Vault - Upgrading to Overdrive</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    .upgrade-container {
+      text-align: center;
+      padding: 50px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(0, 20, 40, 0.9), rgba(0, 10, 30, 0.95));
+      border: 2px solid #00ffff;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+    }
+    
+    .upgrade-title {
+      font-size: 2.5rem;
+      color: #00ffff;
+      text-shadow: 0 0 15px #00ffff;
+      margin-bottom: 20px;
+      animation: titleGlow 2s infinite alternate;
+    }
+    
+    .upgrade-message {
+      font-size: 1.3rem;
+      color: #ffffff;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+    }
+    
+    .feature-item {
+      background: rgba(0, 40, 80, 0.3);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 15px;
+      color: #ffffff;
+    }
+    
+    .upgrade-button {
+      background: linear-gradient(45deg, #004400, #008800);
+      border: 3px solid #00ff00;
+      color: #ffffff;
+      padding: 20px 40px;
+      font-size: 1.4rem;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+      transition: all 0.3s ease;
+      margin: 20px;
+    }
+    
+    .upgrade-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+    }
+    
+    .legacy-note {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #888888;
+      font-style: italic;
+    }
+    
+    @keyframes titleGlow {
+      0% { text-shadow: 0 0 15px #00ffff; }
+      100% { text-shadow: 0 0 25px #00ffff, 0 0 35px #00ffff; }
+    }
+  </style>
+</head>
+<body class="vault">
+  
+  <div class="upgrade-container">
+    <h1 class="upgrade-title">⚡ VAULT UPGRADING TO OVERDRIVE ⚡</h1>
+    
+    <p class="upgrade-message">
+      The ChaosKey333 Vault has evolved! Experience the next generation with 
+      <strong>Overdrive Public Broadcast Edition</strong> - a galaxy-wide synchronized spectacle.
+    </p>
+    
+    <div class="features-grid">
+      <div class="feature-item">
+        🌌 <strong>Vault-Wide Sync</strong><br>
+        Galaxy-wide echo drops every 30 seconds
+      </div>
+      <div class="feature-item">
+        🔮 <strong>Spectral Embers</strong><br>
+        Collect mystical lore fragments
+      </div>
+      <div class="feature-item">
+        📊 <strong>Live Milestones</strong><br>
+        Track expansion progress in real-time
+      </div>
+      <div class="feature-item">
+        🎬 <strong>Cinematic Replays</strong><br>
+        Export epic moments for sharing
+      </div>
+      <div class="feature-item">
+        🔥 <strong>Ignition Leaderboard</strong><br>
+        Compete with vault contributors
+      </div>
+      <div class="feature-item">
+        ⚡ <strong>Enhanced Minting</strong><br>
+        Original relic system + new features
+      </div>
+    </div>
+    
+    <a href="vault_overdrive.html" class="upgrade-button">
+      🚀 ENTER OVERDRIVE MODE
+    </a>
+    
+    <div class="legacy-note">
+      This legacy vault interface has been upgraded to the Overdrive Public Broadcast Edition.<br>
+      All original functionality is preserved and enhanced in the new experience.
+    </div>
+  </div>
+
+  <!-- Background Effects -->
+  <div class="vault-bg-effects">
+    <div class="cosmic-particles"></div>
+    <div class="energy-grid"></div>
+  </div>
+
+  <script>
+    // Auto-redirect after 10 seconds with visual countdown
+    let countdown = 10;
+    const countdownElement = document.createElement('div');
+    countdownElement.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00ffff;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      z-index: 1000;
+    `;
+    document.body.appendChild(countdownElement);
+    
+    const updateCountdown = () => {
+      countdownElement.textContent = `Auto-upgrade in ${countdown}s`;
+      if (countdown <= 0) {
+        window.location.href = 'vault_overdrive.html';
+      } else {
+        countdown--;
+        setTimeout(updateCountdown, 1000);
+      }
+    };
+    
+    updateCountdown();
+    
+    // Add some sparkle effects
+    setInterval(() => {
+      const sparkle = document.createElement('div');
+      sparkle.innerHTML = '✨';
+      sparkle.style.cssText = `
+        position: fixed;
+        top: ${Math.random() * 100}vh;
+        left: ${Math.random() * 100}vw;
+        color: #ffff00;
+        font-size: 1.5rem;
+        pointer-events: none;
+        z-index: 999;
+        animation: sparkleFloat 3s ease-out forwards;
+      `;
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => sparkle.remove(), 3000);
+    }, 500);
+    
+    // Add sparkle animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes sparkleFloat {
+        0% { opacity: 1; transform: translateY(0) scale(0.5); }
+        50% { opacity: 1; transform: translateY(-50px) scale(1); }
+        100% { opacity: 0; transform: translateY(-100px) scale(0.5); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+
+</body>
+</html>
