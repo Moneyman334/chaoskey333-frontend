@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThirdwebProvider } from "thirdweb/react";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
-  description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+  title: "ChaosKey333 Vault - Omni-Singularity Map",
+  description: "Navigate the Omni-Singularity Map with keyboard and gamepad controls",
 };
 
 export default function RootLayout({
@@ -18,8 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThirdwebProvider>{children}</ThirdwebProvider>
+      <body className="font-sans antialiased">
+        {children}
       </body>
     </html>
   );
