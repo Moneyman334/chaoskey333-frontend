@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThirdwebProvider } from "thirdweb/react";
 
 export const metadata: Metadata = {
   title: "ChaosKey333 Operations Console",
@@ -16,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans">
-        <ThirdwebProvider>{children}</ThirdwebProvider>
+        {children}
       </body>
     </html>
   );
