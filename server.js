@@ -1,16 +1,24 @@
 require("dotenv").config();
 const express = require('express');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
+const { isIpWhitelisted, getMaskedEnvVars } = require('./utils/security');
+const { performHealthCheck, logError } = require('./utils/health');
 
 // Load environment variables from Replit Secrets
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
-
-console.log('🔑 Checking Stripe API keys...');
-console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
-console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available
+let stripe;
+if (STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('🔑 Checking Stripe API keys...');
+  console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
+  console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+} else {
+  console.log('⚠️ Stripe secret key not found - Stripe features will be disabled');
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +26,29 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 app.use(express.static('.'));
+
+// Rate limiting for health and debug endpoints
+const healthRateLimit = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // limit each IP to 30 requests per windowMs
+  message: {
+    error: 'Too many health check requests from this IP, please try again later.',
+    retryAfter: '60 seconds'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const debugRateLimit = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 5, // limit each IP to 5 requests per windowMs for debug endpoint
+  message: {
+    error: 'Too many debug requests from this IP, please try again later.',
+    retryAfter: '5 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Serve your frontend files
 app.get('/', (req, res) => {
@@ -183,9 +214,89 @@ app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 
-// 🧪 Test route to check server
-app.get("/health", (req, res) => {
-  res.send("✅ Server is alive and kickin'");
+// Enhanced health check endpoint with dependency monitoring
+app.get("/health", healthRateLimit, async (req, res) => {
+  try {
+    const healthStatus = await performHealthCheck(STRIPE_SECRET_KEY);
+    
+    // Set appropriate HTTP status based on health
+    const statusCode = healthStatus.status === 'healthy' ? 200 : 
+                      healthStatus.status === 'degraded' ? 200 : 503;
+    
+    res.status(statusCode).json(healthStatus);
+  } catch (error) {
+    logError('health-check', error, { userAgent: req.get('User-Agent') });
+    
+    res.status(503).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      error: 'Health check failed',
+      message: 'Unable to perform health check'
+    });
+  }
+});
+
+// Secure debug environment endpoint
+app.get("/debug/env", debugRateLimit, (req, res) => {
+  try {
+    // Check if debug endpoint is enabled
+    if (process.env.ENABLE_DEBUG !== 'true') {
+      return res.status(404).json({
+        error: 'Debug endpoint is disabled',
+        message: 'Set ENABLE_DEBUG=true to enable debug endpoints'
+      });
+    }
+
+    // Get client IP for whitelisting check
+    const clientIp = req.ip || 
+                    req.connection.remoteAddress || 
+                    req.socket.remoteAddress ||
+                    (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+                    req.headers['x-forwarded-for']?.split(',')[0];
+
+    // Check IP whitelist (if configured)
+    const debugWhitelist = process.env.DEBUG_IP_WHITELIST ? 
+                          process.env.DEBUG_IP_WHITELIST.split(',').map(ip => ip.trim()) : 
+                          ['127.0.0.1', 'localhost']; // Default to localhost only
+
+    if (!isIpWhitelisted(clientIp, debugWhitelist)) {
+      logError('debug-access-denied', new Error('Unauthorized IP access attempt'), {
+        clientIp,
+        userAgent: req.get('User-Agent'),
+        whitelist: debugWhitelist
+      });
+      
+      return res.status(403).json({
+        error: 'Access denied',
+        message: 'Your IP address is not authorized to access this endpoint'
+      });
+    }
+
+    // Return masked environment variables
+    const maskedEnv = getMaskedEnvVars();
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      clientIp,
+      environment: maskedEnv,
+      nodeVersion: process.version,
+      platform: process.platform,
+      architecture: process.arch,
+      memoryUsage: process.memoryUsage(),
+      uptime: process.uptime()
+    });
+    
+  } catch (error) {
+    logError('debug-endpoint', error, { 
+      userAgent: req.get('User-Agent'),
+      clientIp: req.ip 
+    });
+    
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Debug endpoint encountered an error'
+    });
+  }
 });
 
 // 🔐 Stripe checkout endpoint (test)
