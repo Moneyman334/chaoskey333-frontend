@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
-
-const inter = Inter({ subsets: ["latin"] });
+import WatchtowerClient from "./components/WatchtowerClient";
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "ChaosKey333 Vault - Watchtower Enabled",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "Real-time monitoring and alerts for the ChaosKey333 Ascension chain",
 };
 
 export default function RootLayout({
@@ -18,8 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThirdwebProvider>{children}</ThirdwebProvider>
+      <body className="font-sans">
+        <ThirdwebProvider>
+          {children}
+          <WatchtowerClient />
+        </ThirdwebProvider>
       </body>
     </html>
   );
