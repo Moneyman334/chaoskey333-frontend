@@ -3,10 +3,20 @@ const express = require('express');
 const path = require('path');
 
 // Load environment variables from Replit Secrets
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'test_key';
+const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY || 'pk_test_dummy_key';
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+// Initialize Stripe with fallback for testing
+let stripe = null;
+try {
+  if (STRIPE_SECRET_KEY && STRIPE_SECRET_KEY !== 'test_key') {
+    stripe = require('stripe')(STRIPE_SECRET_KEY);
+  } else {
+    console.warn('⚠️ No valid Stripe secret key found, running in test mode');
+  }
+} catch (error) {
+  console.warn('⚠️ Stripe initialization failed, running without payment processing');
+}
 
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
@@ -28,6 +38,14 @@ app.get('/', (req, res) => {
 app.get('/api/test-stripe', async (req, res) => {
   try {
     console.log('🧪 Testing Stripe connection...');
+
+    if (!stripe) {
+      console.log('⚠️ Stripe not configured, returning test response');
+      return res.json({
+        success: false,
+        message: 'Stripe not configured - running in test mode'
+      });
+    }
 
     // Test Stripe connection by retrieving account info
     const account = await stripe.accounts.retrieve();
@@ -167,9 +185,9 @@ app.get('/config', (req, res) => {
   console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
   console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
 
-  if (!STRIPE_PUBLIC_KEY) {
-    console.error('❌ STRIPE_PUBLIC_KEY not found in environment variables');
-    return res.status(500).json({ error: 'Stripe public key not configured' });
+  // Allow test mode for development
+  if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === 'pk_test_dummy_key') {
+    console.warn('⚠️ Using test Stripe configuration');
   }
 
   res.json({

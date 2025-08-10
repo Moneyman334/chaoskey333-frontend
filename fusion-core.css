@@ -1,0 +1,447 @@
+/**
+ * Eternal Fusion Core Visual Effects
+ * CSS for immortal energy core visual system
+ */
+
+/* Main Fusion Core Container */
+.fusion-core-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  pointer-events: none;
+  width: 400px;
+  height: 400px;
+}
+
+/* Ambient Glow Effect */
+.fusion-core-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, 
+    rgba(255, 165, 0, 0.8) 0%,     /* Orange core */
+    rgba(255, 69, 0, 0.6) 20%,     /* Red-orange */
+    rgba(138, 43, 226, 0.4) 40%,   /* Purple */
+    rgba(0, 255, 255, 0.2) 60%,    /* Cyan */
+    rgba(0, 0, 0, 0) 100%          /* Transparent edge */
+  );
+  border-radius: 50%;
+  animation: fusionCorePulse 1.25s ease-in-out infinite alternate,
+             fusionCoreRotate 10s linear infinite;
+  filter: blur(2px);
+  opacity: 0.7;
+}
+
+/* Bass Heartbeat Synchronized Pulsation */
+@keyframes fusionCorePulse {
+  0% { 
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.5),
+                0 0 40px rgba(255, 69, 0, 0.3),
+                0 0 60px rgba(138, 43, 226, 0.2);
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(1.3);
+    box-shadow: 0 0 40px rgba(255, 165, 0, 0.8),
+                0 0 80px rgba(255, 69, 0, 0.6),
+                0 0 120px rgba(138, 43, 226, 0.4);
+  }
+}
+
+/* Slow Rotation for Quantum Effect */
+@keyframes fusionCoreRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Energy Flare Effects for Broadcast Cycles */
+.fusion-core-flare {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 215, 0, 0.7) 30%,
+    rgba(255, 69, 0, 0.5) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  --flare-color: #FFD700;
+  --flare-intensity: 1.0;
+}
+
+.fusion-core-flare.flare-active {
+  opacity: 1;
+  animation: energyFlareExplosion 2s ease-out;
+}
+
+/* Specialized flare effects */
+.fusion-core-container.broadcast-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(255, 215, 0, 0.95) 0%,
+    rgba(255, 140, 0, 0.8) 30%,
+    rgba(255, 69, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  box-shadow: 0 0 50px var(--flare-color);
+}
+
+.fusion-core-container.relic-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(255, 102, 0, 0.95) 0%,
+    rgba(255, 69, 0, 0.8) 30%,
+    rgba(138, 43, 226, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.fusion-core-container.power-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(0, 255, 255, 0.95) 0%,
+    rgba(0, 191, 255, 0.8) 30%,
+    rgba(138, 43, 226, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+@keyframes energyFlareExplosion {
+  0% {
+    transform: translate(-50%, -50%) scale(calc(0.5 * var(--flare-intensity)));
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(calc(2 * var(--flare-intensity)));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(calc(5 * var(--flare-intensity)));
+    opacity: 0;
+  }
+}
+
+/* Core Status Display */
+.fusion-core-status {
+  position: absolute;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #ff6600;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  color: #fff;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  pointer-events: auto;
+  min-width: 250px;
+}
+
+.fusion-core-status .core-id {
+  color: #ffaa00;
+  font-size: 0.7rem;
+  margin-bottom: 5px;
+  word-break: break-all;
+}
+
+.fusion-core-status .power-level {
+  color: #00ff88;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.fusion-core-status .status-text {
+  color: #ff6600;
+  font-weight: bold;
+  animation: statusTextGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes statusTextGlow {
+  0% { text-shadow: 0 0 5px #ff6600; }
+  100% { text-shadow: 0 0 15px #ff6600, 0 0 25px #ff3300; }
+}
+
+/* Quantum Echo Particles */
+.fusion-core-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: quantumEchoRing 3s linear infinite;
+}
+
+.fusion-core-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  height: 350px;
+  background: transparent;
+  border: 1px solid rgba(138, 43, 226, 0.2);
+  border-radius: 50%;
+  animation: quantumEchoRing 4s linear infinite reverse;
+}
+
+@keyframes quantumEchoRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* DNA Binding Visual Indicators */
+.fusion-core-container .dna-helix {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  border: 2px solid rgba(255, 20, 147, 0.3);
+  border-radius: 50%;
+  animation: dnaHelixRotation 8s linear infinite;
+}
+
+@keyframes dnaHelixRotation {
+  from { transform: translate(-50%, -50%) rotateY(0deg); }
+  to { transform: translate(-50%, -50%) rotateY(360deg); }
+}
+
+/* Lore Resonance Ripples */
+.fusion-core-container .lore-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 50%;
+  animation: loreResonanceRipple 2s ease-out infinite;
+}
+
+@keyframes loreResonanceRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* Fail-Safe Warning Effects */
+.fusion-core-container.failsafe-active {
+  animation: failSafeWarning 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes failSafeWarning {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(180deg); }
+}
+
+.fusion-core-container.failsafe-active .fusion-core-status {
+  border-color: #ff0000;
+  background: rgba(139, 0, 0, 0.8);
+}
+
+.fusion-core-container.failsafe-active .fusion-core-status .status-text {
+  color: #ff0000;
+  animation: failSafeAlert 0.3s ease-in-out infinite;
+}
+
+@keyframes failSafeAlert {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Immortal Energy Streams */
+.fusion-core-energy-stream {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to bottom,
+    rgba(255, 215, 0, 0.8) 0%,
+    rgba(255, 69, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  transform-origin: bottom center;
+  animation: energyStreamFlow 1.5s ease-in-out infinite;
+}
+
+.fusion-core-energy-stream:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
+.fusion-core-energy-stream:nth-child(2) { transform: translate(-50%, -100%) rotate(60deg); }
+.fusion-core-energy-stream:nth-child(3) { transform: translate(-50%, -100%) rotate(120deg); }
+.fusion-core-energy-stream:nth-child(4) { transform: translate(-50%, -100%) rotate(180deg); }
+.fusion-core-energy-stream:nth-child(5) { transform: translate(-50%, -100%) rotate(240deg); }
+.fusion-core-energy-stream:nth-child(6) { transform: translate(-50%, -100%) rotate(300deg); }
+
+@keyframes energyStreamFlow {
+  0% {
+    height: 80px;
+    opacity: 0.8;
+  }
+  50% {
+    height: 120px;
+    opacity: 1;
+  }
+  100% {
+    height: 80px;
+    opacity: 0.8;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .fusion-core-container {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .fusion-core-glow {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .fusion-core-status {
+    font-size: 0.7rem;
+    padding: 8px 12px;
+    min-width: 200px;
+  }
+}
+
+/* High DPI / Retina Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .fusion-core-glow {
+    filter: blur(1px);
+  }
+}
+
+/* Animation Performance Optimizations */
+.fusion-core-container,
+.fusion-core-glow,
+.fusion-core-flare {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .fusion-core-glow {
+    animation: none;
+  }
+  
+  .fusion-core-container::before,
+  .fusion-core-container::after {
+    animation: none;
+  }
+  
+  .fusion-core-energy-stream {
+    animation: none;
+  }
+}
+
+/* Fusion Core Notifications */
+.fusion-activation-notification {
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.fusion-activation-notification h3 {
+  margin: 0 0 10px 0;
+  color: #ff6600;
+  text-align: center;
+}
+
+.fusion-activation-notification p {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  color: #ffaa00;
+}
+
+.fusion-failsafe-alert {
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+  backdrop-filter: blur(15px);
+}
+
+.fusion-failsafe-alert h3 {
+  margin: 0 0 15px 0;
+  color: #ff0000;
+}
+
+.fusion-failsafe-alert p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+}
+
+/* Notification animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes failSafeAlert {
+  0% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% { 
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+/* Fusion Enhanced Elements */
+.fusion-enhanced {
+  transition: opacity 0.3s ease-in-out;
+}
