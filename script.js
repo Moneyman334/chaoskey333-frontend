@@ -58,6 +58,15 @@ async function connectMetaMask() {
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
       
+      // Dispatch wallet connected event for event logging
+      window.dispatchEvent(new CustomEvent('walletConnected', {
+        detail: {
+          address: userWalletAddress,
+          walletType: 'MetaMask',
+          chainId: null // Will be populated by event logger
+        }
+      }));
+      
       checkStripeAndMint();
       
     } catch (err) {
@@ -90,6 +99,15 @@ async function connectCoinbaseWallet() {
       console.log("🔵 Coinbase Wallet Connected:", userWalletAddress);
       connectCoinbaseBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
+      
+      // Dispatch wallet connected event for event logging
+      window.dispatchEvent(new CustomEvent('walletConnected', {
+        detail: {
+          address: userWalletAddress,
+          walletType: 'Coinbase',
+          chainId: null // Will be populated by event logger
+        }
+      }));
       
       checkStripeAndMint();
       
@@ -136,6 +154,15 @@ async function connectWallet() {
         console.log("🦊 MetaMask detected and connected");
         document.getElementById("connectWallet").innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
         document.getElementById("mintStatus").innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
+        
+        // Dispatch wallet connected event
+        window.dispatchEvent(new CustomEvent('walletConnected', {
+          detail: {
+            address: userWalletAddress,
+            walletType: 'MetaMask',
+            chainId: null
+          }
+        }));
       } else if (window.ethereum.isCoinbaseWallet) {
         connectedWalletType = "Coinbase";
         console.log("🔵 Coinbase Wallet detected and connected");
@@ -183,6 +210,16 @@ async function mintRelic() {
     if (mintStatus) {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
     }
+    
+    // Dispatch relic minted event for event logging
+    window.dispatchEvent(new CustomEvent('relicMinted', {
+      detail: {
+        walletAddress: userWalletAddress,
+        transactionHash: 'simulated-tx-' + Date.now(),
+        tokenId: Date.now(),
+        contractAddress: '0x1234567890abcdef1234567890abcdef12345678'
+      }
+    }));
   }, 2000);
 }
 
@@ -318,6 +355,17 @@ function checkStripeAndMint() {
 
   if (paymentSuccess && isWalletConnected && userWalletAddress) {
     console.log("✅ Stripe payment success + Wallet connected - minting to vault...");
+    
+    // Dispatch payment completed event for event logging
+    window.dispatchEvent(new CustomEvent('paymentCompleted', {
+      detail: {
+        sessionId: sessionId,
+        walletAddress: userWalletAddress,
+        amount: 3333,
+        currency: 'usd'
+      }
+    }));
+    
     mintRelic();
   } else if (paymentSuccess && !isWalletConnected) {
     console.log("⚠️ Stripe payment success but wallet not connected");

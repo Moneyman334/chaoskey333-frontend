@@ -218,7 +218,332 @@ app.post("/create-checkout-session2", async (req, res) => {
   }
 });
 
+// 🔄 Recursion Monitor + Trigger Package - SSE and Admin Endpoints
+// Part of PR #42 integration
+
+// Store for SSE connections and monitor state
+const sseConnections = new Set();
+const monitorState = {
+  isActive: false,
+  pulseCount: 0,
+  evolutionCycles: 0,
+  lastPulseTime: null,
+  sseConnections: 0
+};
+const eventLog = [];
+
+// SSE endpoint for pulse stream
+app.get('/api/pulse-stream', (req, res) => {
+  // Set SSE headers
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Cache-Control'
+  });
+
+  // Add connection to set
+  sseConnections.add(res);
+  monitorState.sseConnections = sseConnections.size;
+  
+  console.log(`🔄 SSE connection established. Total connections: ${sseConnections.size}`);
+  
+  // Send initial pulse
+  res.write(`data: ${JSON.stringify({
+    type: 'CONNECTED',
+    timestamp: new Date().toISOString(),
+    pulseCount: monitorState.pulseCount,
+    evolutionCycles: monitorState.evolutionCycles
+  })}\n\n`);
+
+  // Handle client disconnect
+  req.on('close', () => {
+    sseConnections.delete(res);
+    monitorState.sseConnections = sseConnections.size;
+    console.log(`🔄 SSE connection closed. Total connections: ${sseConnections.size}`);
+  });
+});
+
+// Broadcast pulse to all SSE connections
+function broadcastPulse(pulseData) {
+  const message = `data: ${JSON.stringify(pulseData)}\n\n`;
+  
+  sseConnections.forEach(res => {
+    try {
+      res.write(message);
+    } catch (error) {
+      console.warn('Failed to send pulse to SSE connection:', error);
+      sseConnections.delete(res);
+    }
+  });
+  
+  monitorState.sseConnections = sseConnections.size;
+}
+
+// API endpoint to receive pulse broadcasts
+app.post('/api/broadcast-pulse', (req, res) => {
+  try {
+    const pulseData = req.body;
+    
+    // Update monitor state
+    monitorState.pulseCount = pulseData.count || monitorState.pulseCount;
+    monitorState.lastPulseTime = pulseData.timestamp;
+    
+    // Log the event
+    logEvent('PULSE_BROADCAST', `Pulse #${pulseData.count} broadcasted`, pulseData);
+    
+    // Broadcast to all SSE connections
+    broadcastPulse(pulseData);
+    
+    console.log(`🔊 Broadcasting pulse #${pulseData.count} to ${sseConnections.size} connections`);
+    res.json({ success: true, connections: sseConnections.size });
+    
+  } catch (error) {
+    console.error('❌ Pulse broadcast failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin API endpoints
+app.post('/api/admin/kill-switch', (req, res) => {
+  try {
+    console.log('🚨 EMERGENCY KILL SWITCH ACTIVATED');
+    
+    // Stop all monitors
+    monitorState.isActive = false;
+    
+    // Close all SSE connections
+    sseConnections.forEach(connection => {
+      try {
+        connection.write(`data: ${JSON.stringify({
+          type: 'KILL_SWITCH',
+          message: 'Emergency shutdown activated',
+          timestamp: new Date().toISOString()
+        })}\n\n`);
+        connection.end();
+      } catch (error) {
+        console.warn('Error closing SSE connection:', error);
+      }
+    });
+    sseConnections.clear();
+    monitorState.sseConnections = 0;
+    
+    // Reset state
+    monitorState.pulseCount = 0;
+    monitorState.evolutionCycles = 0;
+    monitorState.lastPulseTime = null;
+    
+    // Log the event
+    logEvent('KILL_SWITCH_EXECUTED', 'Emergency kill switch activated by admin', {
+      reason: req.body.reason || 'ADMIN_SHUTDOWN',
+      timestamp: req.body.timestamp
+    });
+    
+    res.json({ 
+      success: true, 
+      message: 'Emergency shutdown completed',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Kill switch failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin system status endpoint
+app.get('/api/admin/system-status', (req, res) => {
+  try {
+    const status = {
+      activeMonitors: monitorState.isActive ? 1 : 0,
+      totalPulses: monitorState.pulseCount,
+      evolutionCycles: monitorState.evolutionCycles,
+      sseConnections: sseConnections.size,
+      monitorActive: monitorState.isActive,
+      pulseStreamActive: sseConnections.size > 0,
+      serverHealthy: true,
+      lastPulseTime: monitorState.lastPulseTime,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(status);
+  } catch (error) {
+    console.error('❌ System status failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin event log endpoint
+app.get('/api/admin/event-log', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const events = eventLog.slice(0, limit);
+    res.json(events);
+  } catch (error) {
+    console.error('❌ Event log retrieval failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin monitor control endpoints
+app.post('/api/admin/monitors/start', (req, res) => {
+  try {
+    monitorState.isActive = true;
+    logEvent('MONITOR_STARTED', 'Monitors started by admin');
+    res.json({ success: true, message: 'Monitors started' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/monitors/stop', (req, res) => {
+  try {
+    monitorState.isActive = false;
+    logEvent('MONITOR_STOPPED', 'Monitors stopped by admin');
+    res.json({ success: true, message: 'Monitors stopped' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/monitors/reset', (req, res) => {
+  try {
+    monitorState.isActive = false;
+    monitorState.pulseCount = 0;
+    monitorState.evolutionCycles = 0;
+    monitorState.lastPulseTime = null;
+    logEvent('MONITOR_RESET', 'Monitors reset by admin');
+    res.json({ success: true, message: 'Monitors reset' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/trigger-pulse', (req, res) => {
+  try {
+    if (!monitorState.isActive) {
+      return res.status(400).json({ error: 'Monitor not active' });
+    }
+    
+    monitorState.pulseCount++;
+    const pulseData = {
+      id: Date.now(),
+      count: monitorState.pulseCount,
+      timestamp: new Date().toISOString(),
+      type: 'ADMIN_MANUAL_PULSE'
+    };
+    
+    monitorState.lastPulseTime = pulseData.timestamp;
+    broadcastPulse(pulseData);
+    logEvent('ADMIN_PULSE_TRIGGERED', `Manual pulse #${pulseData.count} triggered by admin`);
+    
+    res.json({ success: true, pulse: pulseData });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/force-evolution', (req, res) => {
+  try {
+    monitorState.evolutionCycles++;
+    const evolutionData = {
+      cycle: monitorState.evolutionCycles,
+      timestamp: new Date().toISOString(),
+      type: 'ADMIN_FORCED_EVOLUTION'
+    };
+    
+    broadcastPulse({
+      type: 'EVOLUTION_CYCLE',
+      ...evolutionData
+    });
+    
+    logEvent('ADMIN_EVOLUTION_FORCED', `Evolution cycle #${evolutionData.cycle} forced by admin`);
+    res.json({ success: true, evolution: evolutionData });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/pulse-interval', (req, res) => {
+  try {
+    const interval = req.body.interval;
+    if (interval < 1000 || interval > 30000) {
+      return res.status(400).json({ error: 'Interval must be between 1000-30000ms' });
+    }
+    
+    // In a real implementation, this would update the monitor's pulse interval
+    logEvent('ADMIN_INTERVAL_UPDATE', `Pulse interval updated to ${interval}ms by admin`);
+    res.json({ success: true, interval });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Event imprint storage endpoint
+app.post('/api/event-imprint', (req, res) => {
+  try {
+    const imprint = req.body;
+    
+    // Store in server-side log
+    logEvent('EVENT_IMPRINT_STORED', `Event imprint stored: ${imprint.eventType}`, imprint);
+    
+    // In a real implementation, this would store in a database
+    console.log('📝 Event imprint stored:', imprint.eventId);
+    res.json({ success: true, stored: imprint.eventId });
+  } catch (error) {
+    console.error('❌ Event imprint storage failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin log event endpoint
+app.post('/api/admin/log-event', (req, res) => {
+  try {
+    const event = req.body;
+    logEvent(event.type, event.message, event);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Test pulse stream endpoint (for staging tests)
+app.get('/api/test-pulse-stream', (req, res) => {
+  res.json({ 
+    available: true, 
+    message: 'Pulse stream endpoint available',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Internal event logging function
+function logEvent(type, message, data = {}) {
+  const event = {
+    type,
+    message,
+    timestamp: new Date().toISOString(),
+    data,
+    level: type.includes('ERROR') ? 'error' : type.includes('WARN') ? 'warning' : 'info'
+  };
+  
+  eventLog.unshift(event);
+  
+  // Keep only last 1000 events
+  if (eventLog.length > 1000) {
+    eventLog.splice(1000);
+  }
+  
+  console.log(`📝 ${event.type}: ${event.message}`);
+}
+
+// Initialize server
+logEvent('SERVER_STARTED', 'Frankenstein Vault server with Recursion Monitor started');
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
+  console.log(`🔄 Recursion Monitor + SSE streaming enabled`);
+  console.log(`🛡️ Admin panel available at /admin-panel.html`);
 });
