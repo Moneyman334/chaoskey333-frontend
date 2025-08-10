@@ -179,9 +179,15 @@ app.get('/config', (req, res) => {
 
 const cors = require("cors");
 
+// Import event flow routes
+const eventFlowRoutes = require('./routes/event-flow');
+
 app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
+
+// Mount event flow API routes
+app.use('/api', eventFlowRoutes);
 
 // 🧪 Test route to check server
 app.get("/health", (req, res) => {
