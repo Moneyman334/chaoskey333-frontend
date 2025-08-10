@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Prime Integration Test</title>
+    <style>
+        body {
+            background: #0d001a;
+            color: white;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 20px;
+            border: 2px solid #33ccff;
+        }
+        .test-btn {
+            background: #33ccff;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .test-btn:hover {
+            background: #00aaff;
+            color: white;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 PayPal Prime Integration Test</h1>
+        <p>Test the PayPal Prime Vault enhancements</p>
+        
+        <button class="test-btn" onclick="testConfig()">Test Config</button>
+        <button class="test-btn" onclick="testAllConnections()">Test All Connections</button>
+        <button class="test-btn" onclick="testPulseTracker()">Test Pulse Tracker</button>
+        <button class="test-btn" onclick="clearResults()">Clear Results</button>
+        
+        <div id="results" class="result">
+            Click a test button to begin...
+        </div>
+    </div>
+
+    <script>
+        async function testConfig() {
+            try {
+                addResult('🔄 Testing configuration endpoint...');
+                
+                const response = await fetch('/config');
+                const config = await response.json();
+                
+                addResult('✅ Config Response:');
+                addResult(JSON.stringify(config, null, 2));
+                
+                // Check if both payment gateways are available
+                if (config.stripe?.available) {
+                    addResult('✅ Stripe integration available');
+                } else {
+                    addResult('⚠️ Stripe integration not available');
+                }
+                
+                if (config.paypal?.available) {
+                    addResult('✅ PayPal Prime integration available');
+                } else {
+                    addResult('⚠️ PayPal Prime integration not available');
+                }
+                
+            } catch (error) {
+                addResult('❌ Config test failed: ' + error.message);
+            }
+        }
+
+        async function testAllConnections() {
+            try {
+                addResult('🔄 Testing all payment gateway connections...');
+                
+                const response = await fetch('/api/test-all');
+                const results = await response.json();
+                
+                addResult('📊 Connection Test Results:');
+                addResult(JSON.stringify(results, null, 2));
+                
+                // Analyze results
+                if (results.stripe?.connected) {
+                    addResult('✅ Stripe connection successful');
+                } else {
+                    addResult('❌ Stripe connection failed: ' + (results.stripe?.error || 'Unknown error'));
+                }
+                
+                if (results.paypal?.connected) {
+                    addResult('✅ PayPal Prime connection successful');
+                } else {
+                    addResult('❌ PayPal Prime connection failed: ' + (results.paypal?.error || 'Unknown error'));
+                }
+                
+            } catch (error) {
+                addResult('❌ Connection test failed: ' + error.message);
+            }
+        }
+
+        async function testPulseTracker() {
+            try {
+                addResult('🔄 Testing Revenue Pulse Tracker...');
+                
+                const response = await fetch('/api/pulse-tracker?limit=5');
+                const pulseData = await response.json();
+                
+                addResult('📊 Pulse Tracker Data:');
+                addResult(JSON.stringify(pulseData, null, 2));
+                
+                addResult(`📈 Stats Summary:`);
+                addResult(`   Total Transactions: ${pulseData.stats.totalTransactions}`);
+                addResult(`   Prime Transactions: ${pulseData.stats.primeTransactions}`);
+                addResult(`   Total Revenue: $${pulseData.stats.totalRevenue.toFixed(2)}`);
+                addResult(`   Last Pulse: ${pulseData.stats.lastPulse || 'None'}`);
+                
+            } catch (error) {
+                addResult('❌ Pulse tracker test failed: ' + error.message);
+            }
+        }
+
+        function addResult(message) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `[${timestamp}] ${message}\n`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = 'Results cleared. Click a test button to begin...\n';
+        }
+
+        // Auto-run config test on page load
+        window.addEventListener('load', () => {
+            addResult('🔥 PayPal Prime Integration Test loaded');
+            addResult('📝 Ready to test enhancements...');
+        });
+    </script>
+</body>
+</html>
