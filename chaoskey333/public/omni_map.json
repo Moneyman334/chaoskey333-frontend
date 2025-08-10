@@ -1,9 +1,9 @@
 {
   "metadata": {
     "lastUpdated": "2025-08-10T21:58:13.457Z",
-    "totalNodes": 1,
-    "totalEdges": 0,
-    "broadcastPulseCount": 0
+    "totalNodes": 5,
+    "totalEdges": 4,
+    "broadcastPulseCount": 2
   },
   "nodes": [
     {
@@ -18,8 +18,79 @@
       "isBroadcastPulse": false,
       "x": 0,
       "y": 0
+    },
+    {
+      "id": "pr-1",
+      "type": "pr",
+      "title": "Add Cosmic Replay Terminal Foundation",
+      "number": 1,
+      "status": "merged",
+      "author": "Moneyman334",
+      "createdAt": "2025-08-09T15:30:00.000Z",
+      "mergedAt": "2025-08-09T16:45:00.000Z",
+      "isBroadcastPulse": true,
+      "x": 100,
+      "y": -50
+    },
+    {
+      "id": "pr-2",
+      "type": "pr",
+      "title": "Implement Broadcast Pulse Lineage Tracking",
+      "number": 2,
+      "status": "merged",
+      "author": "Moneyman334",
+      "createdAt": "2025-08-10T09:15:00.000Z",
+      "mergedAt": "2025-08-10T10:30:00.000Z",
+      "isBroadcastPulse": true,
+      "x": 200,
+      "y": 50
+    },
+    {
+      "id": "pr-3",
+      "type": "pr",
+      "title": "Add Vault Integration",
+      "number": 3,
+      "status": "open",
+      "author": "contributor1",
+      "createdAt": "2025-08-10T18:20:00.000Z",
+      "isBroadcastPulse": false,
+      "x": -100,
+      "y": 100
+    },
+    {
+      "id": "pr-4",
+      "type": "pr",
+      "title": "Omni-Singularity Architecture Map (this PR)",
+      "number": 4,
+      "status": "open",
+      "author": "Moneyman334",
+      "createdAt": "2025-08-10T21:30:00.000Z",
+      "isBroadcastPulse": false,
+      "x": 150,
+      "y": 150
     }
   ],
-  "edges": [],
-  "broadcastPulseLineage": []
+  "edges": [
+    {
+      "source": "initial",
+      "target": "pr-1",
+      "type": "temporal"
+    },
+    {
+      "source": "pr-1",
+      "target": "pr-2",
+      "type": "temporal"
+    },
+    {
+      "source": "pr-1",
+      "target": "pr-3",
+      "type": "temporal"
+    },
+    {
+      "source": "pr-2",
+      "target": "pr-4",
+      "type": "temporal"
+    }
+  ],
+  "broadcastPulseLineage": ["pr-1", "pr-2"]
 }

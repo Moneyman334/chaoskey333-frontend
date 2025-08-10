@@ -83,9 +83,9 @@ export default function ForceGraphComponent({ data, isDarkTheme, onNodeClick }: 
       .attr("fill", isDarkTheme ? "#000000" : "#ffffff");
 
     // Create tooltip
-    const tooltip = d3.select("body").selectAll(".omni-tooltip").data([0]);
+    const tooltip = d3.select("body").selectAll<HTMLDivElement, number>(".omni-tooltip").data([0]);
     const tooltipEnter = tooltip.enter().append("div").attr("class", "omni-tooltip");
-    const tooltipDiv = tooltipEnter.merge(tooltip)
+    const tooltipDiv = tooltipEnter.merge(tooltip as any)
       .style("position", "absolute")
       .style("background", "rgba(0,0,0,0.9)")
       .style("color", "white")
@@ -118,7 +118,7 @@ export default function ForceGraphComponent({ data, isDarkTheme, onNodeClick }: 
 
     // Create links
     const link = container.append("g")
-      .selectAll("line")
+      .selectAll<SVGLineElement, Edge>("line")
       .data(data.edges)
       .enter().append("line")
       .attr("stroke", isDarkTheme ? "#374151" : "#9CA3AF")
@@ -127,7 +127,7 @@ export default function ForceGraphComponent({ data, isDarkTheme, onNodeClick }: 
 
     // Create nodes
     const node = container.append("g")
-      .selectAll("circle")
+      .selectAll<SVGCircleElement, Node>("circle")
       .data(data.nodes)
       .enter().append("circle")
       .attr("r", getNodeSize)
@@ -161,7 +161,7 @@ export default function ForceGraphComponent({ data, isDarkTheme, onNodeClick }: 
 
     // Add node labels
     const label = container.append("g")
-      .selectAll("text")
+      .selectAll<SVGTextElement, Node>("text")
       .data(data.nodes)
       .enter().append("text")
       .text((d: Node) => d.number > 0 ? `#${d.number}` : "Init")
