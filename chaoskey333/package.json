@@ -12,7 +12,12 @@
     "next": "14.1.0",
     "react": "^18.3",
     "react-dom": "^18.3",
-    "thirdweb": "^5"
+    "thirdweb": "^5",
+    "stripe": "^14.0.0",
+    "coinbase-commerce-node": "^1.0.4",
+    "@paypal/payouts-sdk": "^1.1.1",
+    "ethers": "^6.8.0",
+    "@vercel/kv": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
