@@ -9,23 +9,37 @@
 </head>
 <body class="vault">
   <div id="terminalOverlay">Initializing Vault Resurrection...</div>
+  <!-- Spectral Decode HUD -->
+  <div id="spectralHUD" class="spectral-hud">
+    <div class="language-selector">
+      <button id="langEn" class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+      <button id="langEs" class="lang-btn" data-lang="es">🇪🇸 ES</button>
+      <button id="langFr" class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+      <button id="langJp" class="lang-btn" data-lang="jp">🇯🇵 JP</button>
+      <button id="langDe" class="lang-btn" data-lang="de">🇩🇪 DE</button>
+    </div>
+    <div class="glyph-halo">
+      <div class="glyph-overlay fade-resonance" id="glyphOverlay"></div>
+    </div>
+  </div>
+
   <div class="resurrection-container">
-    <h1 class="glow">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
-    <p class="pulse">Bass Surge Incoming...</p>
+    <h1 class="glow" data-i18n="title">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
+    <p class="pulse" data-i18n="bassIncoming">Bass Surge Incoming...</p>
     <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Frankenstein_Dracula.jpg" alt="Frankenstein" class="frank-img" />
     <audio id="bassDrop" autoplay loop>
       <source src="https://frankenstein333.33.amazonaws.com/resurrect_bass.mp3" type="audio/mp3" />
     </audio>
-    <button onclick="resurrect()">⚡ Ignite Vault ⚡</button>
-    <button id="connectWallet">🔌 Connect Wallet</button>
-    <button id="connectCoinbase" style="background-color: #1652f0; color: white;">🔵 Coinbase Wallet</button>
-    <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px;">💳 Pay $33.33 & Mint Relic</button>
-    <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
-    <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
-    <button id="mint-button">⚙️ Mint Relic</button>
-    <div id="mint-status">🔒 Awaiting connection & payment...</div>
-    <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>
-    <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;">
+    <button onclick="resurrect()" data-i18n="igniteVault">⚡ Ignite Vault ⚡</button>
+    <button id="connectWallet" data-i18n="connectWallet">🔌 Connect Wallet</button>
+    <button id="connectCoinbase" style="background-color: #1652f0; color: white;" data-i18n="coinbaseWallet">🔵 Coinbase Wallet</button>
+    <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px;" data-i18n="payAndMint">💳 Pay $33.33 & Mint Relic</button>
+    <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;" data-i18n="testStripe">🧪 Test Stripe Connection</button>
+    <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;" data-i18n="testAll">🔄 Test All Connections</button>
+    <button id="mint-button" data-i18n="mintRelic">⚙️ Mint Relic</button>
+    <div id="mint-status" data-i18n="awaitingConnection">🔒 Awaiting connection & payment...</div>
+    <div id="mintStatus" data-i18n="connectAndPay">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>
+    <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;" data-i18n="instructions">
       💡 Connect Wallet (MetaMask/Coinbase) → Complete Stripe Payment → Relic Mints to Vault
     </div>
     <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">

@@ -8,6 +8,91 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Adaptive Multilingual Resonance Layer
+let currentLanguage = 'en';
+let languageMemory = null;
+let audioContext = null;
+let isResonanceActive = false;
+
+// Language translations
+const translations = {
+  en: {
+    title: "⚡ Frankenstein Vault Resurrection 333 ⚡",
+    bassIncoming: "Bass Surge Incoming...",
+    igniteVault: "⚡ Ignite Vault ⚡",
+    connectWallet: "🔌 Connect Wallet",
+    coinbaseWallet: "🔵 Coinbase Wallet",
+    payAndMint: "💳 Pay $33.33 & Mint Relic",
+    testStripe: "🧪 Test Stripe Connection",
+    testAll: "🔄 Test All Connections",
+    mintRelic: "⚙️ Mint Relic",
+    awaitingConnection: "🔒 Awaiting connection & payment...",
+    connectAndPay: "🔒 Connect wallet, then complete Stripe payment to mint vault relic",
+    instructions: "💡 Connect Wallet (MetaMask/Coinbase) → Complete Stripe Payment → Relic Mints to Vault",
+    glyphText: "◊ VAULT ◊"
+  },
+  es: {
+    title: "⚡ Resurrección de la Bóveda Frankenstein 333 ⚡",
+    bassIncoming: "Oleada de Bajos Entrante...",
+    igniteVault: "⚡ Encender Bóveda ⚡",
+    connectWallet: "🔌 Conectar Cartera",
+    coinbaseWallet: "🔵 Cartera Coinbase",
+    payAndMint: "💳 Pagar $33.33 y Acuñar Reliquia",
+    testStripe: "🧪 Probar Conexión Stripe",
+    testAll: "🔄 Probar Todas las Conexiones",
+    mintRelic: "⚙️ Acuñar Reliquia",
+    awaitingConnection: "🔒 Esperando conexión y pago...",
+    connectAndPay: "🔒 Conecta cartera, luego completa el pago Stripe para acuñar reliquia",
+    instructions: "💡 Conectar Cartera (MetaMask/Coinbase) → Completar Pago Stripe → Reliquia se Acuña en Bóveda",
+    glyphText: "◊ BÓVEDA ◊"
+  },
+  fr: {
+    title: "⚡ Résurrection du Coffre Frankenstein 333 ⚡",
+    bassIncoming: "Vague de Basses Arrivante...",
+    igniteVault: "⚡ Allumer le Coffre ⚡",
+    connectWallet: "🔌 Connecter Portefeuille",
+    coinbaseWallet: "🔵 Portefeuille Coinbase",
+    payAndMint: "💳 Payer $33.33 et Créer Relique",
+    testStripe: "🧪 Tester Connexion Stripe",
+    testAll: "🔄 Tester Toutes les Connexions",
+    mintRelic: "⚙️ Créer Relique",
+    awaitingConnection: "🔒 En attente de connexion et paiement...",
+    connectAndPay: "🔒 Connectez portefeuille, puis terminez le paiement Stripe pour créer relique",
+    instructions: "💡 Connecter Portefeuille (MetaMask/Coinbase) → Terminer Paiement Stripe → Relique Créée dans Coffre",
+    glyphText: "◊ COFFRE ◊"
+  },
+  jp: {
+    title: "⚡ フランケンシュタイン金庫復活 333 ⚡",
+    bassIncoming: "ベース波動接近中...",
+    igniteVault: "⚡ 金庫点火 ⚡",
+    connectWallet: "🔌 ウォレット接続",
+    coinbaseWallet: "🔵 Coinbaseウォレット",
+    payAndMint: "💳 $33.33支払い&レリック鋳造",
+    testStripe: "🧪 Stripe接続テスト",
+    testAll: "🔄 全接続テスト",
+    mintRelic: "⚙️ レリック鋳造",
+    awaitingConnection: "🔒 接続と支払いを待機中...",
+    connectAndPay: "🔒 ウォレットを接続し、Stripe支払いを完了してレリックを鋳造",
+    instructions: "💡 ウォレット接続 (MetaMask/Coinbase) → Stripe支払い完了 → レリックが金庫に鋳造",
+    glyphText: "◊ 金庫 ◊"
+  },
+  de: {
+    title: "⚡ Frankenstein Tresor Auferstehung 333 ⚡",
+    bassIncoming: "Bass-Welle Ankommend...",
+    igniteVault: "⚡ Tresor Entzünden ⚡",
+    connectWallet: "🔌 Wallet Verbinden",
+    coinbaseWallet: "🔵 Coinbase Wallet",
+    payAndMint: "💳 $33.33 Zahlen & Relikt Prägen",
+    testStripe: "🧪 Stripe Verbindung Testen",
+    testAll: "🔄 Alle Verbindungen Testen",
+    mintRelic: "⚙️ Relikt Prägen",
+    awaitingConnection: "🔒 Warte auf Verbindung & Zahlung...",
+    connectAndPay: "🔒 Wallet verbinden, dann Stripe-Zahlung abschließen um Relikt zu prägen",
+    instructions: "💡 Wallet Verbinden (MetaMask/Coinbase) → Stripe-Zahlung Abschließen → Relikt wird in Tresor Geprägt",
+    glyphText: "◊ TRESOR ◊"
+  }
+};
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -35,6 +120,199 @@ async function initializeStripe() {
   } catch (error) {
     console.error("❌ Failed to initialize Stripe:", error);
   }
+}
+
+// ===== ADAPTIVE MULTILINGUAL RESONANCE LAYER =====
+
+// Load saved language from memory
+function loadLanguageMemory() {
+  try {
+    languageMemory = localStorage.getItem('vaultLanguageMemory');
+    if (languageMemory && translations[languageMemory]) {
+      currentLanguage = languageMemory;
+      console.log(`🧠 Language memory restored: ${currentLanguage}`);
+      return true;
+    }
+  } catch (error) {
+    console.error("❌ Failed to load language memory:", error);
+  }
+  return false;
+}
+
+// Save language to memory
+function saveLanguageMemory(lang) {
+  try {
+    localStorage.setItem('vaultLanguageMemory', lang);
+    languageMemory = lang;
+    console.log(`💾 Language memory saved: ${lang}`);
+  } catch (error) {
+    console.error("❌ Failed to save language memory:", error);
+  }
+}
+
+// Update UI text based on current language
+function updateLanguageDisplay() {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[currentLanguage] && translations[currentLanguage][key]) {
+      element.textContent = translations[currentLanguage][key];
+    }
+  });
+  
+  // Update glyph overlay
+  const glyphOverlay = document.getElementById('glyphOverlay');
+  if (glyphOverlay && translations[currentLanguage]) {
+    glyphOverlay.textContent = translations[currentLanguage].glyphText;
+    glyphOverlay.style.opacity = '1';
+  }
+}
+
+// Language Switch with Ripple Effect
+function switchLanguage(newLang) {
+  if (newLang === currentLanguage) return;
+  
+  console.log(`🌐 Switching language from ${currentLanguage} to ${newLang}`);
+  
+  // Remove active class from all buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Add active class to selected button
+  const selectedBtn = document.querySelector(`[data-lang="${newLang}"]`);
+  if (selectedBtn) {
+    selectedBtn.classList.add('active');
+    
+    // Language Switch Ripple Effect
+    selectedBtn.classList.add('ripple');
+    setTimeout(() => {
+      selectedBtn.classList.remove('ripple');
+    }, 800);
+  }
+  
+  // Trigger Glyph Halo Ripple Effect
+  const glyphHalo = document.querySelector('.glyph-halo');
+  if (glyphHalo) {
+    glyphHalo.classList.add('ripple-effect');
+    setTimeout(() => {
+      glyphHalo.classList.remove('ripple-effect');
+    }, 1200);
+  }
+  
+  // Fade out current glyph, switch language, fade in new glyph
+  const glyphOverlay = document.getElementById('glyphOverlay');
+  if (glyphOverlay) {
+    glyphOverlay.style.opacity = '0';
+    
+    setTimeout(() => {
+      currentLanguage = newLang;
+      updateLanguageDisplay();
+      saveLanguageMemory(newLang);
+      
+      // Glyph Fade Resonance - fade back in
+      glyphOverlay.style.opacity = '1';
+      
+      // Trigger resonance pulse
+      if (isResonanceActive) {
+        triggerResonancePulse();
+      }
+    }, 400);
+  } else {
+    currentLanguage = newLang;
+    updateLanguageDisplay();
+    saveLanguageMemory(newLang);
+  }
+}
+
+// Trigger resonance pulse synchronized with audio
+function triggerResonancePulse() {
+  const spectralHUD = document.getElementById('spectralHUD');
+  const glyphOverlay = document.getElementById('glyphOverlay');
+  
+  if (spectralHUD) {
+    spectralHUD.classList.add('synchronized-pulse');
+    setTimeout(() => {
+      spectralHUD.classList.remove('synchronized-pulse');
+    }, 2000);
+  }
+  
+  if (glyphOverlay) {
+    glyphOverlay.classList.add('fade-resonance');
+  }
+}
+
+// Initialize audio context for resonance synchronization
+function initializeAudioResonance() {
+  try {
+    const audio = document.getElementById('bassDrop');
+    if (audio) {
+      // Listen for audio events to sync resonance
+      audio.addEventListener('play', () => {
+        isResonanceActive = true;
+        triggerResonancePulse();
+        console.log("🎵 Audio resonance activated");
+      });
+      
+      audio.addEventListener('pause', () => {
+        isResonanceActive = false;
+        console.log("🎵 Audio resonance deactivated");
+      });
+      
+      // Sync with audio time updates for continuous resonance
+      audio.addEventListener('timeupdate', () => {
+        if (isResonanceActive && Math.floor(audio.currentTime) % 3 === 0) {
+          // Trigger resonance every 3 seconds when audio is playing
+          const currentSecond = Math.floor(audio.currentTime);
+          if (currentSecond > 0 && currentSecond % 3 === 0) {
+            setTimeout(() => triggerResonancePulse(), 100);
+          }
+        }
+      });
+    }
+  } catch (error) {
+    console.error("❌ Failed to initialize audio resonance:", error);
+  }
+}
+
+// Initialize multilingual system
+function initializeMultilingualSystem() {
+  console.log("🌐 Initializing Adaptive Multilingual Resonance Layer...");
+  
+  // Load saved language preference
+  const hasMemory = loadLanguageMemory();
+  
+  // Set up language button event listeners
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const lang = e.target.getAttribute('data-lang');
+      if (lang) {
+        switchLanguage(lang);
+      }
+    });
+  });
+  
+  // Set initial active language button
+  const initialBtn = document.querySelector(`[data-lang="${currentLanguage}"]`);
+  if (initialBtn) {
+    initialBtn.classList.add('active');
+  }
+  
+  // Update initial display
+  updateLanguageDisplay();
+  
+  // Initialize audio resonance
+  initializeAudioResonance();
+  
+  // Start glyph resonance animation
+  setTimeout(() => {
+    const glyphOverlay = document.getElementById('glyphOverlay');
+    if (glyphOverlay) {
+      glyphOverlay.classList.add('fade-resonance');
+    }
+  }, 1000);
+  
+  console.log(`✅ Multilingual system initialized. Current language: ${currentLanguage}${hasMemory ? ' (from memory)' : ''}`);
 }
 
 // Connect MetaMask Wallet
@@ -345,6 +623,9 @@ function resurrect() {
 // Initialize on page load
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
+  
+  // Initialize the Adaptive Multilingual Resonance Layer first
+  initializeMultilingualSystem();
   
   // Check for Web3 wallets with multiple attempts (extensions take time to load)
   let checkAttempts = 0;
