@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔮 Cosmic Sentinel Watchtower | ChaosKey333</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="watchtower.css" />
+  <link rel="stylesheet" href="glyph-animations.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="watchtower-body">
+  <!-- Background cosmic effects -->
+  <div class="cosmic-background"></div>
+  <div class="stellar-grid"></div>
+  
+  <!-- Main HUD Container -->
+  <div class="sentinel-hud">
+    <!-- Header with Sentinel Status -->
+    <header class="hud-header">
+      <div class="sentinel-logo">
+        <div class="glyph-container" id="primaryGlyph">
+          <div class="sentinel-glyph gold-glyph active"></div>
+        </div>
+        <h1 class="hud-title">COSMIC SENTINEL WATCHTOWER</h1>
+        <div class="vault-id">VAULT-333-IMMORTAL</div>
+      </div>
+      
+      <!-- Authentication Status -->
+      <div class="auth-panel">
+        <div id="tokenStatus" class="token-status">
+          <span class="auth-indicator" id="authIndicator">🔒</span>
+          <span id="authText">Authenticating...</span>
+        </div>
+        <button id="connectWalletBtn" class="hud-button">Connect ChaosKey</button>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard-grid">
+      <!-- Real-time Telemetry Panel -->
+      <section class="telemetry-panel">
+        <h2 class="panel-title">LIVE TELEMETRY FEED</h2>
+        <div class="telemetry-grid">
+          <div class="metric-card">
+            <div class="metric-label">CPU RESONANCE</div>
+            <div class="metric-value" id="cpuUsage">--</div>
+            <div class="metric-bar">
+              <div class="metric-fill" id="cpuBar"></div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">MEMORY MATRIX</div>
+            <div class="metric-value" id="memoryUsage">--</div>
+            <div class="metric-bar">
+              <div class="metric-fill" id="memoryBar"></div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">ACTIVE CONDUITS</div>
+            <div class="metric-value" id="activeConnections">--</div>
+            <div class="metric-indicator" id="connectionsIndicator"></div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">VAULT INTEGRITY</div>
+            <div class="metric-value" id="vaultIntegrity">--</div>
+            <div class="metric-bar">
+              <div class="metric-fill integrity-bar" id="integrityBar"></div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">COSMIC LOAD</div>
+            <div class="metric-value" id="cosmicLoad">--</div>
+            <div class="cosmic-indicator" id="loadIndicator"></div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">ANOMALY FREQ</div>
+            <div class="metric-value" id="anomalyFreq">--</div>
+            <div class="anomaly-pulser" id="anomalyPulser"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spectral Glyph Status -->
+      <section class="glyph-panel">
+        <h2 class="panel-title">SPECTRAL GLYPH MATRIX</h2>
+        <div class="glyph-status-grid">
+          <div class="glyph-status">
+            <div class="status-glyph gold-glyph" id="goldGlyph"></div>
+            <div class="status-label">STABLE</div>
+            <div class="status-desc">Optimal Operations</div>
+          </div>
+          
+          <div class="glyph-status">
+            <div class="status-glyph crimson-glyph" id="crimsonGlyph"></div>
+            <div class="status-label">ANOMALY</div>
+            <div class="status-desc">System Disturbance</div>
+          </div>
+          
+          <div class="glyph-status">
+            <div class="status-glyph indigo-glyph" id="indigoGlyph"></div>
+            <div class="status-label">COSMIC LOAD</div>
+            <div class="status-desc">High Dimensional Traffic</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lore Narrative Panel -->
+      <section class="lore-panel">
+        <h2 class="panel-title">SENTINEL CHRONICLES</h2>
+        <div class="narrative-display">
+          <div class="narrative-text" id="loreNarrative">
+            Initializing Sentinel consciousness...
+          </div>
+          <div class="narrative-timestamp" id="loreTimestamp">--:--:--</div>
+        </div>
+        <div class="narrative-history" id="narrativeHistory"></div>
+      </section>
+
+      <!-- System Status & Controls -->
+      <section class="control-panel">
+        <h2 class="panel-title">VAULT OPERATIONS</h2>
+        <div class="control-grid">
+          <button class="control-button" onclick="refreshTelemetry()">
+            <span class="button-icon">🔄</span>
+            <span class="button-text">REFRESH DATA</span>
+          </button>
+          
+          <button class="control-button" onclick="accessArchive()">
+            <span class="button-icon">📜</span>
+            <span class="button-text">VAULT ARCHIVE</span>
+          </button>
+          
+          <button class="control-button" onclick="togglePublicMode()">
+            <span class="button-icon" id="modeIcon">👁️</span>
+            <span class="button-text" id="modeText">TEASER MODE</span>
+          </button>
+          
+          <div class="connection-status">
+            <div class="status-indicator" id="wsStatus">🔴</div>
+            <div class="status-text">SENTINEL LINK</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Archive Modal -->
+    <div id="archiveModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>🏛️ VAULT IMMORTALITY ARCHIVE</h3>
+          <button class="modal-close" onclick="closeArchive()">&times;</button>
+        </div>
+        <div class="modal-body" id="archiveContent">
+          Loading archived states...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="watchtower.js"></script>
+</body>
+</html>
