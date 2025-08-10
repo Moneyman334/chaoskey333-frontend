@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "lastUpdated": "2025-08-10T21:58:13.457Z",
+    "totalNodes": 1,
+    "totalEdges": 0,
+    "broadcastPulseCount": 0
+  },
+  "nodes": [
+    {
+      "id": "initial",
+      "type": "pr",
+      "title": "Initial Repository Setup",
+      "number": 0,
+      "status": "merged",
+      "author": "system",
+      "createdAt": "2025-08-10T21:58:13.457Z",
+      "mergedAt": "2025-08-10T21:58:13.457Z",
+      "isBroadcastPulse": false,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "edges": [],
+  "broadcastPulseLineage": []
+}

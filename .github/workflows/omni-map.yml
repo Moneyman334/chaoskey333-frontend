@@ -1,0 +1,108 @@
+name: 🌌 Omni-Singularity Architecture Map
+
+on:
+  # Trigger on pushes to main branch
+  push:
+    branches: [ main ]
+  
+  # Trigger when PRs are closed (merged or just closed)
+  pull_request:
+    types: [ closed ]
+  
+  # Scheduled updates every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  update-omni-map:
+    name: 🔮 Update Architecture Map
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: read
+    
+    steps:
+      - name: 📡 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          if [ -f package.json ]; then npm ci || npm install; fi
+          if [ -f chaoskey333/package.json ]; then
+            cd chaoskey333
+            npm ci || npm install
+            cd ..
+          fi
+      
+      - name: 🌌 Build Omni-Singularity Map
+        env:
+          OMNI_GITHUB_TOKEN: ${{ secrets.OMNI_GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Building Omni-Singularity Architecture Map..."
+          node scripts/build-omni-map.js
+      
+      - name: 📊 Verify Map Generation
+        run: |
+          if [ -f data/omni_map.json ]; then
+            echo "✅ Map generated successfully"
+            echo "📈 Map stats:"
+            cat data/omni_map.json | grep -E '"totalNodes"|"totalEdges"|"broadcastPulseCount"' || true
+          else
+            echo "❌ Map generation failed - file not found"
+            exit 1
+          fi
+      
+      - name: 💾 Commit Updated Map
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Omni-Map Bot"
+          
+          if [ -n "$(git status --porcelain data/omni_map.json)" ]; then
+            git add data/omni_map.json
+            git commit -m "🌌 Auto-update Omni-Singularity Architecture Map
+            
+            - Updated: $(date -u)
+            - Trigger: ${{ github.event_name }}
+            - Commit: ${{ github.sha }}
+            "
+            git push
+            echo "✅ Map updated and committed"
+          else
+            echo "ℹ️  No changes to commit"
+          fi
+      
+      - name: 📝 Report Status
+        if: always()
+        run: |
+          echo "🔮 Omni-Singularity Architecture Map Update Complete"
+          echo "===========================================" 
+          echo "Trigger: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Timestamp: $(date -u)"
+          
+          if [ -f data/omni_map.json ]; then
+            echo ""
+            echo "📊 Current Map Statistics:"
+            node -e "
+              const data = JSON.parse(require('fs').readFileSync('data/omni_map.json'));
+              console.log(\`Nodes: \${data.metadata.totalNodes}\`);
+              console.log(\`Edges: \${data.metadata.totalEdges}\`);
+              console.log(\`Broadcast Pulse: \${data.metadata.broadcastPulseCount}\`);
+              console.log(\`Last Updated: \${data.metadata.lastUpdated}\`);
+            "
+          fi
