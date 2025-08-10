@@ -7,6 +7,7 @@ let STRIPE_PUBLISHABLE_KEY = null;
 let stripe = null;
 let signer = null;
 let userAddress = null;
+let spectralHUD = null; // Spectral Decode HUD instance
 
 // Initialize Stripe
 async function initializeStripe() {
@@ -345,6 +346,12 @@ function resurrect() {
 // Initialize on page load
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
+  
+  // Initialize Spectral Decode HUD
+  if (typeof SpectralDecodeHUD !== 'undefined') {
+    spectralHUD = new SpectralDecodeHUD();
+    console.log("🌊 Spectral Decode HUD initialized successfully");
+  }
   
   // Check for Web3 wallets with multiple attempts (extensions take time to load)
   let checkAttempts = 0;
