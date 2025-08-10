@@ -1,0 +1,347 @@
+/* Spectral Glyph Animation Definitions */
+
+/* Base Glyph Styles */
+.sentinel-glyph, .status-glyph {
+  position: relative;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sentinel-glyph::before,
+.status-glyph::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 40%, currentColor 70%);
+  opacity: 0.3;
+  animation: glyphPulse 2s infinite ease-in-out;
+}
+
+.sentinel-glyph::after,
+.status-glyph::after {
+  content: '◉';
+  position: relative;
+  font-size: 1.5rem;
+  z-index: 1;
+}
+
+/* Gold Glyph - Stable State */
+.gold-glyph {
+  color: #FFD700;
+  border-color: #FFD700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.gold-glyph.active {
+  animation: goldStable 3s infinite ease-in-out;
+}
+
+@keyframes goldStable {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    transform: scale(1.05);
+  }
+}
+
+/* Crimson Glyph - Anomaly State */
+.crimson-glyph {
+  color: #DC143C;
+  border-color: #DC143C;
+  box-shadow: 0 0 20px rgba(220, 20, 60, 0.4);
+  background: radial-gradient(circle, rgba(220, 20, 60, 0.1), transparent);
+}
+
+.crimson-glyph.active {
+  animation: crimsonAnomaly 1s infinite alternate;
+}
+
+@keyframes crimsonAnomaly {
+  0% {
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.3);
+    transform: scale(1) rotate(0deg);
+    border-color: #DC143C;
+  }
+  25% {
+    box-shadow: 0 0 25px rgba(220, 20, 60, 0.6);
+    transform: scale(1.1) rotate(5deg);
+    border-color: #FF1493;
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(220, 20, 60, 0.9);
+    transform: scale(1.15) rotate(-5deg);
+    border-color: #B22222;
+  }
+  75% {
+    box-shadow: 0 0 30px rgba(220, 20, 60, 0.7);
+    transform: scale(1.05) rotate(3deg);
+    border-color: #FF4500;
+  }
+  100% {
+    box-shadow: 0 0 40px rgba(220, 20, 60, 1);
+    transform: scale(1.2) rotate(0deg);
+    border-color: #FF0000;
+  }
+}
+
+/* Indigo Glyph - Cosmic Load State */
+.indigo-glyph {
+  color: #4B0082;
+  border-color: #4B0082;
+  box-shadow: 0 0 20px rgba(75, 0, 130, 0.4);
+  background: radial-gradient(circle, rgba(75, 0, 130, 0.1), transparent);
+}
+
+.indigo-glyph.active {
+  animation: indigoPulse 2s infinite ease-in-out;
+}
+
+@keyframes indigoPulse {
+  0% {
+    box-shadow: 0 0 15px rgba(75, 0, 130, 0.3);
+    transform: scale(1);
+    border-color: #4B0082;
+  }
+  25% {
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+    transform: scale(1.08);
+    border-color: #8A2BE2;
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(147, 0, 211, 0.7);
+    transform: scale(1.15);
+    border-color: #9300D3;
+  }
+  75% {
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+    transform: scale(1.08);
+    border-color: #8A2BE2;
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(75, 0, 130, 0.3);
+    transform: scale(1);
+    border-color: #4B0082;
+  }
+}
+
+/* Anomaly Frequency Synchronization */
+.anomaly-sync-1 {
+  animation-duration: 0.8s !important;
+}
+
+.anomaly-sync-2 {
+  animation-duration: 0.6s !important;
+}
+
+.anomaly-sync-3 {
+  animation-duration: 0.4s !important;
+}
+
+.anomaly-sync-4 {
+  animation-duration: 0.3s !important;
+}
+
+.anomaly-sync-5 {
+  animation-duration: 0.2s !important;
+}
+
+/* Spectral Overlay Effects */
+.spectral-overlay {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gold-glyph .spectral-overlay {
+  background: radial-gradient(circle, transparent 60%, rgba(255, 215, 0, 0.2) 80%);
+  animation: spectralGold 4s infinite linear;
+}
+
+.crimson-glyph .spectral-overlay {
+  background: radial-gradient(circle, transparent 60%, rgba(220, 20, 60, 0.3) 80%);
+  animation: spectralCrimson 1.5s infinite linear;
+}
+
+.indigo-glyph .spectral-overlay {
+  background: radial-gradient(circle, transparent 60%, rgba(75, 0, 130, 0.25) 80%);
+  animation: spectralIndigo 2.5s infinite linear;
+}
+
+.glyph-container:hover .spectral-overlay {
+  opacity: 1;
+}
+
+@keyframes spectralGold {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 0.6; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.3; }
+}
+
+@keyframes spectralCrimson {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.4; }
+  25% { transform: rotate(90deg) scale(1.2); opacity: 0.8; }
+  50% { transform: rotate(180deg) scale(0.9); opacity: 0.6; }
+  75% { transform: rotate(270deg) scale(1.1); opacity: 0.9; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.4; }
+}
+
+@keyframes spectralIndigo {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.35; }
+  33% { transform: rotate(120deg) scale(1.15); opacity: 0.7; }
+  66% { transform: rotate(240deg) scale(1.05); opacity: 0.5; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.35; }
+}
+
+/* Base pulse animation for all glyphs */
+@keyframes glyphPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* Glyph state indicators for metric cards */
+.metric-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.metric-indicator.stable {
+  background: #FFD700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.metric-indicator.anomaly {
+  background: #DC143C;
+  box-shadow: 0 0 8px rgba(220, 20, 60, 0.6);
+  animation: rapidBlink 0.5s infinite;
+}
+
+.metric-indicator.cosmic-load {
+  background: #4B0082;
+  box-shadow: 0 0 8px rgba(75, 0, 130, 0.6);
+  animation: cosmicPulse 1.5s infinite;
+}
+
+.cosmic-indicator {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.cosmic-indicator.minimal {
+  background: #32CD32;
+  box-shadow: 0 0 6px rgba(50, 205, 50, 0.5);
+}
+
+.cosmic-indicator.moderate {
+  background: #FFD700;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+  animation: moderatePulse 2s infinite;
+}
+
+.cosmic-indicator.heavy {
+  background: #DC143C;
+  box-shadow: 0 0 6px rgba(220, 20, 60, 0.5);
+  animation: heavyFlash 1s infinite;
+}
+
+.anomaly-pulser {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #333;
+}
+
+.anomaly-pulser.active {
+  border-color: #DC143C;
+  animation: anomalyRipple 1s infinite;
+}
+
+@keyframes rapidBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+@keyframes cosmicPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+@keyframes moderatePulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes heavyFlash {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.4; }
+}
+
+@keyframes anomalyRipple {
+  0% { transform: translateY(-50%) scale(1); opacity: 1; }
+  50% { transform: translateY(-50%) scale(1.5); opacity: 0.7; }
+  100% { transform: translateY(-50%) scale(2); opacity: 0; }
+}
+
+/* Special effects for high anomaly frequencies */
+.extreme-anomaly .crimson-glyph {
+  animation: extremeAnomaly 0.3s infinite !important;
+}
+
+@keyframes extremeAnomaly {
+  0% { 
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+    transform: scale(1.2) rotate(10deg);
+    filter: hue-rotate(30deg);
+  }
+  50% { 
+    box-shadow: 0 0 60px rgba(255, 69, 0, 1);
+    transform: scale(1.3) rotate(-10deg);
+    filter: hue-rotate(60deg);
+  }
+  75% { 
+    box-shadow: 0 0 50px rgba(255, 20, 147, 0.9);
+    transform: scale(1.15) rotate(5deg);
+    filter: hue-rotate(90deg);
+  }
+  100% { 
+    box-shadow: 0 0 70px rgba(220, 20, 60, 1);
+    transform: scale(1.4) rotate(0deg);
+    filter: hue-rotate(120deg);
+  }
+}
