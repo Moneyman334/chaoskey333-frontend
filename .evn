@@ -1,3 +1,10 @@
 STRIPE_SECRET_KEY=sk_live_your_secret_key_here
 PRIVATE_KEY=your_actual_wallet_private_key_here_without_0x
 
+# Coinbase Commerce Configuration
+COINBASE_API_KEY=your_coinbase_commerce_api_key_here
+COINBASE_WEBHOOK_SHARED_SECRET=your_coinbase_webhook_shared_secret_here
+
+# Payment Provider Configuration
+NEXT_PUBLIC_PAYMENTS_PROVIDER=coinbase
+
