@@ -18,5 +18,101 @@
 @layer base {
 	body {
 		@apply bg-zinc-950 text-neutral-200;
+		background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+		min-height: 100vh;
+	}
+}
+
+@layer components {
+	/* Chaos Neon Theme Classes */
+	.chaos-glow {
+		text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41, 0 0 20px #00ff41;
+	}
+
+	.chaos-border {
+		border: 2px solid transparent;
+		background: linear-gradient(45deg, #ff0080, #00ff41, #0080ff, #ff8000);
+		background-clip: padding-box;
+		border-image: linear-gradient(45deg, #ff0080, #00ff41, #0080ff, #ff8000) 1;
+	}
+
+	.chaos-button {
+		@apply relative overflow-hidden rounded-lg px-6 py-3 font-bold text-white transition-all duration-300;
+		background: linear-gradient(45deg, #ff0080, #00ff41);
+		box-shadow: 0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(0, 255, 65, 0.2);
+	}
+
+	.chaos-button:hover {
+		transform: translateY(-2px) scale(1.05);
+		box-shadow: 0 0 30px rgba(255, 0, 128, 0.5), 0 0 60px rgba(0, 255, 65, 0.3);
+	}
+
+	.chaos-button:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+		transition: left 0.5s;
+	}
+
+	.chaos-button:hover:before {
+		left: 100%;
+	}
+
+	.chaos-card {
+		@apply bg-zinc-900/80 backdrop-blur-sm rounded-xl border;
+		border: 1px solid rgba(0, 255, 65, 0.3);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	}
+
+	.chaos-title {
+		@apply text-transparent bg-clip-text;
+		background: linear-gradient(45deg, #ff0080, #00ff41, #0080ff);
+		background-size: 200% 200%;
+		animation: gradientShift 3s ease infinite;
+	}
+
+	.chaos-pulse {
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	@keyframes gradientShift {
+		0%, 100% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+	}
+
+	@keyframes pulse {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.7; }
+	}
+
+	/* VIP Storefront Styling */
+	.vip-grid {
+		background-image: 
+			radial-gradient(circle at 25% 25%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+			radial-gradient(circle at 75% 75%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+	}
+
+	.neon-text {
+		color: #00ff41;
+		text-shadow: 
+			0 0 5px #00ff41,
+			0 0 10px #00ff41,
+			0 0 15px #00ff41,
+			0 0 20px #00ff41,
+			0 0 40px #00ff41;
+	}
+
+	.chaos-input {
+		@apply bg-zinc-800/50 border border-zinc-600 rounded-lg px-4 py-2 text-white;
+		transition: all 0.3s ease;
+	}
+
+	.chaos-input:focus {
+		@apply outline-none border-green-400;
+		box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 	}
 }
