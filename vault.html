@@ -1,88 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 Vault | Living Artifact</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div id="terminalOverlay">Vault Systems Online...</div>
+  
+  <div class="vault-container">
+    <header class="vault-header">
+      <h1 class="glow">🏛 ChaosKey333 Vault 🏛</h1>
+      <p class="pulse">Living Artifact • Permanent Digital Sanctuary</p>
+    </header>
 
-<!-- 🪙 ChaosKey333 Manual Relic Mint Trigger -->
-<button onclick="mintRelic()">⚡ Manually Mint Origin Flare Relic</button>
+    <!-- Omni-Singularity Countdown Board Integration -->
+    <section class="countdown-board-section">
+      <div class="board-preview">
+        <h2>⚡ OMNI-SINGULARITY COUNTDOWN BOARD ⚡</h2>
+        <p>Permanent Edition • Track PR drops, relic evolutions, and surprise events</p>
+        <div class="countdown-preview-display">
+          <div class="mini-countdown" id="miniCountdown">
+            <div class="time-unit-mini">
+              <span id="preview-days">--</span>
+              <label>DAYS</label>
+            </div>
+            <div class="time-unit-mini">
+              <span id="preview-hours">--</span>
+              <label>HOURS</label>
+            </div>
+            <div class="time-unit-mini">
+              <span id="preview-minutes">--</span>
+              <label>MIN</label>
+            </div>
+            <div class="time-unit-mini">
+              <span id="preview-seconds">--</span>
+              <label>SEC</label>
+            </div>
+          </div>
+          <p class="next-event" id="nextEventName">Next: PR #23 → PR #24 Chain Ignition</p>
+        </div>
+        <a href="omni-singularity-countdown.html" class="access-board-btn">
+          <span class="btn-icon">🌀</span>
+          ACCESS COUNTDOWN BOARD
+        </a>
+      </div>
+    </section>
 
-<script>
-  async function mintRelic() {
-    try {
-      const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
-      const abi = [
-        {
-          "inputs": [],
-          "name": "mintRelic",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ];
+    <!-- Relic Minting Section -->
+    <section class="relic-section">
+      <h2>🪙 Origin Flare Relic Minting</h2>
+      <div class="mint-controls">
+        <button onclick="mintRelic()" class="mint-btn">
+          ⚡ Manually Mint Origin Flare Relic
+        </button>
+        <button onclick="createStripeCheckoutSession()" class="mint-btn payment">
+          💳 Mint Origin Flare Relic ($33.33)
+        </button>
+      </div>
+      <div id="mintStatus" class="mint-status">🔒 Connect wallet to mint relic</div>
+    </section>
 
-      if (!window.ethereum) {
-        alert("⚠️ MetaMask not detected. Please install it to mint.");
-        return;
+    <!-- Vault Navigation -->
+    <section class="vault-navigation">
+      <h2>🗺 Vault Navigation</h2>
+      <div class="nav-grid">
+        <a href="index.html" class="nav-card">
+          <div class="nav-icon">🏠</div>
+          <div class="nav-title">Main Chamber</div>
+          <div class="nav-desc">Return to main entrance</div>
+        </a>
+        <a href="omni-singularity-countdown.html" class="nav-card featured">
+          <div class="nav-icon">⚡</div>
+          <div class="nav-title">Countdown Board</div>
+          <div class="nav-desc">Live event tracking</div>
+        </a>
+        <a href="vault_viewer.html" class="nav-card">
+          <div class="nav-icon">👁</div>
+          <div class="nav-title">Vault Viewer</div>
+          <div class="nav-desc">Check your relics</div>
+        </a>
+        <a href="cosmic_drop_page.html" class="nav-card">
+          <div class="nav-icon">🌌</div>
+          <div class="nav-title">Cosmic Drop</div>
+          <div class="nav-desc">Special events</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Vault Status -->
+    <section class="vault-status">
+      <h2>📊 Vault Status</h2>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-label">Total Relics</div>
+          <div class="status-value" id="totalRelics">Loading...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Active Events</div>
+          <div class="status-value" id="activeEvents">2</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Next Ignition</div>
+          <div class="status-value" id="nextIgnition">Loading...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Vault Health</div>
+          <div class="status-value healthy">100%</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    // Initialize vault mini countdown
+    function updateMiniCountdown() {
+      const targetDate = new Date('2025-01-15T18:33:00Z').getTime();
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('preview-days').textContent = String(days).padStart(2, '0');
+        document.getElementById('preview-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('preview-minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('preview-seconds').textContent = String(seconds).padStart(2, '0');
       }
-
-      await ethereum.request({ method: 'eth_requestAccounts' });
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, abi, signer);
-
-      const tx = await contract.mintRelic();
-      await tx.wait();
-
-      alert("🔥 Origin Flare Relic minted successfully! You’re now encoded in Syndicate history.");
-    } catch (err) {
-      console.error("❌ Minting error:", err);
-      alert("Mint failed. Please check your wallet connection and try again.");
     }
-  }
-</script>
 
-if (paymentSuccess && signer) {
-  const contract = new ethers.Contract(
-    "0xYourContractAddress", // Replace with your deployed contract address
-    ["function mint(address to, string memory tokenURI) public"],
+    // Update mini countdown every second
+    setInterval(updateMiniCountdown, 1000);
+    updateMiniCountdown();
 
-<button onclick="createStripeCheckoutSession()">Mint Origin Flare Relic</button>
+    // Relic minting function
+    async function mintRelic() {
+      try {
+        const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+        const abi = [
+          {
+            "inputs": [],
+            "name": "mintRelic",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ];
 
-    signer
-  );
+        if (!window.ethereum) {
+          alert("⚠️ MetaMask not detected. Please install it to mint.");
+          return;
+        }
 
-  const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash"; // Replace with actual metadata
+        document.getElementById("mintStatus").innerText = "🔄 Connecting wallet...";
+        await ethereum.request({ method: 'eth_requestAccounts' });
 
-  document.getElementById("mintStatus").innerText = "🌀 Minting your relic...";
-  const tx = await contract.mint(userAddress, tokenURI);
-  await tx.wait();
-  document.getElementById("mintStatus").innerText = `✅ Relic minted to ${userAddress}`;
-}
-window.onload = async function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paymentSuccess = urlParams.get("payment") === "success";
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
 
-  if (paymentSuccess && typeof window.ethereum !== "undefined") {
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        "0xYourContractAddress", // TODO: Replace with your live Goerli contract
-        ["function mint(address to, string memory tokenURI) public"],
-        signer
-      );
+        document.getElementById("mintStatus").innerText = "⚡ Minting relic...";
+        const tx = await contract.mintRelic();
+        await tx.wait();
 
-      const walletAddress = await signer.getAddress();
-      const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash"; // TODO: Replace with real metadata
-
-      const mintStatus = document.getElementById("mintStatus");
-      mintStatus.innerText = "🌀 Minting your relic...";
-
-      const tx = await contract.mint(walletAddress, tokenURI);
-      await tx.wait();
-
-      mintStatus.innerText = `✅ Relic minted to ${walletAddress}`;
-    } catch (err) {
-      console.error("Minting failed:", err);
-      document.getElementById("mintStatus").innerText = "❌ Mint failed. See console.";
+        document.getElementById("mintStatus").innerText = "✅ Origin Flare Relic minted successfully!";
+        alert("🔥 Origin Flare Relic minted successfully! You're now encoded in Syndicate history.");
+      } catch (err) {
+        console.error("❌ Minting error:", err);
+        document.getElementById("mintStatus").innerText = "❌ Mint failed. Check wallet connection.";
+        alert("Mint failed. Please check your wallet connection and try again.");
+      }
     }
-  }
-};
+
+    // Stripe checkout function (placeholder)
+    function createStripeCheckoutSession() {
+      alert("🚧 Stripe payment integration coming soon! Use manual mint for now.");
+    }
+
+    // Hide terminal overlay after load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('terminalOverlay').style.display = 'none';
+      }, 2000);
+    });
+
+    // Handle payment success from URL params
+    window.onload = async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentSuccess = urlParams.get("payment") === "success";
+
+      if (paymentSuccess && typeof window.ethereum !== "undefined") {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            "0x11AaC98400AB700549233C4571B679b879Ba9f3a",
+            ["function mintRelic() public"],
+            signer
+          );
+
+          const walletAddress = await signer.getAddress();
+          document.getElementById("mintStatus").innerText = "🌀 Minting your relic...";
+
+          const tx = await contract.mintRelic();
+          await tx.wait();
+
+          document.getElementById("mintStatus").innerText = `✅ Relic minted to ${walletAddress}`;
+        } catch (err) {
+          console.error("Minting failed:", err);
+          document.getElementById("mintStatus").innerText = "❌ Mint failed. See console.";
+        }
+      }
+    };
+  </script>
+</body>
+</html>
