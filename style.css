@@ -43,6 +43,24 @@ body {
   100% { background-color: #000; }
 }
 
+@keyframes pulse-rainbow {
+  0% { 
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #ffe66d);
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+  }
+  50% { 
+    background: linear-gradient(45deg, #4ecdc4, #ffe66d, #ff6b6b);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.7);
+  }
+  100% { 
+    background: linear-gradient(45deg, #ffe66d, #ff6b6b, #4ecdc4);
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(255, 230, 109, 0.6);
+  }
+}
+
 .vault {
   text-align: center;
   padding-top: 5vh;

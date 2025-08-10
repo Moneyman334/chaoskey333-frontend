@@ -8,6 +8,9 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Sentinel Event Forge Integration
+let sentinelForgeInitialized = false;
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -37,6 +40,155 @@ async function initializeStripe() {
   }
 }
 
+// Initialize Sentinel Event Forge Integration
+function initializeSentinelForge() {
+  if (sentinelForgeInitialized) return;
+  
+  console.log("🔥 Initializing Sentinel Event Forge integration...");
+  
+  // Load the forge systems if not already loaded
+  const systems = [
+    'glyph-decoder.js',
+    'evolution-trigger.js', 
+    'cosmic-replay-terminal.js'
+  ];
+  
+  let loadedSystems = 0;
+  
+  systems.forEach(system => {
+    if (!document.querySelector(`script[src="${system}"]`)) {
+      const script = document.createElement('script');
+      script.src = system;
+      script.onload = () => {
+        loadedSystems++;
+        if (loadedSystems === systems.length) {
+          activateSentinelForge();
+        }
+      };
+      document.head.appendChild(script);
+    } else {
+      loadedSystems++;
+      if (loadedSystems === systems.length) {
+        activateSentinelForge();
+      }
+    }
+  });
+}
+
+function activateSentinelForge() {
+  sentinelForgeInitialized = true;
+  console.log("⚡ Sentinel Event Forge activated!");
+  
+  // Set up wallet connection monitoring for glyph events
+  if (window.glyphDecoder) {
+    // Monitor wallet events for glyph generation
+    setupWalletGlyphMonitoring();
+  }
+  
+  // Set up transaction monitoring for evolution triggers
+  if (window.permanentEvolutionTrigger) {
+    setupTransactionEvolutionMonitoring();
+  }
+  
+  // Set up replay recording for broadcast pulses
+  if (window.cosmicReplayTerminal) {
+    setupBroadcastPulseRecording();
+  }
+}
+
+function setupWalletGlyphMonitoring() {
+  // Monitor wallet connection events
+  if (window.ethereum) {
+    window.ethereum.on('accountsChanged', (accounts) => {
+      if (accounts.length > 0) {
+        generateGlyphEvent('wallet_connection', {
+          walletAddress: accounts[0],
+          amplitude: 0.7,
+          frequency: 1500
+        });
+      }
+    });
+    
+    window.ethereum.on('chainChanged', (chainId) => {
+      generateGlyphEvent('chain_change', {
+        chainId: chainId,
+        amplitude: 0.5,
+        frequency: 1200
+      });
+    });
+  }
+}
+
+function setupTransactionEvolutionMonitoring() {
+  // Monitor for payment completion events
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === 'true') {
+    generateEvolutionTrigger('payment_success', {
+      transactionType: 'stripe_payment',
+      amount: 33.33,
+      intensity: 0.9
+    });
+  }
+}
+
+function setupBroadcastPulseRecording() {
+  // Record major events as broadcast pulses
+  const recordPulse = (eventType, data) => {
+    if (window.cosmicReplayTerminal) {
+      window.cosmicReplayTerminal.recordBroadcastPulse({
+        type: eventType,
+        ...data,
+        walletAddress: userWalletAddress,
+        timestamp: Date.now()
+      });
+    }
+  };
+  
+  // Record wallet connections
+  window.addEventListener('wallet-connected', (event) => {
+    recordPulse('wallet_connection', {
+      walletType: event.detail.type,
+      address: event.detail.address
+    });
+  });
+  
+  // Record payment events
+  window.addEventListener('payment-completed', (event) => {
+    recordPulse('payment_completion', {
+      amount: event.detail.amount,
+      method: event.detail.method
+    });
+  });
+}
+
+function generateGlyphEvent(source, eventData) {
+  if (window.glyphDecoder) {
+    const glyphEvent = {
+      source: source,
+      ...eventData,
+      timestamp: Date.now()
+    };
+    
+    window.glyphDecoder.decodeGlyphEvent(glyphEvent);
+    console.log(`🔮 Glyph event generated: ${source}`);
+  }
+}
+
+function generateEvolutionTrigger(source, eventData) {
+  if (window.permanentEvolutionTrigger && window.glyphDecoder) {
+    // First generate a glyph event
+    const glyphEvent = window.glyphDecoder.decodeGlyphEvent({
+      source: source,
+      ...eventData,
+      timestamp: Date.now()
+    });
+    
+    // Then process it for evolution
+    window.permanentEvolutionTrigger.processGlyphEvent(glyphEvent);
+    console.log(`⚡ Evolution trigger activated: ${source}`);
+  }
+}
+
 // Connect MetaMask Wallet
 async function connectMetaMask() {
   const connectWalletBtn = document.getElementById("connectWallet");
@@ -57,6 +209,19 @@ async function connectMetaMask() {
       console.log("🦊 MetaMask Connected:", userWalletAddress);
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
+      
+      // Generate glyph event for wallet connection
+      generateGlyphEvent('metamask_connection', {
+        walletAddress: userWalletAddress,
+        amplitude: 0.8,
+        frequency: 1800,
+        transactionHash: null
+      });
+      
+      // Dispatch wallet connected event
+      window.dispatchEvent(new CustomEvent('wallet-connected', {
+        detail: { type: 'MetaMask', address: userWalletAddress }
+      }));
       
       checkStripeAndMint();
       
@@ -453,5 +618,30 @@ async function mintMythic() {
     console.error("❌ Minting error:", err);
     alert("Mint failed. Please check your wallet connection and try again.");
   }
+}
+
+// Initialize Sentinel Event Forge when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("🎯 ChaosKey333 initialized - Loading Sentinel Event Forge...");
+  
+  // Initialize Stripe first
+  initializeStripe();
+  
+  // Initialize Sentinel Event Forge
+  setTimeout(() => {
+    initializeSentinelForge();
+  }, 1000);
+});
+
+// Initialize immediately if DOM is already loaded
+if (document.readyState === 'loading') {
+  // DOM still loading, wait for DOMContentLoaded
+} else {
+  // DOM already loaded
+  console.log("🎯 ChaosKey333 initialized - Loading Sentinel Event Forge...");
+  initializeStripe();
+  setTimeout(() => {
+    initializeSentinelForge();
+  }, 1000);
 }
 

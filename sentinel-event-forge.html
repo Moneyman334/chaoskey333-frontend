@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 - Sentinel Event Forge</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .forge-container {
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      color: #00ff88;
+      font-family: 'Orbitron', monospace;
+      overflow-x: hidden;
+    }
+
+    .forge-header {
+      text-align: center;
+      padding: 2rem 0;
+      background: rgba(0, 255, 136, 0.1);
+      border-bottom: 2px solid #00ff88;
+    }
+
+    .forge-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-shadow: 0 0 20px #00ff88;
+      margin: 0;
+      animation: pulse-glow 2s infinite;
+    }
+
+    .forge-subtitle {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin: 0.5rem 0 0 0;
+    }
+
+    .forge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .forge-panel {
+      background: rgba(0, 255, 136, 0.05);
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #00ff88;
+      text-align: center;
+    }
+
+    .glyph-decoder-panel {
+      border-left: 4px solid #ff6b6b;
+    }
+
+    .evolution-trigger-panel {
+      border-left: 4px solid #4ecdc4;
+    }
+
+    .replay-terminal-panel {
+      border-left: 4px solid #ffe66d;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .status-active {
+      background: #00ff88;
+      box-shadow: 0 0 10px #00ff88;
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-inactive {
+      background: #666;
+    }
+
+    .event-log {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .event-entry {
+      margin-bottom: 0.5rem;
+      padding: 0.25rem;
+      border-left: 2px solid #00ff88;
+      padding-left: 0.5rem;
+    }
+
+    .event-entry.glyph {
+      border-left-color: #ff6b6b;
+    }
+
+    .event-entry.evolution {
+      border-left-color: #4ecdc4;
+    }
+
+    .event-entry.replay {
+      border-left-color: #ffe66d;
+    }
+
+    .controls-section {
+      background: rgba(0, 255, 136, 0.1);
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+
+    .control-button {
+      background: linear-gradient(45deg, #00ff88, #00cc6a);
+      color: #1a1a2e;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .control-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+    }
+
+    .control-button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric {
+      text-align: center;
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00ff88;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .speed-slider {
+      flex: 1;
+      margin: 0 1rem;
+    }
+
+    .perspective-selector {
+      background: rgba(0, 0, 0, 0.5);
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-family: 'Orbitron', monospace;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: 0 0 20px #00ff88; }
+      50% { text-shadow: 0 0 30px #00ff88, 0 0 40px #00ff88; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .living-moment {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid #ff6b6b;
+      animation: living-pulse 3s infinite;
+    }
+
+    @keyframes living-pulse {
+      0%, 100% { border-color: #ff6b6b; }
+      50% { border-color: #ff9999; }
+    }
+
+    @media (max-width: 768px) {
+      .forge-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      
+      .forge-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="forge-container">
+  <header class="forge-header">
+    <h1 class="forge-title">⚡ SENTINEL EVENT FORGE ⚡</h1>
+    <p class="forge-subtitle">ChaosKey333 Cosmic Replay Terminal v2.0 - Ascension Edition</p>
+  </header>
+
+  <main class="forge-grid">
+    <!-- Glyph Decoder Panel -->
+    <section class="forge-panel glyph-decoder-panel">
+      <h2 class="panel-title">
+        <span class="status-indicator status-active" id="glyphStatus"></span>
+        Glyph Event Decoder
+      </h2>
+      
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-value" id="glyphCount">0</div>
+          <div class="metric-label">Active Glyphs</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="glyphIntensity">0.0</div>
+          <div class="metric-label">Avg Intensity</div>
+        </div>
+      </div>
+
+      <div class="controls-section">
+        <button class="control-button" onclick="simulateGlyphEvent()">Simulate Glyph</button>
+        <button class="control-button" onclick="clearGlyphHistory()">Clear History</button>
+      </div>
+
+      <div class="event-log" id="glyphEventLog">
+        <div class="event-entry glyph">System initialized - Awaiting glyph events...</div>
+      </div>
+    </section>
+
+    <!-- Evolution Trigger Panel -->
+    <section class="forge-panel evolution-trigger-panel">
+      <h2 class="panel-title">
+        <span class="status-indicator status-active" id="evolutionStatus"></span>
+        Evolution Trigger System
+      </h2>
+      
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-value" id="evolutionCount">0</div>
+          <div class="metric-label">Evolutions</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="mutationCount">0</div>
+          <div class="metric-label">Mutations</div>
+        </div>
+      </div>
+
+      <div class="controls-section">
+        <button class="control-button" onclick="triggerEvolution()">Force Evolution</button>
+        <button class="control-button" onclick="viewMutations()">View Mutations</button>
+      </div>
+
+      <div class="event-log" id="evolutionEventLog">
+        <div class="event-entry evolution">Evolution system ready - Monitoring for triggers...</div>
+      </div>
+    </section>
+
+    <!-- Cosmic Replay Terminal Panel -->
+    <section class="forge-panel replay-terminal-panel">
+      <h2 class="panel-title">
+        <span class="status-indicator status-active" id="replayStatus"></span>
+        Cosmic Replay Terminal
+      </h2>
+      
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-value" id="replayCount">0</div>
+          <div class="metric-label">Replays</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="livingMoments">0</div>
+          <div class="metric-label">Living Moments</div>
+        </div>
+      </div>
+
+      <div class="playback-controls">
+        <button class="control-button" id="playBtn" onclick="togglePlayback()">▶ Play</button>
+        <input type="range" class="speed-slider" id="speedSlider" min="0.25" max="3" step="0.25" value="1" onchange="updatePlaybackSpeed(this.value)">
+        <span id="speedDisplay">1.0x</span>
+      </div>
+
+      <div class="controls-section">
+        <select class="perspective-selector" id="perspectiveSelect" onchange="changePerspective(this.value)">
+          <option value="default">Default View</option>
+          <option value="vault_core">Vault Core</option>
+          <option value="singularity_map">Singularity Map</option>
+          <option value="glyph_matrix">Glyph Matrix</option>
+          <option value="evolution_chamber">Evolution Chamber</option>
+        </select>
+      </div>
+
+      <div class="event-log" id="replayEventLog">
+        <div class="event-entry replay">Replay terminal online - Ready for broadcast pulse recording...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Include all the systems -->
+  <script src="glyph-decoder.js"></script>
+  <script src="evolution-trigger.js"></script>
+  <script src="cosmic-replay-terminal.js"></script>
+
+  <script>
+    // Main Sentinel Event Forge Controller
+    class SentinelEventForge {
+      constructor() {
+        this.isActive = false;
+        this.metrics = {
+          glyphs: 0,
+          evolutions: 0,
+          replays: 0,
+          livingMoments: 0
+        };
+        
+        this.initializeForge();
+      }
+
+      initializeForge() {
+        console.log('🔥 Initializing Sentinel Event Forge...');
+        
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Initialize metrics
+        this.updateMetrics();
+        
+        // Mark as active
+        this.isActive = true;
+        
+        console.log('✅ Sentinel Event Forge activated');
+        this.logEvent('forge', 'Sentinel Event Forge fully operational');
+      }
+
+      setupEventListeners() {
+        // Listen to glyph events
+        if (window.glyphDecoder) {
+          window.glyphDecoder.onGlyphDecoded((glyphEvent) => {
+            this.handleGlyphEvent(glyphEvent);
+          });
+        }
+
+        // Listen to evolution events
+        if (window.permanentEvolutionTrigger) {
+          window.permanentEvolutionTrigger.onEvolutionTriggered((evolution) => {
+            this.handleEvolutionEvent(evolution);
+          });
+        }
+
+        // Listen to replay events
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.onReplayEvent((event, data) => {
+            this.handleReplayEvent(event, data);
+          });
+        }
+      }
+
+      handleGlyphEvent(glyphEvent) {
+        this.logEvent('glyph', `${glyphEvent.type} glyph detected - Intensity: ${glyphEvent.intensity.toFixed(2)}`);
+        this.metrics.glyphs++;
+        this.updateMetrics();
+      }
+
+      handleEvolutionEvent(evolution) {
+        this.logEvent('evolution', `${evolution.mutation.type} evolution triggered - Relic transformed`);
+        this.metrics.evolutions++;
+        this.updateMetrics();
+      }
+
+      handleReplayEvent(event, data) {
+        switch (event) {
+          case 'replay_started':
+            this.logEvent('replay', `Replay session started - Duration: ${data.duration}ms`);
+            break;
+          case 'forge_transformed':
+            this.logEvent('replay', 'Transformed to Sentinel Event Forge mode');
+            this.metrics.livingMoments = data.forgeMetrics.livingMoments;
+            break;
+          case 'instant_mutation':
+            this.logEvent('replay', 'Instant mutation applied during replay');
+            break;
+        }
+        this.updateMetrics();
+      }
+
+      updateMetrics() {
+        // Update glyph metrics
+        const activeGlyphs = window.glyphDecoder ? window.glyphDecoder.getActiveGlyphs() : [];
+        document.getElementById('glyphCount').textContent = activeGlyphs.length;
+        
+        const avgIntensity = activeGlyphs.length > 0 
+          ? activeGlyphs.reduce((sum, g) => sum + g.intensity, 0) / activeGlyphs.length 
+          : 0;
+        document.getElementById('glyphIntensity').textContent = avgIntensity.toFixed(1);
+
+        // Update evolution metrics
+        const mutations = window.permanentEvolutionTrigger ? window.permanentEvolutionTrigger.getPermanentMutations() : [];
+        document.getElementById('evolutionCount').textContent = this.metrics.evolutions;
+        document.getElementById('mutationCount').textContent = mutations.length;
+
+        // Update replay metrics
+        const replays = window.cosmicReplayTerminal ? window.cosmicReplayTerminal.getReplayHistory() : [];
+        document.getElementById('replayCount').textContent = replays.length;
+        document.getElementById('livingMoments').textContent = this.metrics.livingMoments;
+      }
+
+      logEvent(type, message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement('div');
+        logEntry.className = `event-entry ${type}`;
+        logEntry.innerHTML = `<strong>${timestamp}</strong> - ${message}`;
+
+        const logContainer = document.getElementById(`${type}EventLog`);
+        logContainer.appendChild(logEntry);
+        
+        // Scroll to bottom
+        logContainer.scrollTop = logContainer.scrollHeight;
+        
+        // Keep only last 20 entries
+        while (logContainer.children.length > 20) {
+          logContainer.removeChild(logContainer.firstChild);
+        }
+      }
+    }
+
+    // Global functions for UI controls
+    function simulateGlyphEvent() {
+      if (window.glyphDecoder) {
+        const mockEvent = {
+          source: 'simulation',
+          amplitude: Math.random(),
+          frequency: Math.random() * 3000,
+          transactionHash: `0x${Math.random().toString(16).substr(2, 40)}`
+        };
+        
+        window.glyphDecoder.decodeGlyphEvent(mockEvent);
+      }
+    }
+
+    function clearGlyphHistory() {
+      if (window.glyphDecoder) {
+        window.glyphDecoder.eventHistory = [];
+        window.glyphDecoder.activeGlyphs.clear();
+        forge.updateMetrics();
+        forge.logEvent('glyph', 'Glyph history cleared');
+      }
+    }
+
+    function triggerEvolution() {
+      if (window.permanentEvolutionTrigger && window.glyphDecoder) {
+        // Create a high-intensity glyph event to trigger evolution
+        const triggerEvent = {
+          source: 'manual_trigger',
+          amplitude: 0.95,
+          frequency: 2500,
+          type: 'resonance',
+          intensity: 0.95
+        };
+        
+        const glyphEvent = window.glyphDecoder.decodeGlyphEvent(triggerEvent);
+        window.permanentEvolutionTrigger.processGlyphEvent(glyphEvent);
+      }
+    }
+
+    function viewMutations() {
+      if (window.permanentEvolutionTrigger) {
+        const mutations = window.permanentEvolutionTrigger.getPermanentMutations();
+        console.log('Permanent Mutations:', mutations);
+        forge.logEvent('evolution', `Viewing ${mutations.length} permanent mutations`);
+      }
+    }
+
+    function togglePlayback() {
+      const btn = document.getElementById('playBtn');
+      if (window.cosmicReplayTerminal) {
+        const state = window.cosmicReplayTerminal.getPlaybackState();
+        
+        if (state.playing) {
+          btn.textContent = '▶ Play';
+          btn.style.background = 'linear-gradient(45deg, #00ff88, #00cc6a)';
+        } else {
+          btn.textContent = '⏸ Pause';
+          btn.style.background = 'linear-gradient(45deg, #ff6b6b, #ff5252)';
+        }
+        
+        // Toggle would be implemented here
+        forge.logEvent('replay', `Playback ${state.playing ? 'paused' : 'started'}`);
+      }
+    }
+
+    function updatePlaybackSpeed(speed) {
+      document.getElementById('speedDisplay').textContent = `${speed}x`;
+      
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.setPlaybackSpeed(parseFloat(speed));
+        forge.logEvent('replay', `Playback speed changed to ${speed}x`);
+      }
+    }
+
+    function changePerspective(perspective) {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.setPerspective(perspective);
+        forge.logEvent('replay', `Perspective changed to ${perspective}`);
+      }
+    }
+
+    // Initialize the Sentinel Event Forge
+    let forge;
+    window.addEventListener('load', () => {
+      // Give time for all systems to initialize
+      setTimeout(() => {
+        forge = new SentinelEventForge();
+        
+        // Start a demo sequence
+        setTimeout(() => {
+          forge.logEvent('forge', 'Demo sequence initiated');
+          simulateGlyphEvent();
+          
+          setTimeout(() => {
+            triggerEvolution();
+          }, 2000);
+          
+          setTimeout(() => {
+            simulateGlyphEvent();
+          }, 4000);
+        }, 1000);
+      }, 500);
+    });
+  </script>
+</body>
+</html>
