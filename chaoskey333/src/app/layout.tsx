@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "ChaosKey333 Vault - Ultimate Checkout System",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "Chaos-themed storefront with multi-provider payment system featuring Coinbase Commerce, PayPal, and Stripe",
 };
 
 export default function RootLayout({
@@ -18,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="font-sans">
         <ThirdwebProvider>{children}</ThirdwebProvider>
       </body>
     </html>
