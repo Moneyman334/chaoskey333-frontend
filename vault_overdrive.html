@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 Vault - Overdrive Public Broadcast Edition</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="vault-overdrive">
+  
+  <!-- Overdrive Status Header -->
+  <div id="overdrive-header" class="overdrive-header">
+    <h1 class="overdrive-title">⚡ CHAOSKEY333 OVERDRIVE ⚡</h1>
+    <div id="overdrive-status" class="overdrive-status">⚡ Overdrive Standby - Ready to Ignite</div>
+  </div>
+
+  <!-- Main Vault Container -->
+  <div class="vault-container">
+    
+    <!-- Vault-Wide Echo Drop Sync Panel -->
+    <div class="sync-panel">
+      <h2>🌌 Vault-Wide Echo Drop Sync</h2>
+      <div id="overdrive-pulse" class="pulse-indicator">
+        <div class="pulse-ring"></div>
+        <div class="pulse-core">⚡</div>
+      </div>
+      <div class="sync-controls">
+        <button id="start-overdrive" onclick="window.overdrive.startVaultWideSyncPulse()" class="overdrive-btn primary">
+          🚀 INITIATE GALAXY SYNC
+        </button>
+        <button id="stop-overdrive" onclick="window.overdrive.stopVaultWideSyncPulse()" class="overdrive-btn secondary">
+          ⏸️ PAUSE SYNC
+        </button>
+      </div>
+      <div class="next-pulse-timer">
+        Next Pulse: <span id="pulse-countdown">--:--</span>
+      </div>
+    </div>
+
+    <!-- Adaptive Mutation Milestone Tracker -->
+    <div class="milestone-panel">
+      <h2>📊 Expansion Progress Tracker</h2>
+      <div id="milestone-tracker" class="milestone-tracker">
+        <div class="progress-container">
+          <div class="progress-label">Overdrive Expansion</div>
+          <div class="progress-bar-container">
+            <div id="expansion-progress-bar" class="progress-bar" style="width: 0%"></div>
+            <span id="expansion-progress-text" class="progress-text">0%</span>
+          </div>
+        </div>
+        <div class="milestone-markers">
+          <div class="milestone-marker" data-threshold="25">25%</div>
+          <div class="milestone-marker" data-threshold="50">50%</div>
+          <div class="milestone-marker" data-threshold="75">75%</div>
+          <div class="milestone-marker" data-threshold="100">MAX</div>
+        </div>
+      </div>
+      <div id="milestone-achievements" class="milestone-achievements"></div>
+    </div>
+
+    <!-- Spectral Lore Embers Cascade -->
+    <div class="ember-panel">
+      <h2>🔮 Spectral Lore Embers</h2>
+      <div id="ember-cascade" class="ember-cascade">
+        <!-- Ember fragments will appear here -->
+      </div>
+      <div id="ember-combinations" class="ember-combinations">
+        <h3>✨ Discovered Combinations</h3>
+        <!-- Ember combinations will appear here -->
+      </div>
+    </div>
+
+    <!-- Infinite Ignition Leaderboard -->
+    <div class="leaderboard-panel">
+      <div id="ignition-leaderboard" class="ignition-leaderboard">
+        <h3>🔥 Infinite Ignition Leaderboard</h3>
+        <!-- Leaderboard entries will appear here -->
+      </div>
+    </div>
+
+    <!-- Cinematic Capture Mode -->
+    <div class="capture-panel">
+      <h2>🎬 Cinematic Capture Mode</h2>
+      <div class="capture-controls">
+        <button onclick="window.overdrive.exportCinematicReplay()" class="overdrive-btn capture">
+          📥 Export Epic Replay
+        </button>
+        <button onclick="shareToSocial()" class="overdrive-btn social">
+          📱 Share Moment
+        </button>
+      </div>
+      <div class="recent-captures">
+        <h3>Recent Epic Moments</h3>
+        <div id="recent-moments" class="recent-moments">
+          <!-- Recent cinematic moments will appear here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Original Relic Minting (Enhanced) -->
+    <div class="mint-panel">
+      <h2>🪙 Origin Flare Relic Minting</h2>
+      <div class="wallet-connection">
+        <button id="connect-wallet" onclick="connectWallet()" class="overdrive-btn wallet">
+          🔌 Connect Wallet
+        </button>
+        <div id="wallet-status" class="wallet-status">No wallet connected</div>
+      </div>
+      <button id="mint-relic" onclick="mintRelic()" class="overdrive-btn mint" disabled>
+        ⚡ Mint Origin Flare Relic
+      </button>
+      <div id="mint-status" class="mint-status">🔒 Connect wallet to enable minting</div>
+    </div>
+
+  </div>
+
+  <!-- Background Effects -->
+  <div class="vault-bg-effects">
+    <div class="cosmic-particles"></div>
+    <div class="energy-grid"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="overdrive.js"></script>
+  <script>
+    // Enhanced wallet connection
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("⚠️ MetaMask not detected. Please install it to participate in Overdrive.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        window.userWalletAddress = accounts[0];
+        
+        document.getElementById("wallet-status").innerText = `🟢 Connected: ${accounts[0].slice(0, 8)}...${accounts[0].slice(-4)}`;
+        document.getElementById("mint-relic").disabled = false;
+        document.getElementById("mint-status").innerText = "⚡ Ready to mint Origin Flare Relic";
+        
+        // Update leaderboard with wallet connection
+        if (window.overdrive) {
+          window.overdrive.updateLeaderboard(accounts[0], 'wallet_connect');
+        }
+        
+      } catch (error) {
+        console.error("Wallet connection failed:", error);
+        alert("Failed to connect wallet. Please try again.");
+      }
+    }
+
+    // Enhanced relic minting
+    async function mintRelic() {
+      if (!window.userWalletAddress) {
+        alert("Please connect your wallet first.");
+        return;
+      }
+
+      try {
+        const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+        const abi = [
+          {
+            "inputs": [],
+            "name": "mintRelic",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ];
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        document.getElementById("mint-status").innerText = "🌀 Minting your Origin Flare Relic...";
+
+        const tx = await contract.mintRelic();
+        await tx.wait();
+
+        document.getElementById("mint-status").innerText = "🔥 Origin Flare Relic minted successfully! You're now encoded in Syndicate history.";
+        
+        // Update leaderboard for successful mint
+        if (window.overdrive) {
+          window.overdrive.updateLeaderboard(window.userWalletAddress, 'relic_mint');
+        }
+        
+      } catch (err) {
+        console.error("❌ Minting error:", err);
+        document.getElementById("mint-status").innerText = "❌ Mint failed. Please check your wallet and try again.";
+      }
+    }
+
+    // Social sharing functionality
+    function shareToSocial() {
+      const shareText = `🚀 Just experienced the ChaosKey333 Overdrive! Galaxy-wide sync at ${Math.floor(window.overdrive?.expansionProgress || 0)}% expansion. Join the broadcast! #ChaosKey333 #Overdrive`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'ChaosKey333 Overdrive Experience',
+          text: shareText,
+          url: window.location.href
+        });
+      } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(shareText + ' ' + window.location.href);
+        alert("📋 Shared content copied to clipboard!");
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', () => {
+      console.log("🌌 ChaosKey333 Vault - Overdrive Public Broadcast Edition Loaded");
+      
+      // Auto-connect wallet if previously connected
+      if (window.ethereum && window.ethereum.selectedAddress) {
+        connectWallet();
+      }
+      
+      // Initialize pulse countdown timer
+      updatePulseCountdown();
+      setInterval(updatePulseCountdown, 1000);
+    });
+
+    // Update pulse countdown timer
+    function updatePulseCountdown() {
+      if (window.overdrive && window.overdrive.isActive) {
+        const now = Date.now();
+        const lastPulse = localStorage.getItem('lastPulseTime') || now;
+        const nextPulse = parseInt(lastPulse) + 30000; // 30 seconds
+        const remaining = Math.max(0, nextPulse - now);
+        
+        const seconds = Math.floor((remaining / 1000) % 60);
+        const minutes = Math.floor(remaining / 60000);
+        
+        document.getElementById('pulse-countdown').textContent = 
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      } else {
+        document.getElementById('pulse-countdown').textContent = '--:--';
+      }
+    }
+
+    // Store pulse timing
+    if (window.overdrive) {
+      const originalTriggerPulse = window.overdrive.triggerSynchronizedPulse;
+      window.overdrive.triggerSynchronizedPulse = function() {
+        localStorage.setItem('lastPulseTime', Date.now().toString());
+        return originalTriggerPulse.call(this);
+      };
+    }
+  </script>
+
+</body>
+</html>
