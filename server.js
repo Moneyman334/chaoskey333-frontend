@@ -6,11 +6,15 @@ const path = require('path');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
-
-console.log('🔑 Checking Stripe API keys...');
-console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
-console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+let stripe = null;
+if (STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('🔑 Checking Stripe API keys...');
+  console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
+  console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+} else {
+  console.log('⚠️ Stripe API key not configured - payment features disabled');
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,6 +31,13 @@ app.get('/', (req, res) => {
 // Test Stripe connection endpoint
 app.get('/api/test-stripe', async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(500).json({
+        success: false,
+        error: 'Stripe not configured'
+      });
+    }
+
     console.log('🧪 Testing Stripe connection...');
 
     // Test Stripe connection by retrieving account info
@@ -68,12 +79,19 @@ app.get('/api/test-all', async (req, res) => {
 
   // Test Stripe
   try {
-    const account = await stripe.accounts.retrieve();
-    results.stripe = {
-      connected: true,
-      accountId: account.id,
-      currency: account.default_currency
-    };
+    if (stripe) {
+      const account = await stripe.accounts.retrieve();
+      results.stripe = {
+        connected: true,
+        accountId: account.id,
+        currency: account.default_currency
+      };
+    } else {
+      results.stripe = {
+        connected: false,
+        error: 'Stripe not configured'
+      };
+    }
   } catch (error) {
     results.stripe = {
       connected: false,
@@ -88,6 +106,12 @@ app.get('/api/test-all', async (req, res) => {
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(500).json({
+        error: 'Stripe not configured'
+      });
+    }
+
     const { walletAddress, connectedWalletType } = req.body;
     const amount = req.body.amount || 1000; // Default to $10.00 if amount is not provided
     const currency = req.body.currency || 'usd'; // Default currency
@@ -129,7 +153,11 @@ app.post('/api/create-checkout-session', async (req, res) => {
 });
 
 // Stripe webhook to handle successful payments
-app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  if (!stripe) {
+    return res.status(500).json({ error: 'Stripe not configured' });
+  }
+
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -149,13 +177,21 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) =
     console.log('💰 Payment successful for wallet:', session.metadata.walletAddress);
     console.log('🧿 Ready to mint relic to vault...');
 
-    // Here you would typically:
-    // 1. Mint the NFT to the user's wallet
-    // 2. Store the transaction in your database
-    // 3. Send confirmation email
+    try {
+      // Retrieve full session details including customer and line items
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items', 'customer_details']
+      });
 
-    // For now, we'll just log it
-    console.log('🎉 Relic minting process initiated for:', session.metadata.walletAddress);
+      // Process payment and send notifications
+      const { processPaymentSuccess } = require('./services/notificationService');
+      const result = await processPaymentSuccess(fullSession);
+
+      console.log('🎉 Payment processing completed:', result);
+    } catch (error) {
+      console.error('❌ Error processing payment success:', error);
+      // Don't fail the webhook - payment was successful
+    }
   }
 
   res.json({ received: true });
@@ -191,6 +227,12 @@ app.get("/health", (req, res) => {
 // 🔐 Stripe checkout endpoint (test)
 app.post("/create-checkout-session2", async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(500).json({
+        error: 'Stripe not configured'
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -221,4 +263,358 @@ app.post("/create-checkout-session2", async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
+});
+
+// Admin routes for viewing and managing notifications
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/index.html'));
+});
+
+app.get('/admin/sends', async (req, res) => {
+  try {
+    const { getNotificationRecords } = require('./services/tokenService');
+    const { validateNotificationConfig } = require('./services/notificationService');
+    
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    
+    const records = await getNotificationRecords(limit, offset);
+    const config = validateNotificationConfig();
+
+    res.json({
+      success: true,
+      config,
+      records,
+      pagination: {
+        limit,
+        offset,
+        count: records.length
+      }
+    });
+  } catch (error) {
+    console.error('Admin sends error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Admin route for resending failed notifications
+app.post('/admin/resend/:recordId', async (req, res) => {
+  try {
+    const { recordId } = req.params;
+    const { getNotificationRecord } = require('./services/tokenService');
+    const { resendEmail } = require('./services/emailService');
+    const { resendSMS } = require('./services/smsService');
+    
+    const record = await getNotificationRecord(recordId);
+    
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        error: 'Notification record not found'
+      });
+    }
+
+    let result;
+    if (record.type === 'email') {
+      result = await resendEmail(recordId);
+    } else if (record.type === 'sms') {
+      result = await resendSMS(recordId);
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: 'Unknown notification type'
+      });
+    }
+
+    res.json({
+      success: true,
+      type: record.type,
+      result
+    });
+  } catch (error) {
+    console.error('Admin resend error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Mint endpoint for processing claim tokens
+app.get('/mint', async (req, res) => {
+  try {
+    const { token } = req.query;
+    
+    if (!token) {
+      return res.status(400).send(`
+        <!DOCTYPE html>
+        <html>
+        <head><title>Invalid Mint Link</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h1>❌ Invalid Mint Link</h1>
+          <p>This mint link is missing required parameters.</p>
+        </body>
+        </html>
+      `);
+    }
+
+    const { validateClaimToken } = require('./services/tokenService');
+    const tokenData = await validateClaimToken(token);
+    
+    if (!tokenData) {
+      return res.status(400).send(`
+        <!DOCTYPE html>
+        <html>
+        <head><title>Expired Mint Link</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h1>⏰ Mint Link Expired</h1>
+          <p>This mint link has expired or is invalid.</p>
+          <p>Please check your email for a new link or contact support.</p>
+        </body>
+        </html>
+      `);
+    }
+
+    // Serve mint page with token data
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Mint Your ${tokenData.productName}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          }
+          .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+          .product-name {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #ffd93d;
+          }
+          .wallet-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+          }
+          .mint-button {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #000;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+          }
+          .mint-button:hover {
+            transform: translateY(-2px);
+          }
+          .expires {
+            font-size: 14px;
+            color: #ffd93d;
+            margin-top: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="logo">⚡️ ChaosKey333</div>
+          <div class="product-name">${tokenData.productName}</div>
+          
+          <div class="wallet-info">
+            <div><strong>Wallet Address:</strong></div>
+            <div style="font-family: monospace; word-break: break-all; margin-top: 10px;">
+              ${tokenData.walletAddress}
+            </div>
+          </div>
+          
+          <button class="mint-button" onclick="mintRelic()">
+            🔥 Mint to Vault Now
+          </button>
+          
+          <div class="expires">
+            ⏰ This link expires in ${Math.ceil((tokenData.expiresAt - Date.now()) / (1000 * 60 * 60))} hours
+          </div>
+        </div>
+        
+        <script>
+          async function mintRelic() {
+            const button = document.querySelector('.mint-button');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '⏳ Minting...';
+            button.disabled = true;
+            
+            try {
+              const response = await fetch('/api/mint', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  token: '${token}'
+                })
+              });
+              
+              const result = await response.json();
+              
+              if (result.success) {
+                button.innerHTML = '✅ Minted Successfully!';
+                button.style.background = 'linear-gradient(45deg, #6bcf7f, #4d79ff)';
+                setTimeout(() => {
+                  alert('🎉 Your relic has been minted to your vault! Check your wallet.');
+                }, 500);
+              } else {
+                throw new Error(result.error || 'Minting failed');
+              }
+            } catch (error) {
+              console.error('Mint error:', error);
+              button.innerHTML = '❌ Mint Failed';
+              button.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8e8e)';
+              alert('Minting failed: ' + error.message);
+              
+              setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                button.style.background = 'linear-gradient(45deg, #ff6b6b, #ffd93d)';
+              }, 3000);
+            }
+          }
+        </script>
+      </body>
+      </html>
+    `);
+
+  } catch (error) {
+    console.error('Mint page error:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head><title>Server Error</title></head>
+      <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+        <h1>🚨 Server Error</h1>
+        <p>Something went wrong. Please try again later.</p>
+      </body>
+      </html>
+    `);
+  }
+});
+
+// API endpoint for processing mint requests
+app.post('/api/mint', async (req, res) => {
+  try {
+    const { token } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        error: 'Token is required'
+      });
+    }
+
+    const { validateClaimToken, markTokenAsUsed } = require('./services/tokenService');
+    
+    // Validate token
+    const tokenData = await validateClaimToken(token);
+    if (!tokenData) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid or expired token'
+      });
+    }
+
+    // Mark token as used
+    const marked = await markTokenAsUsed(token);
+    if (!marked) {
+      return res.status(400).json({
+        success: false,
+        error: 'Token has already been used'
+      });
+    }
+
+    // Here you would integrate with your minting contract
+    // For now, we'll simulate the minting process
+    console.log(`🎯 Minting ${tokenData.productName} to wallet: ${tokenData.walletAddress}`);
+    
+    // Simulate minting delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    res.json({
+      success: true,
+      message: 'Relic minted successfully',
+      walletAddress: tokenData.walletAddress,
+      productName: tokenData.productName
+    });
+
+  } catch (error) {
+    console.error('Mint API error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Test notification endpoint for development
+app.post('/api/test-notification', async (req, res) => {
+  try {
+    const { sendNotifications } = require('./services/notificationService');
+    
+    const testData = {
+      walletAddress: '0x1234567890123456789012345678901234567890',
+      email: 'test@example.com',
+      phone: '+1234567890',
+      productName: 'Test ChaosKey333 Relic',
+      sessionId: 'test_session_' + Date.now(),
+      checkoutMetadata: {
+        language: req.body.language || 'en'
+      }
+    };
+
+    const result = await sendNotifications(testData);
+    
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Test notification error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });

@@ -1,3 +1,18 @@
 STRIPE_SECRET_KEY=sk_live_your_secret_key_here
 PRIVATE_KEY=your_actual_wallet_private_key_here_without_0x
 
+# Multi-language notification system
+NEXT_PUBLIC_BASE_URL=https://chaoskey333-casino.vercel.app
+RESEND_API_KEY=re_your_resend_api_key_here
+TWILIO_ACCOUNT_SID=your_twilio_account_sid_here
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_PHONE_NUMBER=+1234567890
+
+# Optional: Enable/disable notifications (default: enabled)
+ENABLE_EMAIL=true
+ENABLE_SMS=true
+
+# Vercel KV (automatically provided by Vercel)
+KV_REST_API_URL=
+KV_REST_API_TOKEN=
+

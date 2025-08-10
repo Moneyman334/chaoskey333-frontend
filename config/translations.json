@@ -1,0 +1,90 @@
+{
+  "email": {
+    "subject": {
+      "en": "🔥 Your ChaosKey333 Relic is Ready to Mint!",
+      "es": "🔥 ¡Tu Reliquia ChaosKey333 está Lista para Acuñar!",
+      "fr": "🔥 Votre Relique ChaosKey333 est Prête à Être Frappée !",
+      "de": "🔥 Ihr ChaosKey333 Relikt ist Bereit zum Prägen!",
+      "it": "🔥 La Tua Reliquia ChaosKey333 è Pronta per il Conio!",
+      "pt": "🔥 Sua Relíquia ChaosKey333 está Pronta para Cunhar!",
+      "ja": "🔥 あなたのChaosKey333レリックがミント準備完了！",
+      "ko": "🔥 귀하의 ChaosKey333 유물이 민트 준비 완료!",
+      "zh": "🔥 您的ChaosKey333遗物已准备好铸造！",
+      "ar": "🔥 أثر ChaosKey333 الخاص بك جاهز للسك!"
+    },
+    "greeting": {
+      "en": "Chaos Warrior",
+      "es": "Guerrero del Caos",
+      "fr": "Guerrier du Chaos",
+      "de": "Chaos-Krieger",
+      "it": "Guerriero del Caos",
+      "pt": "Guerreiro do Caos",
+      "ja": "カオス・ウォリアー",
+      "ko": "카오스 워리어",
+      "zh": "混沌战士",
+      "ar": "محارب الفوضى"
+    },
+    "body": {
+      "en": "Your payment has been confirmed! Your exclusive ChaosKey333 Relic is now ready to be minted to your vault.",
+      "es": "¡Tu pago ha sido confirmado! Tu Reliquia ChaosKey333 exclusiva ahora está lista para ser acuñada en tu bóveda.",
+      "fr": "Votre paiement a été confirmé ! Votre Relique ChaosKey333 exclusive est maintenant prête à être frappée dans votre coffre.",
+      "de": "Ihre Zahlung wurde bestätigt! Ihr exklusives ChaosKey333 Relikt ist nun bereit, in Ihren Tresor geprägt zu werden.",
+      "it": "Il tuo pagamento è stato confermato! La tua Reliquia ChaosKey333 esclusiva è ora pronta per essere coniata nel tuo vault.",
+      "pt": "Seu pagamento foi confirmado! Sua Relíquia ChaosKey333 exclusiva está agora pronta para ser cunhada em seu cofre.",
+      "ja": "お支払いが確認されました！あなた専用のChaosKey333レリックが、あなたのヴォルトにミントする準備が整いました。",
+      "ko": "결제가 확인되었습니다! 귀하의 독점 ChaosKey333 유물이 이제 귀하의 금고에 민트할 준비가 되었습니다.",
+      "zh": "您的付款已确认！您的专属ChaosKey333遗物现在可以铸造到您的金库中。",
+      "ar": "تم تأكيد دفعتك! أثر ChaosKey333 الحصري الخاص بك جاهز الآن ليتم سكه في خزنتك."
+    },
+    "cta": {
+      "en": "Mint Now",
+      "es": "Acuñar Ahora",
+      "fr": "Frapper Maintenant",
+      "de": "Jetzt Prägen",
+      "it": "Conia Ora",
+      "pt": "Cunhar Agora",
+      "ja": "今すぐミント",
+      "ko": "지금 민트",
+      "zh": "立即铸造",
+      "ar": "اسكّ الآن"
+    },
+    "expires": {
+      "en": "This link expires in 48 hours for security.",
+      "es": "Este enlace expira en 48 horas por seguridad.",
+      "fr": "Ce lien expire dans 48 heures pour des raisons de sécurité.",
+      "de": "Dieser Link läuft aus Sicherheitsgründen in 48 Stunden ab.",
+      "it": "Questo link scade tra 48 ore per sicurezza.",
+      "pt": "Este link expira em 48 horas por segurança.",
+      "ja": "このリンクはセキュリティのため48時間で期限切れになります。",
+      "ko": "이 링크는 보안을 위해 48시간 후에 만료됩니다.",
+      "zh": "出于安全考虑，此链接将在48小时后过期。",
+      "ar": "ينتهي صلاحية هذا الرابط خلال 48 ساعة لأغراض الأمان."
+    },
+    "support": {
+      "en": "Need help? Contact our support team.",
+      "es": "¿Necesitas ayuda? Contacta a nuestro equipo de soporte.",
+      "fr": "Besoin d'aide ? Contactez notre équipe de support.",
+      "de": "Brauchen Sie Hilfe? Kontaktieren Sie unser Support-Team.",
+      "it": "Hai bisogno di aiuto? Contatta il nostro team di supporto.",
+      "pt": "Precisa de ajuda? Entre em contato com nossa equipe de suporte.",
+      "ja": "ヘルプが必要ですか？サポートチームにお問い合わせください。",
+      "ko": "도움이 필요하신가요? 지원팀에 문의하세요.",
+      "zh": "需要帮助？联系我们的支持团队。",
+      "ar": "تحتاج مساعدة؟ اتصل بفريق الدعم لدينا."
+    }
+  },
+  "sms": {
+    "message": {
+      "en": "🔥 Your {productName} is ready! Mint now: {link} (QR: {qrLink}) - ChaosKey333",
+      "es": "🔥 ¡Tu {productName} está listo! Acuña ahora: {link} (QR: {qrLink}) - ChaosKey333",
+      "fr": "🔥 Votre {productName} est prêt ! Frappez maintenant : {link} (QR : {qrLink}) - ChaosKey333",
+      "de": "🔥 Ihr {productName} ist bereit! Jetzt prägen: {link} (QR: {qrLink}) - ChaosKey333",
+      "it": "🔥 Il tuo {productName} è pronto! Conia ora: {link} (QR: {qrLink}) - ChaosKey333",
+      "pt": "🔥 Seu {productName} está pronto! Cunhe agora: {link} (QR: {qrLink}) - ChaosKey333",
+      "ja": "🔥 あなたの{productName}の準備ができました！今すぐミント: {link} (QR: {qrLink}) - ChaosKey333",
+      "ko": "🔥 귀하의 {productName} 준비 완료! 지금 민트: {link} (QR: {qrLink}) - ChaosKey333",
+      "zh": "🔥 您的{productName}已准备好！立即铸造: {link} (QR: {qrLink}) - ChaosKey333",
+      "ar": "🔥 {productName} الخاص بك جاهز! اسكّ الآن: {link} (QR: {qrLink}) - ChaosKey333"
+    }
+  }
+}
