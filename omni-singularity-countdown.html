@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Omni-Singularity Countdown Board | ChaosKey333 Vault</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="omni-singularity-countdown.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="countdown-vault">
+  <!-- Terminal Overlay -->
+  <div id="terminalOverlay" class="terminal-overlay">
+    <div class="terminal-text">
+      <div class="typing-effect">OMNI-SINGULARITY COUNTDOWN BOARD</div>
+      <div class="typing-effect delay-1">Initializing Temporal Synchronization...</div>
+      <div class="typing-effect delay-2">Loading Event Matrices...</div>
+      <div class="typing-effect delay-3">Activating Glyph Sequences...</div>
+      <div class="typing-effect delay-4">BOARD ONLINE - AWAITING IGNITION</div>
+    </div>
+  </div>
+
+  <!-- Main Countdown Board -->
+  <div class="omni-board-container">
+    <!-- Header -->
+    <header class="board-header">
+      <h1 class="board-title">
+        <span class="glyph-ring rotating">⚡</span>
+        OMNI-SINGULARITY COUNTDOWN BOARD
+        <span class="glyph-ring rotating-reverse">⚡</span>
+      </h1>
+      <div class="board-subtitle">Permanent Edition • Vault Living Artifact</div>
+    </header>
+
+    <!-- Active Events Section -->
+    <section class="active-events">
+      <h2 class="section-title">
+        <span class="chaos-whisper">🌀</span>
+        ACTIVE IGNITION SEQUENCES
+        <span class="chaos-whisper pulse">🌀</span>
+      </h2>
+      
+      <!-- Primary Timer -->
+      <div class="countdown-container primary-event" id="primaryEvent">
+        <div class="event-header">
+          <div class="event-title" id="primaryTitle">PR #23 → PR #24 Chain Ignition</div>
+          <div class="event-description" id="primaryDescription">Lore Glyph Execution Sequence Activation</div>
+        </div>
+        <div class="glyph-ring-container">
+          <div class="glyph-ring large">
+            <div class="glyph active">⚡</div>
+            <div class="glyph">🔥</div>
+            <div class="glyph">🌀</div>
+            <div class="glyph">💫</div>
+            <div class="glyph">⚛</div>
+            <div class="glyph">🗲</div>
+            <div class="glyph">🔮</div>
+            <div class="glyph">✨</div>
+          </div>
+        </div>
+        <div class="countdown-display" id="primaryCountdown">
+          <div class="time-unit">
+            <span class="time-value" id="primary-days">00</span>
+            <span class="time-label">DAYS</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="primary-hours">00</span>
+            <span class="time-label">HOURS</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="primary-minutes">00</span>
+            <span class="time-label">MINUTES</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="primary-seconds">00</span>
+            <span class="time-label">SECONDS</span>
+          </div>
+        </div>
+        <div class="pulse-indicator" id="primaryPulse"></div>
+        <div class="whisper-teasers" id="primaryWhispers">
+          <div class="whisper">ChaosKey whispers: "The sequence begins with shadow..."</div>
+        </div>
+      </div>
+
+      <!-- Secondary Timer -->
+      <div class="countdown-container secondary-event" id="secondaryEvent">
+        <div class="event-header">
+          <div class="event-title" id="secondaryTitle">Cosmic Replay Terminal v2.0</div>
+          <div class="event-description" id="secondaryDescription">Enhanced Archive Experience Drop</div>
+        </div>
+        <div class="glyph-ring-container">
+          <div class="glyph-ring medium">
+            <div class="glyph active">🌌</div>
+            <div class="glyph">📡</div>
+            <div class="glyph">🔄</div>
+            <div class="glyph">💎</div>
+            <div class="glyph">⏳</div>
+            <div class="glyph">🎯</div>
+          </div>
+        </div>
+        <div class="countdown-display" id="secondaryCountdown">
+          <div class="time-unit">
+            <span class="time-value" id="secondary-days">00</span>
+            <span class="time-label">DAYS</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="secondary-hours">00</span>
+            <span class="time-label">HOURS</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="secondary-minutes">00</span>
+            <span class="time-label">MINUTES</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">
+            <span class="time-value" id="secondary-seconds">00</span>
+            <span class="time-label">SECONDS</span>
+          </div>
+        </div>
+        <div class="pulse-indicator" id="secondaryPulse"></div>
+        <div class="whisper-teasers" id="secondaryWhispers">
+          <div class="whisper">ChaosKey whispers: "Time itself bends to the archive..."</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timezone Sync Panel -->
+    <section class="timezone-panel">
+      <h3 class="panel-title">⌚ Temporal Synchronization</h3>
+      <div class="timezone-controls">
+        <select id="timezoneSelect" class="timezone-select">
+          <option value="auto">Auto-Detect Timezone</option>
+          <option value="UTC">UTC (Universal)</option>
+          <option value="America/New_York">EST/EDT (New York)</option>
+          <option value="America/Los_Angeles">PST/PDT (Los Angeles)</option>
+          <option value="Europe/London">GMT/BST (London)</option>
+          <option value="Europe/Berlin">CET/CEST (Berlin)</option>
+          <option value="Asia/Tokyo">JST (Tokyo)</option>
+          <option value="Asia/Shanghai">CST (Shanghai)</option>
+        </select>
+        <div class="current-time" id="currentTime">Loading...</div>
+      </div>
+    </section>
+
+    <!-- Cosmic Replay Archive -->
+    <section class="cosmic-replay">
+      <h3 class="section-title">
+        <span class="archive-glyph">📦</span>
+        COSMIC REPLAY ARCHIVE
+        <span class="archive-glyph">📦</span>
+      </h3>
+      <div class="replay-grid" id="replayGrid">
+        <div class="replay-item">
+          <div class="replay-header">
+            <h4>Origin Flare Genesis</h4>
+            <span class="replay-date">2024-12-15</span>
+          </div>
+          <div class="replay-preview">First vault ignition sequence</div>
+          <button class="replay-btn" onclick="playReplay('genesis')">
+            <span class="btn-icon">▶</span>
+            REPLAY
+          </button>
+        </div>
+        <div class="replay-item placeholder">
+          <div class="replay-header">
+            <h4>Awaiting Next Ignition</h4>
+            <span class="replay-date">TBD</span>
+          </div>
+          <div class="replay-preview">Next event will be archived here</div>
+          <button class="replay-btn disabled">
+            <span class="btn-icon">⏸</span>
+            PENDING
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Control Panel -->
+    <section class="control-panel">
+      <div class="audio-controls">
+        <button id="audioToggle" class="control-btn">
+          <span class="btn-icon">🔊</span>
+          SOUNDSCAPE
+        </button>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+      </div>
+      <div class="board-controls">
+        <button id="fullscreenToggle" class="control-btn">
+          <span class="btn-icon">⛶</span>
+          FULLSCREEN
+        </button>
+        <button id="dataExport" class="control-btn">
+          <span class="btn-icon">💾</span>
+          EXPORT DATA
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="ambientSoundscape" loop>
+    <source src="https://www.soundjay.com/misc/sounds/magic-chime-02.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="ignitionAudio">
+    <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Live Ignite Mode Overlay -->
+  <div id="liveIgniteOverlay" class="live-ignite-overlay hidden">
+    <div class="ignite-content">
+      <div class="blazing-title">🔥 LIVE IGNITION ACTIVATED 🔥</div>
+      <div class="relic-animation">
+        <div class="relic-core">💎</div>
+        <div class="energy-rings">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+        </div>
+      </div>
+      <div class="ignition-message" id="ignitionMessage">Event sequence activated!</div>
+      <button class="dismiss-btn" onclick="dismissIgnition()">ACKNOWLEDGE</button>
+    </div>
+  </div>
+
+  <!-- Back to Vault -->
+  <nav class="vault-nav">
+    <a href="vault.html" class="nav-btn">
+      <span class="nav-icon">🏛</span>
+      RETURN TO VAULT
+    </a>
+    <a href="index.html" class="nav-btn">
+      <span class="nav-icon">🏠</span>
+      MAIN CHAMBER
+    </a>
+  </nav>
+
+  <script src="omni-singularity-countdown.js"></script>
+</body>
+</html>
