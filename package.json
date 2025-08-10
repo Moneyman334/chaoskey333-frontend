@@ -13,12 +13,17 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^7.3.1",
+    "@vercel/kv": "^3.0.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.5.0",
     "ethers": "^6.15.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "express-slow-down": "^3.0.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.3.2",
+    "jsonwebtoken": "^9.0.2",
     "stripe": "^18.2.1",
     "twitter-api-v2": "^1.24.0"
   },
