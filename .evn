@@ -1,3 +1,22 @@
 STRIPE_SECRET_KEY=sk_live_your_secret_key_here
 PRIVATE_KEY=your_actual_wallet_private_key_here_without_0x
 
+# PayPal Configuration
+PAYPAL_CLIENT_ID=your_paypal_client_id_here
+PAYPAL_CLIENT_SECRET=your_paypal_client_secret_here
+PAYPAL_WEBHOOK_ID=your_paypal_webhook_id_here
+PAYPAL_SANDBOX=true
+
+# Coinbase Configuration
+COINBASE_API_KEY=your_coinbase_api_key_here
+COINBASE_API_SECRET=your_coinbase_api_secret_here
+COINBASE_ACCOUNT_USD=your_coinbase_usd_account_id_here
+COINBASE_ACCOUNT_USDC=your_coinbase_usdc_account_id_here
+
+# Vault Configuration
+VAULT_USDC_ADDRESS=your_vault_usdc_address_here
+VIP_MIN_USD=100
+
+# Payments Provider
+NEXT_PUBLIC_PAYMENTS_PROVIDER=paypal
+
