@@ -185,7 +185,8 @@ app.use(express.json());
 
 // 🧪 Test route to check server
 app.get("/health", (req, res) => {
-  res.send("✅ Server is alive and kickin'");
+  if (req.method !== "GET") return res.status(405).json({ ok: false, error: "Method not allowed" });
+  return res.status(200).json({ ok: true, service: "ChaosKey333 Ascension", time: new Date().toISOString() });
 });
 
 // 🔐 Stripe checkout endpoint (test)
