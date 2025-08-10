@@ -23,6 +23,18 @@
     <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
     <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
     <button id="mint-button">⚙️ Mint Relic</button>
+    
+    <!-- NEW SPECTRAL DECODE FEATURES -->
+    <div style="margin-top: 20px; border-top: 2px solid #00ff88; padding-top: 15px;">
+      <h3 style="color: #00ff88; text-shadow: 0 0 5px #00ff88; margin-bottom: 10px;">⚡ SPECTRAL DECODE FEATURES ⚡</h3>
+      <button onclick="toggleSpectralHUD()" style="background-color: #00ff88; color: #000; font-weight: bold; margin: 5px;">🔍 Spectral Decode HUD (H)</button>
+      <button onclick="demoToastSystem()" style="background-color: #ff6600; color: white; font-weight: bold; margin: 5px;">🎬 Demo Toast System</button>
+      <button onclick="triggerEvolutionDemo()" style="background-color: #8800ff; color: white; font-weight: bold; margin: 5px;">🧬 Demo Evolution Flow</button>
+      <div style="margin-top: 8px; font-size: 0.8rem; color: #00ffff;">
+        🎯 Press 'H' to toggle Spectral HUD | View glyph↔whisper alignments | Trigger evolution when decode completes
+      </div>
+    </div>
+    
     <div id="mint-status">🔒 Awaiting connection & payment...</div>
     <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>
     <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;">
@@ -35,6 +47,8 @@
 
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="components/ToastPop.js"></script>
+  <script src="components/SpectralDecodeHUD.js"></script>
   <script src="script.js"></script>
 
   <script>
@@ -175,4 +189,61 @@
     const session = await res.json();
     await stripe.redirectToCheckout({ sessionId: session.id });
   });
+
+  // ⚡ NEW SPECTRAL DECODE FUNCTIONS ⚡
+  
+  function toggleSpectralHUD() {
+    if (window.spectralHUD) {
+      window.spectralHUD.toggle();
+    } else {
+      console.warn('SpectralDecodeHUD not initialized');
+    }
+  }
+  
+  function demoToastSystem() {
+    if (window.ToastPop) {
+      window.ToastPop.demo();
+    } else {
+      console.warn('ToastPop not initialized');
+    }
+  }
+  
+  async function triggerEvolutionDemo() {
+    try {
+      // Show the HUD first
+      if (window.spectralHUD) {
+        window.spectralHUD.show();
+        
+        // Force decode completion after a short delay to demo the flow
+        setTimeout(() => {
+          window.spectralHUD.forceDecodeComplete();
+        }, 3000);
+      }
+      
+      // Show initial toast
+      if (window.ToastPop) {
+        window.ToastPop.showInfo('Demo Evolution Flow Starting...');
+      }
+      
+    } catch (error) {
+      console.error('Error in evolution demo:', error);
+      if (window.ToastPop) {
+        window.ToastPop.showError('Demo failed: ' + error.message);
+      }
+    }
+  }
+  
+  // Initialize new components when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Initializing Spectral Decode components...');
+    
+    // Components are auto-initialized by their respective scripts
+    setTimeout(() => {
+      if (window.spectralHUD && window.ToastPop) {
+        console.log('✅ All Spectral Decode components ready');
+        window.ToastPop.showSuccess('Spectral Decode System Online', 2000);
+      }
+    }, 1000);
+  });
+
 </script>
