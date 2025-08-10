@@ -1,59 +1,100 @@
 
-![tw-banner](https://github.com/thirdweb-example/next-starter/assets/57885104/20c8ce3b-4e55-4f10-ae03-2fe4743a5ee8)
+# ChaosKey333 Casino - Frontend
 
-# thirdweb-next-starter
+A Next.js application for selling legendary relics and artifacts with integrated crypto payment processing.
 
-Starter template to build an onchain react native app with [thirdweb](https://thirdweb.com/) and [next](https://nextjs.org/).
+## Features
 
-## Installation
-
-Install the template using [thirdweb create](https://portal.thirdweb.com/cli/create)
-
-```bash
-  npx thirdweb create app --next
-```
+- **ProductCard Component**: Displays product details with inline checkout functionality
+- **Store Grid**: Responsive product listing with neon graffiti chaos theme
+- **Unified BuyButton**: Consistent checkout experience across products
+- **Multiple Payment Providers**: Supports Coinbase Commerce and PayPal
+- **Responsive Design**: Mobile-first design that adapts to all screen sizes
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file:
-
-`CLIENT_ID`
-
-To learn how to create a client ID, refer to the [client documentation](https://portal.thirdweb.com/typescript/v5/client). 
-
-## Run locally
-
-Install dependencies
+Copy `.env.example` to `.env.local` and configure the following variables:
 
 ```bash
-yarn
+# ThirdWeb Configuration
+NEXT_PUBLIC_TEMPLATE_CLIENT_ID="your_thirdweb_client_id"
+
+# Base URL
+NEXT_PUBLIC_BASE_URL="your_base_url"
+
+# Product Configuration
+NEXT_PUBLIC_PRODUCT_ID="chaos_relic_001"
+NEXT_PUBLIC_PRODUCT_NAME="Legendary Family Relic"
+NEXT_PUBLIC_PRODUCT_PRICE_USD="50"
+
+# Payment Provider Configuration
+NEXT_PUBLIC_PAYMENTS_PROVIDER="coinbase"  # or "paypal"
+
+# Coinbase Commerce Configuration
+COINBASE_COMMERCE_API_KEY="your_coinbase_api_key"
+COINBASE_COMMERCE_WEBHOOK_SECRET="your_coinbase_webhook_secret"
+
+# PayPal Configuration
+PAYPAL_MODE="sandbox"  # or "production"
 ```
 
-Start development server
+## Development
 
 ```bash
-yarn dev
+npm install
+npm run dev
 ```
 
-Create a production build
+Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+## Deployment Instructions
+
+### 1. Add Environment Variables to Vercel
 
 ```bash
-yarn build
+vercel env add NEXT_PUBLIC_BASE_URL "sandbox"
+# Add other environment variables as needed
 ```
 
-Preview the production build
+### 2. Deploy to Production
 
 ```bash
-yarn start
+vercel --prod --confirm --name=chaoskey333-casino
 ```
 
-## Resources
+### 3. Test the Store
 
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
+Visit `/store` to see the product grid and test the checkout functionality.
 
-## Need help?
+## Project Structure
 
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+```
+src/
+├── app/
+│   ├── api/placeholder/         # Dynamic placeholder images
+│   ├── store/                   # Store page with product grid
+│   ├── layout.tsx              # Root layout with metadata
+│   ├── page.tsx                # Home page
+│   └── globals.css             # Global styles with neon theme
+├── components/
+│   ├── BuyButton.tsx           # Unified checkout button
+│   └── ProductCard.tsx         # Product display component
+```
+
+## Payment Integration
+
+The app supports multiple payment providers:
+
+- **Coinbase Commerce**: Primary crypto payment processor
+- **PayPal**: Backup traditional payment processor
+
+The payment provider is configurable via the `NEXT_PUBLIC_PAYMENTS_PROVIDER` environment variable.
+
+## Styling
+
+The app features a VIP-style neon graffiti chaos theme with:
+- Gradient backgrounds and borders
+- Neon glow effects
+- Animated particles
+- Responsive grid layouts
+- Cyberpunk color scheme
