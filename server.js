@@ -188,6 +188,34 @@ app.get("/health", (req, res) => {
   res.send("✅ Server is alive and kickin'");
 });
 
+// 🔍 Debug endpoint to show environment configuration
+app.get("/debug/env", (req, res) => {
+  const packageJson = require('./package.json');
+  
+  res.json({
+    server: {
+      name: packageJson.name,
+      version: packageJson.version,
+      nodeVersion: process.version,
+      port: PORT,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    },
+    environment: {
+      nodeEnv: process.env.NODE_ENV || 'development',
+      hasStripePublicKey: !!process.env.STRIPE_PUBLIC_KEY,
+      hasStripeSecretKey: !!process.env.STRIPE_SECRET_KEY,
+      hasStripeWebhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET,
+      hasPrivateKey: !!process.env.PRIVATE_KEY
+    },
+    runtime: {
+      platform: process.platform,
+      arch: process.arch,
+      memoryUsage: process.memoryUsage()
+    }
+  });
+});
+
 // 🔐 Stripe checkout endpoint (test)
 app.post("/create-checkout-session2", async (req, res) => {
   try {
