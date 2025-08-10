@@ -9,6 +9,66 @@
 </head>
 <body class="vault">
   <div id="terminalOverlay">Initializing Vault Resurrection...</div>
+  
+  <!-- Ripple-Cascade Multilingual Overlay System -->
+  <div id="multilingualOverlay" class="multilingual-overlay">
+    <div class="overlay-layer primary-layer" data-lang="en">
+      <div class="glyph-container">
+        <span class="relic-glyph">🧬</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">Eternal Fusion Core Awakening</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="ja">
+      <div class="glyph-container">
+        <span class="relic-glyph">🔮</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">永遠の融合コア覚醒</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="zh">
+      <div class="glyph-container">
+        <span class="relic-glyph">⚡</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">永恒融合核心觉醒</div>
+    </div>
+    
+    <div class="overlay-layer secondary-layer" data-lang="ko">
+      <div class="glyph-container">
+        <span class="relic-glyph">🌌</span>
+        <div class="ripple-container">
+          <div class="ripple ripple-1"></div>
+          <div class="ripple ripple-2"></div>
+          <div class="ripple ripple-3"></div>
+        </div>
+      </div>
+      <div class="evolution-text">영원한 융합 코어 각성</div>
+    </div>
+  </div>
+  
+  <!-- Particle burst system for ripple edges -->
+  <div id="particleBurstContainer" class="particle-burst-container"></div>
+  
+  <!-- Sub-bass audio system -->
+  <audio id="rippleDropSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAB4AVESFAQCGAQAAAQAQAGRhdGEAAAAA" type="audio/wav" />
+  </audio>
+  
   <div class="resurrection-container">
     <h1 class="glow">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
     <p class="pulse">Bass Surge Incoming...</p>
@@ -22,6 +82,7 @@
     <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px;">💳 Pay $33.33 & Mint Relic</button>
     <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
     <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
+    <button onclick="testRippleCascadeSystem()" style="background-color: #8A2BE2; color: white; margin-top: 10px;">🌊 Test Ripple-Cascade System</button>
     <button id="mint-button">⚙️ Mint Relic</button>
     <div id="mint-status">🔒 Awaiting connection & payment...</div>
     <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>

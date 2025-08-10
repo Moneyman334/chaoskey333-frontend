@@ -8,6 +8,257 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Ripple-Cascade Multilingual Overlay System
+let solverImprint = null;
+let evolutionSequenceActive = false;
+let cosmicReplayMode = false;
+
+// Solver Imprint Generation (based on wallet address for personalization)
+function generateSolverImprint(walletAddress) {
+  if (!walletAddress) return { resonanceTone: 1000, cascadeDelay: 500 };
+  
+  // Create personalized resonance tone from wallet address
+  const addressSum = walletAddress.slice(2).split('').reduce((sum, char) => {
+    return sum + parseInt(char, 16) || 0;
+  }, 0);
+  
+  const resonanceTone = 800 + (addressSum % 400); // Range: 800-1200ms
+  const cascadeDelay = 300 + (addressSum % 600); // Range: 300-900ms
+  
+  return { resonanceTone, cascadeDelay };
+}
+
+// Sub-bass water drop sound system
+function playRippleDropSound() {
+  try {
+    // Create synthetic sub-bass water drop sound
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Sub-bass frequency (40-80 Hz)
+    oscillator.frequency.setValueAtTime(60, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.3);
+    
+    // Water drop envelope
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  } catch (error) {
+    console.log("Audio context not available, skipping sound effect");
+  }
+}
+
+// Micro-particle burst effect at ripple edges
+function createParticleBurst(x, y, color = 'gold') {
+  const container = document.getElementById('particleBurstContainer');
+  if (!container) return;
+  
+  const particleCount = 12;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = `particle ${color === 'violet' ? 'violet' : ''}`;
+    
+    const angle = (i / particleCount) * Math.PI * 2;
+    const distance = 50 + Math.random() * 100;
+    const burstX = Math.cos(angle) * distance;
+    const burstY = Math.sin(angle) * distance;
+    
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.setProperty('--burst-x', burstX + 'px');
+    particle.style.setProperty('--burst-y', burstY + 'px');
+    
+    container.appendChild(particle);
+    
+    // Clean up particle after animation
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 2000);
+  }
+}
+
+// Ripple-cascade effect trigger
+function triggerRippleCascade(layerElement, imprint) {
+  const glyphContainer = layerElement.querySelector('.glyph-container');
+  const ripples = layerElement.querySelectorAll('.ripple');
+  const isPrimary = layerElement.classList.contains('primary-layer');
+  
+  if (!glyphContainer || !ripples.length) return;
+  
+  // Get glyph center position for particle bursts
+  const rect = glyphContainer.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  // Trigger ripples with personalized timing
+  ripples.forEach((ripple, index) => {
+    const delay = index * imprint.cascadeDelay / ripples.length;
+    
+    setTimeout(() => {
+      // Play water drop sound
+      playRippleDropSound();
+      
+      // Restart ripple animation
+      ripple.style.animation = 'none';
+      ripple.offsetHeight; // Trigger reflow
+      ripple.style.animation = `rippleCascade ${imprint.resonanceTone}ms infinite ease-out`;
+      
+      // Create particle burst at ripple edge (delayed)
+      setTimeout(() => {
+        createParticleBurst(centerX, centerY, isPrimary ? 'gold' : 'violet');
+      }, imprint.resonanceTone * 0.7);
+      
+    }, delay);
+  });
+}
+
+// Permanent Relic Evolution Trigger (PR #24 integration)
+function triggerPermanentRelicEvolution() {
+  if (evolutionSequenceActive) return;
+  
+  evolutionSequenceActive = true;
+  const overlay = document.getElementById('multilingualOverlay');
+  const layers = document.querySelectorAll('.overlay-layer');
+  
+  if (!overlay || !layers.length) {
+    evolutionSequenceActive = false;
+    return;
+  }
+  
+  console.log("🧬 Triggering Permanent Relic Evolution with Ripple-Cascade Sync");
+  
+  // Generate or use existing solver imprint
+  if (!solverImprint && userWalletAddress) {
+    solverImprint = generateSolverImprint(userWalletAddress);
+    console.log("🔮 Generated Solver Imprint:", solverImprint);
+  }
+  
+  const imprint = solverImprint || { resonanceTone: 1000, cascadeDelay: 500 };
+  
+  // Show multilingual overlay
+  overlay.classList.add('active');
+  
+  // Activate layers with staggered timing
+  layers.forEach((layer, index) => {
+    const isPrimary = layer.classList.contains('primary-layer');
+    const activationDelay = isPrimary ? 0 : (index * 300);
+    
+    setTimeout(() => {
+      layer.classList.add('active');
+      
+      // Trigger ripple cascade for this layer
+      setTimeout(() => {
+        triggerRippleCascade(layer, imprint);
+      }, 500);
+      
+    }, activationDelay);
+  });
+  
+  // Complete evolution sequence after full cascade
+  const totalDuration = (layers.length * 300) + (imprint.resonanceTone * 3) + 2000;
+  setTimeout(() => {
+    completeEvolutionSequence();
+  }, totalDuration);
+}
+
+// Complete evolution sequence and transition to normal state
+function completeEvolutionSequence() {
+  console.log("✨ Evolution sequence complete - Eternal Fusion Core activated");
+  
+  const overlay = document.getElementById('multilingualOverlay');
+  const layers = document.querySelectorAll('.overlay-layer');
+  
+  // Fade out layers
+  layers.forEach((layer, index) => {
+    setTimeout(() => {
+      layer.classList.remove('active');
+    }, index * 200);
+  });
+  
+  // Hide overlay after all layers fade
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    evolutionSequenceActive = false;
+    
+    // Trigger cosmic replay terminal sync if in replay mode
+    if (cosmicReplayMode) {
+      console.log("🌌 Syncing evolution sequence with Cosmic Replay Terminal");
+    }
+  }, layers.length * 200 + 1000);
+}
+
+// Enhanced mint relic function with evolution trigger integration
+async function mintRelicWithEvolution() {
+  if (!userWalletAddress || !isWalletConnected) {
+    console.log("⚠️ No wallet connected for evolution minting");
+    return;
+  }
+
+  console.log("⚙️ Initiating enhanced relic mint with evolution trigger for wallet:", userWalletAddress);
+  const mintStatus = document.getElementById("mintStatus");
+
+  if (mintStatus) {
+    mintStatus.innerText = "🌀 Preparing Eternal Fusion Core evolution...";
+  }
+
+  // Generate solver imprint if not exists
+  if (!solverImprint) {
+    solverImprint = generateSolverImprint(userWalletAddress);
+  }
+
+  // Trigger the Permanent Relic Evolution (PR #24 + PR #25 integration)
+  triggerPermanentRelicEvolution();
+
+  // Continue with original minting logic
+  setTimeout(() => {
+    if (mintStatus) {
+      mintStatus.innerText = "🧬 Evolution cascade complete - Minting vault relic...";
+    }
+    
+    // Simulate minting process
+    setTimeout(() => {
+      console.log("🧬 Vault Relic Minted for", userWalletAddress);
+      if (mintStatus) {
+        mintStatus.innerText = `🧿 Eternal Fusion Core Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
+      }
+    }, 2000);
+  }, 1000);
+}
+
+// Cosmic Replay Terminal Integration (PR #8-#10 compatibility)
+function enableCosmicReplayMode() {
+  cosmicReplayMode = true;
+  console.log("🌌 Cosmic Replay Terminal mode enabled - Evolution sequences will sync for vault cycles");
+}
+
+function disableCosmicReplayMode() {
+  cosmicReplayMode = false;
+  console.log("🌌 Cosmic Replay Terminal mode disabled");
+}
+
+// Test function for the ripple-cascade system
+function testRippleCascadeSystem() {
+  console.log("🧪 Testing Ripple-Cascade Multilingual Overlay System");
+  
+  if (!userWalletAddress) {
+    // Use test address for demonstration
+    userWalletAddress = "0x742d35Cc6661C0532c26916F8B3A4c1c0f50cA1f";
+    isWalletConnected = true;
+  }
+  
+  triggerPermanentRelicEvolution();
+}
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -163,27 +414,10 @@ async function connectWallet() {
   }
 }
 
-// Mint Relic Function (handles post-payment minting)
+// Mint Relic Function (handles post-payment minting) - Enhanced with Evolution System
 async function mintRelic() {
-  if (!userWalletAddress || !isWalletConnected) {
-    console.log("⚠️ No wallet connected for minting");
-    return;
-  }
-
-  console.log("⚙️ Initiating relic mint for wallet:", userWalletAddress);
-  const mintStatus = document.getElementById("mintStatus");
-
-  if (mintStatus) {
-    mintStatus.innerText = "🌀 Minting vault relic...";
-  }
-
-  // Simulate minting process
-  setTimeout(() => {
-    console.log("🧬 Vault Relic Minted for", userWalletAddress);
-    if (mintStatus) {
-      mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
-    }
-  }, 2000);
+  // Use the enhanced evolution mint function
+  return mintRelicWithEvolution();
 }
 
 // Test Stripe Connection
