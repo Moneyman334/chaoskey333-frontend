@@ -7,9 +7,142 @@ let STRIPE_PUBLISHABLE_KEY = null;
 let stripe = null;
 let signer = null;
 let userAddress = null;
+let paypalInitialized = false;
 
-// Initialize Stripe
-async function initializeStripe() {
+// Initialize PayPal Smart Button
+async function initializePayPal() {
+  try {
+    // Get PayPal client ID from config
+    const response = await fetch('/config');
+    const config = await response.json();
+    const paypalClientId = config.paypalClientId;
+    
+    if (!paypalClientId || paypalClientId === 'YOUR_PAYPAL_CLIENT_ID') {
+      console.log("⚠️ PayPal Client ID not configured, skipping PayPal initialization");
+      document.getElementById('paypal-button-container').innerHTML = 
+        '<div style="color: #ffaa00; text-align: center; padding: 20px; border: 1px solid #ffaa00; border-radius: 10px;">PayPal not configured</div>';
+      return;
+    }
+    
+    // Dynamically load PayPal SDK
+    if (typeof paypal === 'undefined') {
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD`;
+      script.onload = () => {
+        console.log("✅ PayPal SDK loaded");
+        renderPayPalButton();
+      };
+      script.onerror = () => {
+        console.error("❌ Failed to load PayPal SDK");
+        document.getElementById('paypal-button-container').innerHTML = 
+          '<div style="color: #ff6666; text-align: center; padding: 20px;">PayPal SDK failed to load</div>';
+      };
+      document.head.appendChild(script);
+    } else {
+      renderPayPalButton();
+    }
+    
+  } catch (error) {
+    console.error("❌ Failed to initialize PayPal:", error);
+    document.getElementById('paypal-button-container').innerHTML = 
+      '<div style="color: #ff6666; text-align: center; padding: 20px;">PayPal initialization failed</div>';
+  }
+}
+
+// Render PayPal Smart Button
+function renderPayPalButton() {
+  if (paypalInitialized) {
+    console.log("✅ PayPal already initialized");
+    return;
+  }
+
+  console.log("🔑 Rendering PayPal Smart Button...");
+  
+  paypal.Buttons({
+    style: {
+      layout: 'vertical',
+      color: 'gold',
+      shape: 'rect',
+      label: 'paypal',
+      height: 55
+    },
+    createOrder: function(data, actions) {
+      if (!isWalletConnected || !userWalletAddress) {
+        alert("🔌 Please connect your wallet first!");
+        throw new Error("Wallet not connected");
+      }
+
+      console.log("💰 Creating PayPal order...");
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '33.33'
+          },
+          description: `ChaosKey333 Vault Relic for wallet: ${userWalletAddress}`,
+          custom_id: userWalletAddress
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      console.log("✅ PayPal payment approved, capturing...");
+      document.getElementById("mintStatus").innerText = "💰 PayPal payment approved, processing...";
+      
+      return actions.order.capture().then(function(details) {
+        console.log("🎉 PayPal payment captured:", details);
+        
+        // Call our server to handle the payment and create claim token
+        return fetch('/api/paypal-capture', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderID: data.orderID,
+            walletAddress: userWalletAddress,
+            connectedWalletType: connectedWalletType,
+            paymentDetails: details
+          }),
+        }).then(response => response.json())
+          .then(result => {
+            if (result.success) {
+              document.getElementById("mintStatus").innerText = "✅ PayPal payment confirmed! Redirecting to claim...";
+              // Redirect to store/success with claim token
+              window.location.href = `/store/success?token=${result.claimToken}`;
+            } else {
+              throw new Error(result.error || 'Payment processing failed');
+            }
+          });
+      });
+    },
+    onError: function(err) {
+      console.error("❌ PayPal error:", err);
+      document.getElementById("mintStatus").innerText = "❌ PayPal payment failed";
+      alert("PayPal payment failed. Please try again.");
+    },
+    onCancel: function(data) {
+      console.log("⚠️ PayPal payment cancelled");
+      document.getElementById("mintStatus").innerText = "⚠️ PayPal payment cancelled";
+    }
+  }).render('#paypal-button-container').then(() => {
+    console.log("✅ PayPal Smart Button rendered successfully");
+    paypalInitialized = true;
+    
+    // Add cosmic styling to PayPal button
+    setTimeout(() => {
+      const paypalContainer = document.getElementById('paypal-button-container');
+      if (paypalContainer) {
+        paypalContainer.style.boxShadow = '0 0 20px #ffc439';
+        paypalContainer.style.borderRadius = '10px';
+        paypalContainer.style.overflow = 'hidden';
+        paypalContainer.style.border = '1px solid #ffc439';
+      }
+    }, 500);
+  }).catch(err => {
+    console.error("❌ PayPal button render failed:", err);
+    document.getElementById('paypal-button-container').innerHTML = 
+      '<div style="color: #ff6666; text-align: center; padding: 20px;">PayPal temporarily unavailable</div>';
+  });
+}
   try {
     // Fetch public key from server
     const response = await fetch('/config');
@@ -371,6 +504,7 @@ window.onload = async function () {
   setTimeout(checkWalletAvailability, 500);
   
   await initializeStripe();
+  await initializePayPal();
 
   setTimeout(() => {
     const overlay = document.getElementById("terminalOverlay");

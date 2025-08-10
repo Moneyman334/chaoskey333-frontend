@@ -19,14 +19,20 @@
     <button onclick="resurrect()">⚡ Ignite Vault ⚡</button>
     <button id="connectWallet">🔌 Connect Wallet</button>
     <button id="connectCoinbase" style="background-color: #1652f0; color: white;">🔵 Coinbase Wallet</button>
-    <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px;">💳 Pay $33.33 & Mint Relic</button>
+    
+    <div style="margin: 20px 0; padding: 15px; border: 1px solid #333; border-radius: 10px; background: linear-gradient(135deg, #1a1a1a, #2a2a2a);">
+      <h3 style="color: #00ffff; text-align: center; margin-bottom: 15px;">⚡ Choose Payment Method ⚡</h3>
+      <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px; margin: 5px; width: 45%;">💳 Stripe - $33.33</button>
+      <div id="paypal-button-container" style="width: 45%; display: inline-block; margin: 5px; vertical-align: top;"></div>
+    </div>
+    
     <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
     <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
     <button id="mint-button">⚙️ Mint Relic</button>
     <div id="mint-status">🔒 Awaiting connection & payment...</div>
     <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>
     <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;">
-      💡 Connect Wallet (MetaMask/Coinbase) → Complete Stripe Payment → Relic Mints to Vault
+      💡 Connect Wallet (MetaMask/Coinbase) → Complete Payment (Stripe/PayPal) → Relic Mints to Vault
     </div>
     <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
       🔌 No wallet? Install: <a href="https://metamask.io" target="_blank" style="color: #ff6600;">MetaMask</a> | <a href="https://wallet.coinbase.com" target="_blank" style="color: #1652f0;">Coinbase Wallet</a>
