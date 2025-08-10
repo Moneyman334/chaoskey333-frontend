@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spectral Decode HUD - Test Environment</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div id="terminalOverlay">Initializing Spectral Decode Matrix...</div>
+  
+  <div class="resurrection-container">
+    <h1 class="glow">⧨ Spectral Decode HUD - Test Environment ⧨</h1>
+    <p class="pulse">Multilingual Glyph Overlay System Active</p>
+    
+    <div class="chaos-glyphs-display">
+      <h3 style="color: #00ffcc; margin-bottom: 15px;">🌊 Chaos Glyphs for Testing:</h3>
+      <div class="glyph-sequence">ᚨᚢᚱᚨ ᚲᚺᚨᛟᛊ ᚱᛖᛚᛁᚲ</div>
+      <div class="glyph-sequence">ᚢᚨᚢᛚᛏ ᛞᛖᚲᛟᛞᛖ ⧨⧩⧪</div>
+      <div class="glyph-sequence">◯◉◯</div>
+      <p style="color: #ffaa00; font-size: 0.9rem; margin-top: 10px;">
+        🔍 Hover over glyphs to see them highlighted and translated in real-time
+      </p>
+    </div>
+
+    <div class="test-controls">
+      <h3 style="color: #00ffcc; margin-bottom: 15px;">🎛️ Test Controls:</h3>
+      <button onclick="triggerGlyphDetection()" class="test-btn">⚡ Trigger Glyph Detection</button>
+      <button onclick="simulateDecodeSequence()" class="test-btn">🌀 Simulate Decode Sequence</button>
+      <button onclick="toggleHUDVisibility()" class="test-btn">👁️ Toggle HUD</button>
+      <button onclick="testLanguageSwitch()" class="test-btn">🌐 Test Language Switch</button>
+    </div>
+
+    <div class="feature-demo">
+      <h3 style="color: #00ffcc; margin-bottom: 15px;">🚀 Features Demonstrated:</h3>
+      <div class="feature-list">
+        <div class="feature-item">✅ Auto-detection of viewer's language preference</div>
+        <div class="feature-item">✅ Localized glyph hints in 10+ languages</div>
+        <div class="feature-item">✅ Dual-layer subtitles (translated + original)</div>
+        <div class="feature-item">✅ Synced HUD highlights with cosmic aesthetic</div>
+        <div class="feature-item">✅ Adaptive AI translation system</div>
+        <div class="feature-item">✅ Real-time glyph scanning and detection</div>
+      </div>
+    </div>
+
+    <div class="integration-info">
+      <h3 style="color: #ffaa00; margin-bottom: 15px;">🔗 Integration Status:</h3>
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-label">PR #23 Integration:</span>
+          <span class="status-value ready">✅ Ready</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">PR #25 Integration:</span>
+          <span class="status-value ready">✅ Ready</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Multilingual Support:</span>
+          <span class="status-value active">🌐 Active</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">HUD Sync:</span>
+          <span class="status-value active">⚡ Synced</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="keyboard-shortcuts">
+      <h4 style="color: #00ffcc;">⌨️ Keyboard Shortcuts:</h4>
+      <p style="color: #ffaa00; font-size: 0.9rem;">
+        Ctrl+H: Toggle HUD | Hover: Highlight Glyphs | Click Language Selector: Change Language
+      </p>
+    </div>
+  </div>
+
+  <script src="spectral-decode-hud.js"></script>
+  
+  <script>
+    let spectralHUD = null;
+    let testGlyphs = [
+      'ᚨᚢᚱᚨ', 'ᚲᚺᚨᛟᛊ', 'ᚱᛖᛚᛁᚲ', 
+      'ᚢᚨᚢᛚᛏ', 'ᛞᛖᚲᛟᛞᛖ', '⧨⧩⧪', '◯◉◯'
+    ];
+    let currentTestIndex = 0;
+
+    // Initialize Spectral Decode HUD
+    window.onload = async function () {
+      console.log("🚀 Initializing Spectral Decode Test Environment...");
+      
+      // Initialize HUD
+      if (typeof SpectralDecodeHUD !== 'undefined') {
+        spectralHUD = new SpectralDecodeHUD();
+        console.log("🌊 Spectral Decode HUD initialized for testing");
+      }
+
+      // Hide loading overlay
+      setTimeout(() => {
+        const overlay = document.getElementById("terminalOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }, 2000);
+
+      // Add dynamic glyph content for testing
+      setTimeout(() => {
+        addDynamicGlyphContent();
+      }, 3000);
+    };
+
+    function triggerGlyphDetection() {
+      if (spectralHUD) {
+        spectralHUD.scanForGlyphs();
+        console.log("🔍 Manual glyph detection triggered");
+      }
+    }
+
+    function simulateDecodeSequence() {
+      const sequences = [
+        'ᚨᚢᚱᚨ ᚲᚺᚨᛟᛊ',
+        'ᚱᛖᛚᛁᚲ ᚢᚨᚢᛚᛏ', 
+        'ᛞᛖᚲᛟᛞᛖ ⧨⧩⧪',
+        '◯◉◯'
+      ];
+
+      sequences.forEach((sequence, index) => {
+        setTimeout(() => {
+          showTemporaryGlyph(sequence);
+        }, index * 1500);
+      });
+    }
+
+    function showTemporaryGlyph(glyphText) {
+      const tempElement = document.createElement('div');
+      tempElement.textContent = glyphText;
+      tempElement.style.position = 'fixed';
+      tempElement.style.top = Math.random() * 300 + 100 + 'px';
+      tempElement.style.left = Math.random() * 400 + 100 + 'px';
+      tempElement.style.color = '#ffaa00';
+      tempElement.style.fontSize = '1.5rem';
+      tempElement.style.fontFamily = 'Courier New, monospace';
+      tempElement.style.textShadow = '0 0 10px #ffaa00';
+      tempElement.style.zIndex = '1000';
+      tempElement.style.pointerEvents = 'none';
+      
+      document.body.appendChild(tempElement);
+      
+      // Trigger HUD detection
+      if (spectralHUD) {
+        spectralHUD.scanForGlyphs();
+      }
+      
+      // Remove after animation
+      setTimeout(() => {
+        document.body.removeChild(tempElement);
+      }, 3000);
+    }
+
+    function toggleHUDVisibility() {
+      if (spectralHUD) {
+        spectralHUD.toggleHUD();
+      }
+    }
+
+    function testLanguageSwitch() {
+      const languages = ['en', 'es', 'fr', 'de', 'ja', 'zh', 'ru'];
+      const currentLang = spectralHUD?.currentLanguage || 'en';
+      const currentIndex = languages.indexOf(currentLang);
+      const nextLang = languages[(currentIndex + 1) % languages.length];
+      
+      if (spectralHUD) {
+        spectralHUD.changeLanguage(nextLang);
+        console.log(`🌐 Language switched to: ${nextLang.toUpperCase()}`);
+      }
+    }
+
+    function addDynamicGlyphContent() {
+      const container = document.querySelector('.chaos-glyphs-display');
+      const dynamicDiv = document.createElement('div');
+      dynamicDiv.innerHTML = `
+        <h4 style="color: #00ffcc; margin-top: 20px;">🔮 Dynamic Glyph Detection:</h4>
+        <div id="dynamic-glyph-area" style="min-height: 50px; border: 1px dashed #00ffcc; padding: 10px; margin: 10px 0;">
+          <span style="color: #888;">Dynamic glyphs will appear here...</span>
+        </div>
+      `;
+      container.appendChild(dynamicDiv);
+
+      // Add glyphs periodically
+      setInterval(() => {
+        addRandomGlyph();
+      }, 5000);
+    }
+
+    function addRandomGlyph() {
+      const area = document.getElementById('dynamic-glyph-area');
+      if (area) {
+        const glyph = testGlyphs[Math.floor(Math.random() * testGlyphs.length)];
+        const span = document.createElement('span');
+        span.textContent = glyph + ' ';
+        span.style.color = '#ffaa00';
+        span.style.marginRight = '10px';
+        span.className = 'dynamic-glyph';
+        
+        area.appendChild(span);
+        
+        // Trigger HUD scan
+        if (spectralHUD) {
+          setTimeout(() => spectralHUD.scanForGlyphs(), 100);
+        }
+      }
+    }
+
+    // Glyph interaction
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('glyph-sequence')) {
+        const glyphText = e.target.textContent;
+        if (spectralHUD) {
+          spectralHUD.showDualLayerSubtitle(glyphText);
+        }
+      }
+    });
+  </script>
+
+  <style>
+    .test-controls {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+      border-radius: 10px;
+    }
+
+    .test-btn {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      transition: all 0.3s ease;
+    }
+
+    .test-btn:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 15px #00ffcc;
+      transform: translateY(-2px);
+    }
+
+    .feature-demo, .integration-info {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 170, 0, 0.05);
+      border: 1px solid rgba(255, 170, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .feature-item {
+      color: #ffaa00;
+      font-size: 0.95rem;
+      padding: 5px 0;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 5px;
+      border: 1px solid rgba(255,170,0,0.2);
+    }
+
+    .status-label {
+      color: #ffaa00;
+      font-size: 0.9rem;
+    }
+
+    .status-value.ready {
+      color: #00ff00;
+    }
+
+    .status-value.active {
+      color: #00ffcc;
+    }
+
+    .keyboard-shortcuts {
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      border: 1px solid rgba(0,255,204,0.2);
+    }
+
+    .dynamic-glyph {
+      animation: glyphAppear 0.5s ease-out;
+    }
+
+    @keyframes glyphAppear {
+      0% { opacity: 0; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</body>
+</html>

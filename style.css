@@ -190,3 +190,37 @@ button:hover {
   0% { transform: translate(0px, 0px) rotate(0deg); }
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
+
+/* Chaos Glyphs Display */
+.chaos-glyphs-display {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(0, 255, 204, 0.05);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.glyph-sequence {
+  font-family: 'Courier New', monospace;
+  font-size: 1.3rem;
+  color: #ffaa00;
+  text-align: center;
+  margin: 10px 0;
+  text-shadow: 0 0 10px #ffaa00;
+  animation: glyphFlicker 3s infinite alternate;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.glyph-sequence:hover {
+  color: #00ffcc;
+  text-shadow: 0 0 15px #00ffcc;
+  transform: scale(1.05);
+}
+
+@keyframes glyphFlicker {
+  0%, 90% { opacity: 1; }
+  95% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
