@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Cosmic Terminal - Rollback Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #2e0a1a 50%, #3e162e 100%);
+            color: #ff6666;
+            font-family: 'Courier Prime', monospace;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px solid #ff6666;
+            padding: 20px;
+            background: rgba(255, 102, 102, 0.1);
+            border-radius: 10px;
+        }
+        
+        .demo-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 800;
+            font-size: 2rem;
+            color: #ff6666;
+            text-shadow: 0 0 20px #ff6666;
+        }
+        
+        .scenario-section {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #ff6666;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .scenario-title {
+            color: #ff6666;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ff6666;
+            padding-bottom: 5px;
+        }
+        
+        .demo-button {
+            padding: 15px 30px;
+            border: 2px solid #ff6666;
+            background: rgba(255, 102, 102, 0.1);
+            color: #ff6666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            background: rgba(255, 102, 102, 0.3);
+            box-shadow: 0 0 20px #ff6666;
+        }
+        
+        .log-output {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #ff6666;
+            border-radius: 8px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-top: 15px;
+        }
+        
+        .log-error { color: #ff3333; }
+        .log-warning { color: #ffaa00; }
+        .log-info { color: #66aaff; }
+        .log-success { color: #66ff99; }
+        
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #00ff88;
+            text-decoration: none;
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <a href="/cosmic-terminal" class="back-link">← Back to Cosmic Terminal</a>
+        
+        <div class="demo-header">
+            <div class="demo-title">🛡️ FAIL-SAFE ROLLBACK DEMONSTRATION</div>
+            <div style="margin-top: 10px; font-size: 1.1rem;">Testing Emergency Recovery Protocols</div>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">🎯 SCENARIO: Vault Integrity Breach During Deployment</div>
+            <p>This demonstration simulates a critical failure during the Ascension deployment sequence where vault integrity drops below the safety threshold (85%). The fail-safe mechanisms should automatically trigger an emergency rollback to maintain vault stability.</p>
+            
+            <button class="demo-button" onclick="simulateIntegrityBreach()">🚨 Simulate Integrity Breach</button>
+            <button class="demo-button" onclick="simulateNetworkFailure()">📡 Simulate Network Failure</button>
+            <button class="demo-button" onclick="simulateCorruptedDeployment()">⚠️ Simulate Corrupted PR</button>
+            
+            <div class="log-output" id="demoOutput">
+                <div class="log-info">[DEMO] Rollback demonstration system initialized</div>
+                <div class="log-info">[DEMO] Fail-safe protocols ready for testing</div>
+                <div class="log-info">[DEMO] Select a scenario above to begin</div>
+            </div>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">🔧 KEY FEATURES DEMONSTRATED</div>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin: 10px 0; color: #66ff99;">✓ Real-time vault integrity monitoring</li>
+                <li style="margin: 10px 0; color: #66ff99;">✓ Automatic deployment halting on threshold breach</li>
+                <li style="margin: 10px 0; color: #66ff99;">✓ Cascading rollback of deployed PRs</li>
+                <li style="margin: 10px 0; color: #66ff99;">✓ Vault backup restoration</li>
+                <li style="margin: 10px 0; color: #66ff99;">✓ System reset to stable state</li>
+                <li style="margin: 10px 0; color: #66ff99;">✓ Live feedback throughout recovery process</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let logCount = 0;
+        
+        function log(level, message) {
+            const output = document.getElementById('demoOutput');
+            const entry = document.createElement('div');
+            entry.className = `log-${level}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            output.appendChild(entry);
+            output.scrollTop = output.scrollHeight;
+            
+            // Keep only last 20 entries
+            while (output.children.length > 20) {
+                output.removeChild(output.firstChild);
+            }
+        }
+        
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        async function simulateIntegrityBreach() {
+            log('info', '🎯 [DEMO] Starting Vault Integrity Breach simulation');
+            log('info', '[DEPLOY] Beginning deployment sequence...');
+            await delay(1000);
+            
+            log('info', '[DEPLOY] PR #10 - Ascension Edition Core: DEPLOYING');
+            await delay(1500);
+            log('success', '[DEPLOY] PR #10 deployed successfully');
+            await delay(500);
+            
+            log('info', '[DEPLOY] PR #11 - Mood Sync Integration: DEPLOYING');
+            await delay(1000);
+            log('warning', '[VAULT] Integrity dropping: 92% → 87% → 82%');
+            await delay(800);
+            
+            log('error', '🚨 [FAIL-SAFE] CRITICAL: Vault integrity below threshold (82%)');
+            log('warning', '[FAIL-SAFE] Automatic deployment halt initiated');
+            log('warning', '🛡️ [ROLLBACK] Emergency rollback protocols activated');
+            await delay(1000);
+            
+            log('info', '[ROLLBACK] Stopping active deployments...');
+            log('info', '[ROLLBACK] Rolling back PR #11: Mood Sync Integration');
+            await delay(800);
+            log('info', '[ROLLBACK] Rolling back PR #10: Ascension Edition Core');
+            await delay(800);
+            
+            log('info', '[ROLLBACK] Restoring vault from backup...');
+            await delay(1200);
+            log('success', '[ROLLBACK] Vault integrity restored to 95%');
+            log('success', '✅ [COMPLETE] Emergency rollback successful - System stabilized');
+        }
+        
+        async function simulateNetworkFailure() {
+            log('info', '🎯 [DEMO] Starting Network Failure simulation');
+            log('info', '[DEPLOY] Beginning deployment sequence...');
+            await delay(1000);
+            
+            log('info', '[DEPLOY] PR #10 - Ascension Edition Core: DEPLOYING');
+            await delay(1500);
+            log('success', '[DEPLOY] PR #10 deployed successfully');
+            await delay(500);
+            
+            log('info', '[DEPLOY] PR #11 - Mood Sync Integration: DEPLOYING');
+            await delay(1000);
+            log('warning', '[NETWORK] Connection instability detected');
+            await delay(500);
+            
+            log('error', '📡 [NETWORK] WebSocket connection lost');
+            log('error', '[DEPLOY] PR #11 deployment timeout after 30 seconds');
+            log('warning', '[FAIL-SAFE] Network failure detected - Initiating rollback');
+            await delay(1000);
+            
+            log('warning', '🛡️ [ROLLBACK] Emergency rollback protocols activated');
+            log('info', '[ROLLBACK] Rolling back partial PR #11 deployment');
+            await delay(800);
+            log('info', '[ROLLBACK] Rolling back PR #10: Ascension Edition Core');
+            await delay(800);
+            
+            log('info', '[ROLLBACK] Restoring vault from backup...');
+            await delay(1200);
+            log('success', '[ROLLBACK] Vault restored to stable state');
+            log('success', '✅ [COMPLETE] Network failure recovery successful');
+        }
+        
+        async function simulateCorruptedDeployment() {
+            log('info', '🎯 [DEMO] Starting Corrupted PR simulation');
+            log('info', '[DEPLOY] Beginning deployment sequence...');
+            await delay(1000);
+            
+            log('info', '[DEPLOY] PR #10 - Ascension Edition Core: DEPLOYING');
+            await delay(1500);
+            log('success', '[DEPLOY] PR #10 deployed successfully');
+            await delay(500);
+            
+            log('info', '[DEPLOY] PR #11 - Mood Sync Integration: DEPLOYING');
+            await delay(1500);
+            log('success', '[DEPLOY] PR #11 deployed successfully');
+            await delay(500);
+            
+            log('info', '[DEPLOY] PR #23 - Spectral Decode HUD: DEPLOYING');
+            await delay(1000);
+            log('warning', '[DEPLOY] Checksum mismatch detected in PR #23');
+            await delay(500);
+            
+            log('error', '⚠️ [DEPLOY] CRITICAL: Corrupted deployment package detected');
+            log('error', '[VALIDATE] PR #23 validation failed - Code integrity compromised');
+            log('warning', '[FAIL-SAFE] Corrupted deployment detected - Halting sequence');
+            await delay(1000);
+            
+            log('warning', '🛡️ [ROLLBACK] Emergency rollback protocols activated');
+            log('info', '[ROLLBACK] Rolling back corrupted PR #23');
+            await delay(800);
+            log('info', '[ROLLBACK] Rolling back PR #11: Mood Sync Integration');
+            await delay(800);
+            log('info', '[ROLLBACK] Rolling back PR #10: Ascension Edition Core');
+            await delay(800);
+            
+            log('info', '[ROLLBACK] Performing security scan...');
+            await delay(1000);
+            log('info', '[ROLLBACK] Restoring vault from clean backup...');
+            await delay(1200);
+            log('success', '[SECURITY] No vault contamination detected');
+            log('success', '✅ [COMPLETE] Corruption containment successful - System secured');
+        }
+    </script>
+</body>
+</html>
