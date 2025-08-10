@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Integration Test - ChaosKey333</title>
+    <style>
+        body { 
+            font-family: 'Orbitron', Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a); 
+            color: #fff; 
+            margin: 0;
+        }
+        .test-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 15px; 
+            border: 1px solid #00ffff; 
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #333; 
+            border-radius: 8px; 
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-family: monospace;
+        }
+        .success { background: rgba(45, 90, 45, 0.8); border: 1px solid #4CAF50; }
+        .error { background: rgba(90, 45, 45, 0.8); border: 1px solid #f44336; }
+        .warning { background: rgba(90, 90, 45, 0.8); border: 1px solid #ff9800; }
+        .info { background: rgba(45, 45, 90, 0.8); border: 1px solid #2196F3; }
+        button { 
+            padding: 12px 24px; 
+            margin: 10px 5px; 
+            background: linear-gradient(45deg, #4CAF50, #45a049); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .paypal-test { background: linear-gradient(45deg, #ffc439, #ff9800); }
+        .stripe-test { background: linear-gradient(45deg, #6772e5, #5469d4); }
+        .wallet-test { background: linear-gradient(45deg, #ff6600, #e65100); }
+        h1 { 
+            text-align: center; 
+            color: #00ffff; 
+            text-shadow: 0 0 10px #00ffff;
+            margin-bottom: 30px;
+        }
+        h2 { 
+            color: #ffaa00; 
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .flow-step {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .flow-step h3 {
+            color: #00ffff;
+            margin-top: 0;
+        }
+        .api-response {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        #paypal-button-container {
+            margin: 20px 0;
+            min-height: 60px;
+            border: 1px dashed #333;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .token-display {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="test-container">
+        <h1>⚡ PayPal Integration Test Suite ⚡</h1>
+        
+        <div class="test-section">
+            <h2>🔌 Step 1: Wallet Connection</h2>
+            <div id="walletStatus" class="status info">Checking for Web3 wallet...</div>
+            <button id="connectWalletBtn" class="wallet-test" onclick="testWallet()">🦊 Connect Wallet</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Step 2: System Integration Test</h2>
+            <div id="systemStatus" class="status info">Ready to test system connections</div>
+            <button onclick="testSystemConnections()" class="stripe-test">🔄 Test All Connections</button>
+            <div id="systemResponse" class="api-response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>💰 Step 3: PayPal Smart Button Test</h2>
+            <div id="paypalStatus" class="status info">Initializing PayPal Smart Button...</div>
+            <div id="paypal-button-container"></div>
+            <button onclick="reinitializePayPal()" class="paypal-test">🔄 Reinitialize PayPal</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎫 Step 4: Claim Token Flow</h2>
+            <p style="color: #888;">This section simulates the complete flow from payment to minting:</p>
+            
+            <div class="flow-step">
+                <h3>4a. Generate Test Claim Token</h3>
+                <div id="tokenGenStatus" class="status info">Ready to generate test token</div>
+                <button onclick="generateTestToken()" class="paypal-test">🎯 Generate Test Token</button>
+                <div id="generatedToken" class="token-display" style="display: none;"></div>
+            </div>
+            
+            <div class="flow-step">
+                <h3>4b. Validate Claim Token</h3>
+                <div id="tokenValidStatus" class="status info">Ready to validate token</div>
+                <button onclick="validateTestToken()" class="paypal-test" disabled>✅ Validate Token</button>
+                <div id="validationResponse" class="api-response" style="display: none;"></div>
+            </div>
+            
+            <div class="flow-step">
+                <h3>4c. Test Store Success Page</h3>
+                <div id="storeTestStatus" class="status info">Ready to test store success page</div>
+                <button onclick="testStoreSuccess()" class="paypal-test" disabled>🏪 Open Store Success</button>
+            </div>
+            
+            <div class="flow-step">
+                <h3>4d. Mint with Token</h3>
+                <div id="mintTestStatus" class="status info">Ready to test minting</div>
+                <button onclick="mintWithTestToken()" class="paypal-test" disabled>⚙️ Test Mint</button>
+                <div id="mintResponse" class="api-response" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Step 5: Integration Summary</h2>
+            <div id="summaryStatus" class="status info">Complete all tests above for summary</div>
+            <button onclick="generateSummary()" class="info">📋 Generate Test Summary</button>
+            <div id="testSummary" class="api-response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        let testData = {
+            walletConnected: false,
+            walletAddress: null,
+            paypalInitialized: false,
+            claimToken: null,
+            systemConnections: null
+        };
+
+        // Test wallet connection
+        async function testWallet() {
+            const status = document.getElementById('walletStatus');
+            const btn = document.getElementById('connectWalletBtn');
+            
+            if (typeof window.ethereum === 'undefined') {
+                status.className = 'status error';
+                status.innerHTML = `❌ No Web3 wallet detected<br>Install MetaMask or Coinbase Wallet`;
+                return;
+            }
+
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                testData.walletAddress = accounts[0];
+                testData.walletConnected = true;
+                
+                let walletType = 'Generic Web3';
+                if (window.ethereum.isMetaMask) walletType = 'MetaMask';
+                if (window.ethereum.isCoinbaseWallet) walletType = 'Coinbase Wallet';
+                
+                status.className = 'status success';
+                status.innerHTML = `✅ Wallet Connected<br>Type: ${walletType}<br>Address: ${testData.walletAddress}<br>Network: ${await getNetworkName()}`;
+                
+                btn.textContent = '✅ Wallet Connected';
+                btn.disabled = true;
+                
+                // Initialize PayPal after wallet connection
+                initializePayPalTest();
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Wallet connection failed: ${error.message}`;
+            }
+        }
+
+        async function getNetworkName() {
+            try {
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                const networks = {
+                    '0x1': 'Ethereum Mainnet',
+                    '0x5': 'Goerli Testnet',
+                    '0xaa36a7': 'Sepolia Testnet',
+                    '0x89': 'Polygon Mainnet'
+                };
+                return networks[chainId] || `Unknown (${chainId})`;
+            } catch {
+                return 'Unknown';
+            }
+        }
+
+        // Test system connections
+        async function testSystemConnections() {
+            const status = document.getElementById('systemStatus');
+            const response = document.getElementById('systemResponse');
+            
+            status.className = 'status warning';
+            status.innerHTML = '🔄 Testing system connections...';
+            
+            try {
+                const res = await fetch('/api/test-all');
+                const data = await res.json();
+                testData.systemConnections = data;
+                
+                status.className = 'status success';
+                status.innerHTML = '✅ System connections tested successfully';
+                
+                response.style.display = 'block';
+                response.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ System test failed: ${error.message}`;
+            }
+        }
+
+        // Initialize PayPal for testing
+        async function initializePayPalTest() {
+            const status = document.getElementById('paypalStatus');
+            
+            try {
+                status.className = 'status warning';
+                status.innerHTML = '🔄 Loading PayPal SDK...';
+                
+                // Get PayPal client ID from config
+                const response = await fetch('/config');
+                const config = await response.json();
+                const paypalClientId = config.paypalClientId;
+                
+                if (!paypalClientId || paypalClientId === 'YOUR_PAYPAL_CLIENT_ID') {
+                    status.className = 'status warning';
+                    status.innerHTML = '⚠️ PayPal Client ID not configured (this is expected in test environment)';
+                    document.getElementById('paypal-button-container').innerHTML = 
+                        '<div style="color: #ffaa00; text-align: center; padding: 20px; border: 1px solid #ffaa00; border-radius: 10px;">PayPal Client ID needed for live integration</div>';
+                    return;
+                }
+                
+                // Load PayPal SDK dynamically
+                if (typeof paypal === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD`;
+                    script.onload = renderPayPalTestButton;
+                    script.onerror = () => {
+                        status.className = 'status error';
+                        status.innerHTML = '❌ Failed to load PayPal SDK';
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    renderPayPalTestButton();
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ PayPal initialization failed: ${error.message}`;
+            }
+        }
+
+        function renderPayPalTestButton() {
+            const status = document.getElementById('paypalStatus');
+            
+            if (!testData.walletConnected) {
+                status.className = 'status warning';
+                status.innerHTML = '⚠️ Connect wallet first to enable PayPal button';
+                return;
+            }
+            
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'paypal',
+                    height: 55
+                },
+                createOrder: function(data, actions) {
+                    console.log('PayPal order creation for test wallet:', testData.walletAddress);
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: '33.33' },
+                            description: `ChaosKey333 Vault Relic TEST for ${testData.walletAddress}`,
+                            custom_id: testData.walletAddress
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    status.className = 'status success';
+                    status.innerHTML = '✅ PayPal payment approved! (Test mode)';
+                    
+                    return actions.order.capture().then(function(details) {
+                        console.log('PayPal test capture:', details);
+                        alert('✅ PayPal test payment successful! In production, this would redirect to /store/success');
+                    });
+                },
+                onError: function(err) {
+                    status.className = 'status error';
+                    status.innerHTML = '❌ PayPal test error';
+                    console.error('PayPal test error:', err);
+                },
+                onCancel: function(data) {
+                    status.className = 'status warning';
+                    status.innerHTML = '⚠️ PayPal test payment cancelled';
+                }
+            }).render('#paypal-button-container').then(() => {
+                status.className = 'status success';
+                status.innerHTML = '✅ PayPal Smart Button ready for testing';
+                testData.paypalInitialized = true;
+            });
+        }
+
+        function reinitializePayPal() {
+            document.getElementById('paypal-button-container').innerHTML = '';
+            testData.paypalInitialized = false;
+            initializePayPalTest();
+        }
+
+        // Generate test claim token
+        async function generateTestToken() {
+            const status = document.getElementById('tokenGenStatus');
+            const tokenDisplay = document.getElementById('generatedToken');
+            
+            if (!testData.walletConnected) {
+                status.className = 'status error';
+                status.innerHTML = '❌ Connect wallet first';
+                return;
+            }
+            
+            status.className = 'status warning';
+            status.innerHTML = '🔄 Generating test claim token...';
+            
+            try {
+                const response = await fetch('/api/paypal-capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderID: 'TEST_' + Date.now(),
+                        walletAddress: testData.walletAddress,
+                        connectedWalletType: 'TestWallet',
+                        paymentDetails: { status: 'COMPLETED', amount: { value: '33.33' } }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    testData.claimToken = result.claimToken;
+                    
+                    status.className = 'status success';
+                    status.innerHTML = '✅ Test claim token generated successfully';
+                    
+                    tokenDisplay.style.display = 'block';
+                    tokenDisplay.innerHTML = `<strong>Claim Token:</strong><br>${result.claimToken}`;
+                    
+                    // Enable next step
+                    document.querySelector('button[onclick="validateTestToken()"]').disabled = false;
+                    
+                } else {
+                    throw new Error(result.error || 'Token generation failed');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Token generation failed: ${error.message}`;
+            }
+        }
+
+        // Validate test token
+        async function validateTestToken() {
+            const status = document.getElementById('tokenValidStatus');
+            const response = document.getElementById('validationResponse');
+            
+            if (!testData.claimToken) {
+                status.className = 'status error';
+                status.innerHTML = '❌ No claim token to validate';
+                return;
+            }
+            
+            status.className = 'status warning';
+            status.innerHTML = '🔄 Validating claim token...';
+            
+            try {
+                const res = await fetch('/api/validate-claim-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: testData.claimToken })
+                });
+                
+                const data = await res.json();
+                
+                if (data.valid) {
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Token valid! Used: ${data.used}`;
+                    
+                    response.style.display = 'block';
+                    response.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Enable next steps
+                    document.querySelector('button[onclick="testStoreSuccess()"]').disabled = false;
+                    if (!data.used) {
+                        document.querySelector('button[onclick="mintWithTestToken()"]').disabled = false;
+                    }
+                    
+                } else {
+                    throw new Error(data.error || 'Token validation failed');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Validation failed: ${error.message}`;
+            }
+        }
+
+        // Test store success page
+        function testStoreSuccess() {
+            if (!testData.claimToken) {
+                document.getElementById('storeTestStatus').className = 'status error';
+                document.getElementById('storeTestStatus').innerHTML = '❌ No claim token available';
+                return;
+            }
+            
+            document.getElementById('storeTestStatus').className = 'status success';
+            document.getElementById('storeTestStatus').innerHTML = '✅ Opening store success page...';
+            
+            // Open in new tab
+            window.open(`/store/success?token=${testData.claimToken}`, '_blank');
+        }
+
+        // Mint with test token
+        async function mintWithTestToken() {
+            const status = document.getElementById('mintTestStatus');
+            const response = document.getElementById('mintResponse');
+            
+            if (!testData.claimToken || !testData.walletAddress) {
+                status.className = 'status error';
+                status.innerHTML = '❌ Missing token or wallet address';
+                return;
+            }
+            
+            status.className = 'status warning';
+            status.innerHTML = '🔄 Testing mint process...';
+            
+            try {
+                const res = await fetch('/api/mint-with-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: testData.claimToken,
+                        walletAddress: testData.walletAddress
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    status.className = 'status success';
+                    status.innerHTML = '✅ Test mint successful! Token marked as used.';
+                    
+                    response.style.display = 'block';
+                    response.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Disable mint button since token is now used
+                    document.querySelector('button[onclick="mintWithTestToken()"]').disabled = true;
+                    
+                } else {
+                    throw new Error(data.error || 'Mint failed');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Mint test failed: ${error.message}`;
+            }
+        }
+
+        // Generate test summary
+        function generateSummary() {
+            const summary = document.getElementById('testSummary');
+            const status = document.getElementById('summaryStatus');
+            
+            const summaryData = {
+                timestamp: new Date().toISOString(),
+                wallet: {
+                    connected: testData.walletConnected,
+                    address: testData.walletAddress
+                },
+                paypal: {
+                    initialized: testData.paypalInitialized
+                },
+                claimToken: {
+                    generated: !!testData.claimToken,
+                    token: testData.claimToken ? testData.claimToken.slice(0, 16) + '...' : null
+                },
+                systemConnections: testData.systemConnections
+            };
+            
+            status.className = 'status success';
+            status.innerHTML = '✅ Test summary generated';
+            
+            summary.style.display = 'block';
+            summary.textContent = JSON.stringify(summaryData, null, 2);
+        }
+
+        // Auto-start wallet detection
+        window.onload = function() {
+            const walletStatus = document.getElementById('walletStatus');
+            
+            setTimeout(() => {
+                if (typeof window.ethereum !== 'undefined') {
+                    walletStatus.className = 'status success';
+                    walletStatus.innerHTML = '✅ Web3 wallet detected - Click "Connect Wallet" to begin';
+                } else {
+                    walletStatus.className = 'status warning';
+                    walletStatus.innerHTML = '⚠️ No Web3 wallet detected - Install MetaMask or Coinbase Wallet';
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

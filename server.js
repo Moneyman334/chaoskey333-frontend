@@ -41,6 +41,11 @@ app.get('/store/success', (req, res) => {
   res.sendFile(path.join(__dirname, 'store', 'success.html'));
 });
 
+// Serve PayPal integration test page
+app.get('/test-paypal', (req, res) => {
+  res.sendFile(path.join(__dirname, 'test-paypal-integration.html'));
+});
+
 // Test Stripe connection endpoint
 app.get('/api/test-stripe', async (req, res) => {
   try {
@@ -240,9 +245,37 @@ app.post('/api/paypal-capture', async (req, res) => {
 // PayPal webhook endpoint (for PAYMENT.CAPTURE.COMPLETED events)
 app.post('/api/paypal-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
-    const event = JSON.parse(req.body);
+    const headers = req.headers;
+    const body = req.body;
     
-    console.log('🔔 PayPal webhook received:', event.event_type);
+    // PayPal webhook security validation
+    const authAlgo = headers['paypal-auth-algo'];
+    const transmission_id = headers['paypal-transmission-id'];
+    const cert_url = headers['paypal-cert-url'];
+    const transmission_sig = headers['paypal-transmission-sig'];
+    const transmission_time = headers['paypal-transmission-time'];
+    
+    console.log('🔔 PayPal webhook received with headers:', {
+      authAlgo,
+      transmission_id: transmission_id ? transmission_id.slice(0, 10) + '...' : 'none',
+      cert_url: cert_url ? cert_url.slice(0, 50) + '...' : 'none'
+    });
+    
+    // In production, you should verify the webhook signature
+    // For now, we'll log the security headers for reference
+    if (transmission_id && cert_url && transmission_sig) {
+      console.log('✅ PayPal security headers present');
+      // TODO: Implement full webhook signature verification
+      // You would typically:
+      // 1. Download the certificate from cert_url
+      // 2. Verify the signature using the certificate
+      // 3. Check transmission_time is recent
+    } else {
+      console.warn('⚠️ PayPal webhook missing security headers');
+    }
+    
+    const event = JSON.parse(body);
+    console.log('📨 PayPal webhook event type:', event.event_type);
     
     if (event.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
       const resource = event.resource;
@@ -261,7 +294,12 @@ app.post('/api/paypal-webhook', express.raw({ type: 'application/json' }), async
         timestamp,
         used: false,
         paymentProvider: 'paypal',
-        source: 'webhook'
+        source: 'webhook',
+        webhookData: {
+          transmission_id,
+          cert_url,
+          transmission_time
+        }
       });
       
       console.log('🎫 Webhook claim token generated:', claimToken);
