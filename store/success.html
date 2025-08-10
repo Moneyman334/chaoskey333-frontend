@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 - Payment Success</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    .success-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border-radius: 15px;
+      border: 1px solid #00ffff;
+      box-shadow: 0 0 30px #00ffff;
+      text-align: center;
+      animation: pulseGlow 2s infinite alternate;
+    }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 30px #00ffff; }
+      100% { box-shadow: 0 0 50px #00ffff, 0 0 80px #00ffff; }
+    }
+    
+    .mint-button {
+      background: linear-gradient(45deg, #ff6600, #ffaa00);
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      font-size: 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 20px;
+      font-family: 'Orbitron', monospace;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mint-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #ff6600;
+    }
+    
+    .mint-button:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .mint-button:hover:before {
+      left: 100%;
+    }
+    
+    .mint-button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .status-message {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+    
+    .status-success {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid #00ff00;
+      color: #00ff00;
+    }
+    
+    .status-error {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid #ff0000;
+      color: #ff0000;
+    }
+    
+    .status-warning {
+      background: rgba(255, 255, 0, 0.1);
+      border: 1px solid #ffff00;
+      color: #ffff00;
+    }
+    
+    .token-info {
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body class="vault">
+  <div id="terminalOverlay" style="display: none;">Processing Claim Token...</div>
+  
+  <div class="resurrection-container">
+    <div class="success-container">
+      <h1 class="glow">⚡ Payment Successful! ⚡</h1>
+      
+      <div id="statusMessage" class="status-message status-success">
+        🎉 Payment confirmed! Processing claim token...
+      </div>
+      
+      <div id="tokenInfo" class="token-info" style="display: none;">
+        <strong>Claim Token:</strong> <span id="tokenDisplay"></span><br>
+        <strong>Payment Method:</strong> <span id="paymentMethod"></span><br>
+        <strong>Wallet:</strong> <span id="walletDisplay"></span>
+      </div>
+      
+      <button id="mintButton" class="mint-button" style="display: none;" disabled>
+        ⚡ Mint Vault Relic ⚡
+      </button>
+      
+      <div id="walletSection" style="display: none; margin: 20px 0;">
+        <h3 style="color: #00ffff;">Connect Wallet to Claim</h3>
+        <button id="connectWallet" class="mint-button" style="background: linear-gradient(45deg, #6772e5, #4f46e5);">
+          🔌 Connect Wallet
+        </button>
+      </div>
+      
+      <div style="margin-top: 30px; padding: 15px; border-top: 1px solid #333;">
+        <p style="color: #888; font-size: 0.9rem;">
+          💡 Your relic will be minted directly to your connected wallet address.<br>
+          🔒 This claim token can only be used once and expires after use.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    let claimToken = null;
+    let tokenData = null;
+    let userWalletAddress = null;
+    let isWalletConnected = false;
+    let signer = null;
+    
+    // Get claim token from URL parameters
+    function getClaimToken() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('token');
+    }
+    
+    // Validate claim token with server
+    async function validateClaimToken(token) {
+      try {
+        const response = await fetch('/api/validate-claim-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error('Token validation error:', error);
+        return { valid: false, error: error.message };
+      }
+    }
+    
+    // Connect wallet function
+    async function connectWallet() {
+      const statusMessage = document.getElementById('statusMessage');
+      const connectBtn = document.getElementById('connectWallet');
+      
+      if (typeof window.ethereum === 'undefined') {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = '❌ No Web3 wallet detected!<br>Please install MetaMask or Coinbase Wallet.';
+        return;
+      }
+      
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        userWalletAddress = accounts[0];
+        isWalletConnected = true;
+        
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        
+        // Detect wallet type
+        let walletType = 'Web3 Wallet';
+        if (window.ethereum.isMetaMask) walletType = 'MetaMask';
+        if (window.ethereum.isCoinbaseWallet) walletType = 'Coinbase Wallet';
+        
+        document.getElementById('walletDisplay').textContent = `${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)} (${walletType})`;
+        
+        statusMessage.className = 'status-message status-success';
+        statusMessage.innerHTML = '✅ Wallet connected! You can now mint your relic.';
+        
+        // Hide wallet section and show mint button
+        document.getElementById('walletSection').style.display = 'none';
+        document.getElementById('mintButton').style.display = 'inline-block';
+        document.getElementById('mintButton').disabled = false;
+        
+      } catch (error) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = `❌ Wallet connection failed: ${error.message}`;
+      }
+    }
+    
+    // Mint relic function
+    async function mintRelic() {
+      const statusMessage = document.getElementById('statusMessage');
+      const mintBtn = document.getElementById('mintButton');
+      
+      if (!isWalletConnected || !claimToken) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = '❌ Wallet not connected or invalid token';
+        return;
+      }
+      
+      try {
+        mintBtn.disabled = true;
+        mintBtn.textContent = '⚙️ Minting...';
+        
+        statusMessage.className = 'status-message status-warning';
+        statusMessage.innerHTML = '🌀 Minting your vault relic... Please wait.';
+        
+        // Call server to process the mint
+        const response = await fetch('/api/mint-with-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: claimToken,
+            walletAddress: userWalletAddress
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          statusMessage.className = 'status-message status-success';
+          statusMessage.innerHTML = `🎉 Vault Relic successfully minted!<br>📍 Sent to: ${userWalletAddress}<br>🔗 Transaction: Simulated`;
+          
+          mintBtn.textContent = '✅ Minted!';
+          mintBtn.style.background = '#4CAF50';
+          
+          // Trigger vault broadcast pulse (optional feature)
+          setTimeout(() => {
+            triggerVaultBroadcast();
+          }, 1000);
+          
+        } else {
+          throw new Error(result.error || 'Minting failed');
+        }
+        
+      } catch (error) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = `❌ Minting failed: ${error.message}`;
+        
+        mintBtn.disabled = false;
+        mintBtn.textContent = '⚡ Mint Vault Relic ⚡';
+      }
+    }
+    
+    // Vault broadcast pulse trigger (optional feature)
+    function triggerVaultBroadcast() {
+      console.log('🎆 Triggering vault broadcast pulse...');
+      
+      // Create visual effect
+      document.body.style.animation = 'none';
+      document.body.style.filter = 'brightness(2) contrast(1.5)';
+      
+      setTimeout(() => {
+        document.body.style.filter = 'none';
+      }, 2000);
+      
+      // You could add a WebSocket call here to trigger real-time vault updates
+      // Example: ws.send(JSON.stringify({ type: 'VAULT_MINT_COMPLETE', wallet: userWalletAddress }));
+    }
+    
+    // Initialize page
+    window.onload = async function() {
+      const statusMessage = document.getElementById('statusMessage');
+      
+      // Get and validate claim token
+      claimToken = getClaimToken();
+      
+      if (!claimToken) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = '❌ No claim token found. Invalid access to this page.';
+        return;
+      }
+      
+      statusMessage.innerHTML = '🔍 Validating claim token...';
+      
+      // Validate token with server
+      const validation = await validateClaimToken(claimToken);
+      
+      if (!validation.valid) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = `❌ Invalid or expired claim token: ${validation.error}`;
+        return;
+      }
+      
+      if (validation.used) {
+        statusMessage.className = 'status-message status-warning';
+        statusMessage.innerHTML = '⚠️ This claim token has already been used.';
+        return;
+      }
+      
+      // Show token info
+      tokenData = validation.data;
+      document.getElementById('tokenDisplay').textContent = claimToken.slice(0, 8) + '...' + claimToken.slice(-8);
+      document.getElementById('paymentMethod').textContent = tokenData.paymentProvider || 'Unknown';
+      document.getElementById('tokenInfo').style.display = 'block';
+      
+      // Check if wallet is already connected
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            userWalletAddress = accounts[0];
+            isWalletConnected = true;
+            
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            signer = provider.getSigner();
+            
+            let walletType = 'Web3 Wallet';
+            if (window.ethereum.isMetaMask) walletType = 'MetaMask';
+            if (window.ethereum.isCoinbaseWallet) walletType = 'Coinbase Wallet';
+            
+            document.getElementById('walletDisplay').textContent = `${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)} (${walletType})`;
+            
+            statusMessage.className = 'status-message status-success';
+            statusMessage.innerHTML = '✅ Valid claim token! Wallet already connected. Ready to mint!';
+            
+            document.getElementById('mintButton').style.display = 'inline-block';
+            document.getElementById('mintButton').disabled = false;
+          } else {
+            statusMessage.className = 'status-message status-warning';
+            statusMessage.innerHTML = '⚠️ Valid claim token! Please connect your wallet to mint.';
+            document.getElementById('walletSection').style.display = 'block';
+          }
+        } catch (error) {
+          statusMessage.className = 'status-message status-warning';
+          statusMessage.innerHTML = '⚠️ Valid claim token! Please connect your wallet to mint.';
+          document.getElementById('walletSection').style.display = 'block';
+        }
+      } else {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.innerHTML = '❌ No Web3 wallet detected. Please install MetaMask or Coinbase Wallet.';
+      }
+      
+      // Set up event listeners
+      document.getElementById('connectWallet').addEventListener('click', connectWallet);
+      document.getElementById('mintButton').addEventListener('click', mintRelic);
+      
+      // Handle wallet account changes
+      if (window.ethereum) {
+        window.ethereum.on('accountsChanged', function(accounts) {
+          if (accounts.length === 0) {
+            userWalletAddress = null;
+            isWalletConnected = false;
+            document.getElementById('walletSection').style.display = 'block';
+            document.getElementById('mintButton').style.display = 'none';
+            statusMessage.className = 'status-message status-warning';
+            statusMessage.innerHTML = '⚠️ Wallet disconnected. Please reconnect to mint.';
+          } else {
+            userWalletAddress = accounts[0];
+            isWalletConnected = true;
+            
+            let walletType = 'Web3 Wallet';
+            if (window.ethereum.isMetaMask) walletType = 'MetaMask';
+            if (window.ethereum.isCoinbaseWallet) walletType = 'Coinbase Wallet';
+            
+            document.getElementById('walletDisplay').textContent = `${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)} (${walletType})`;
+            document.getElementById('walletSection').style.display = 'none';
+            document.getElementById('mintButton').style.display = 'inline-block';
+            document.getElementById('mintButton').disabled = false;
+            
+            statusMessage.className = 'status-message status-success';
+            statusMessage.innerHTML = '✅ Wallet connected! Ready to mint.';
+          }
+        });
+      }
+    };
+  </script>
+</body>
+</html>
