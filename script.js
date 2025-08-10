@@ -74,6 +74,9 @@ async function initializeFusionCore() {
     // Show activation notification
     showFusionCoreActivation();
     
+    // Add prestige marker to the page
+    addPrestigeMarker();
+    
   } catch (error) {
     console.error("❌ Failed to initialize Fusion Core:", error);
   }
@@ -123,11 +126,17 @@ function integrateFusionCoreWithVault() {
     window.mintRelic = async function(...args) {
       // Trigger energy flare on mint
       if (fusionCore) {
-        fusionCore.triggerEnergyFlare();
+        fusionCore.triggerEnergyFlare(1.2, 'relic-mint');
       }
       return originalMintFunction.apply(this, args);
     };
   }
+  
+  // Connect broadcast detection to fusion core
+  setupBroadcastDetection();
+  
+  // Enhance existing button interactions
+  enhanceButtonInteractions();
   
   // Enhance audio with fusion core harmonic drone
   const existingAudio = document.getElementById('bassDrop');
@@ -135,6 +144,61 @@ function integrateFusionCoreWithVault() {
     // The fusion core's harmonic drone will layer with existing audio
     console.log('🎵 Fusion Core harmonic drone layered with existing audio');
   }
+}
+
+// Set up broadcast cycle detection
+function setupBroadcastDetection() {
+  // Detect page navigation/refresh as broadcast cycles
+  let lastActivity = Date.now();
+  
+  // Monitor for significant page events that could be broadcasts
+  const broadcastEvents = ['beforeunload', 'pagehide', 'visibilitychange'];
+  broadcastEvents.forEach(eventType => {
+    window.addEventListener(eventType, () => {
+      if (fusionCore && Date.now() - lastActivity > 5000) {
+        fusionCore.triggerBroadcastFlare();
+        lastActivity = Date.now();
+      }
+    });
+  });
+  
+  // Monitor for network activity that could indicate broadcasts
+  if ('fetch' in window) {
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      if (fusionCore && args[0] && typeof args[0] === 'string') {
+        // Trigger broadcast flare for significant API calls
+        if (args[0].includes('/api/') || args[0].includes('mint') || args[0].includes('broadcast')) {
+          setTimeout(() => fusionCore.triggerBroadcastFlare(), 100);
+        }
+      }
+      return originalFetch.apply(this, args);
+    };
+  }
+  
+  console.log('📡 Broadcast detection integrated with Fusion Core');
+}
+
+// Enhance button interactions with fusion core effects
+function enhanceButtonInteractions() {
+  const enhanceableButtons = document.querySelectorAll('button');
+  enhanceableButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (fusionCore) {
+        // Different effects based on button type
+        const buttonText = button.textContent.toLowerCase();
+        if (buttonText.includes('mint')) {
+          fusionCore.triggerEnergyFlare(1.0, 'relic-mint');
+        } else if (buttonText.includes('connect') || buttonText.includes('wallet')) {
+          fusionCore.triggerEnergyFlare(0.8, 'power-surge');
+        } else if (buttonText.includes('test') || buttonText.includes('stripe')) {
+          fusionCore.triggerBroadcastFlare();
+        } else {
+          fusionCore.triggerEnergyFlare(0.6, 'standard');
+        }
+      }
+    });
+  });
 }
 
 // Show fusion core activation notification
@@ -238,6 +302,110 @@ function updateVaultStatusWithFusionCore(fusionData) {
       <span style="color: #ffaa00; font-size: 0.8rem;">Core ID: ${fusionData.coreId}</span>
     `;
   }
+}
+
+// Add prestige marker to the page
+function addPrestigeMarker() {
+  // Create prestige badge
+  const prestigeBadge = document.createElement('div');
+  prestigeBadge.className = 'fusion-core-prestige-badge';
+  prestigeBadge.innerHTML = `
+    <div class="prestige-icon">⚡</div>
+    <div class="prestige-text">
+      <div class="prestige-main">Powered by the Eternal Fusion Core</div>
+      <div class="prestige-sub">ChaosKey333 Syndicate Elite</div>
+    </div>
+  `;
+  
+  prestigeBadge.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, rgba(255, 102, 0, 0.9), rgba(138, 43, 226, 0.9));
+    border: 2px solid #FFD700;
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    z-index: 1500;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: prestigePulse 3s ease-in-out infinite alternate;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  `;
+  
+  // Add hover effect
+  prestigeBadge.addEventListener('mouseenter', () => {
+    prestigeBadge.style.transform = 'scale(1.05)';
+  });
+  
+  prestigeBadge.addEventListener('mouseleave', () => {
+    prestigeBadge.style.transform = 'scale(1)';
+  });
+  
+  // Click to show core status
+  prestigeBadge.addEventListener('click', () => {
+    if (fusionCore) {
+      const status = fusionCore.getStatus();
+      alert(`🔥 Eternal Fusion Core Status\n\nCore ID: ${status.coreId}\nPower Level: ${status.powerLevel}%\nActive: ${status.isActive ? 'Yes' : 'No'}\n\nQuantum Echo: ${status.quantumEchoStatus.isRunning ? 'Running' : 'Stopped'}\nDNA Binding: ${status.dnaBindingStatus.isBound ? 'Bound' : 'Unbound'}\nLore Resonance: ${status.loreResonanceStatus.isEmitting ? 'Emitting' : 'Silent'}\nFail-Safe: ${status.failSafeStatus.isMonitoring ? 'Monitoring' : 'Inactive'}`);
+    }
+  });
+  
+  document.body.appendChild(prestigeBadge);
+  
+  // Add CSS for the prestige elements
+  const prestigeStyles = document.createElement('style');
+  prestigeStyles.textContent = `
+    .prestige-icon {
+      font-size: 1.5rem;
+      animation: iconSpin 4s linear infinite;
+    }
+    
+    .prestige-main {
+      font-weight: bold;
+      color: #FFD700;
+      margin-bottom: 2px;
+    }
+    
+    .prestige-sub {
+      font-size: 0.7rem;
+      color: #FFA500;
+    }
+    
+    @keyframes prestigePulse {
+      0% { 
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        border-color: #FFD700;
+      }
+      100% { 
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.8);
+        border-color: #FFA500;
+      }
+    }
+    
+    @keyframes iconSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .fusion-core-prestige-badge {
+        bottom: 10px !important;
+        right: 10px !important;
+        padding: 10px 15px !important;
+        font-size: 0.8rem !important;
+      }
+    }
+  `;
+  
+  document.head.appendChild(prestigeStyles);
+  
+  console.log('👑 Prestige marker added - "Powered by the Eternal Fusion Core"');
 }
 
 // Connect MetaMask Wallet

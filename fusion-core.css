@@ -76,6 +76,8 @@
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  --flare-color: #FFD700;
+  --flare-intensity: 1.0;
 }
 
 .fusion-core-flare.flare-active {
@@ -83,17 +85,46 @@
   animation: energyFlareExplosion 2s ease-out;
 }
 
+/* Specialized flare effects */
+.fusion-core-container.broadcast-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(255, 215, 0, 0.95) 0%,
+    rgba(255, 140, 0, 0.8) 30%,
+    rgba(255, 69, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  box-shadow: 0 0 50px var(--flare-color);
+}
+
+.fusion-core-container.relic-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(255, 102, 0, 0.95) 0%,
+    rgba(255, 69, 0, 0.8) 30%,
+    rgba(138, 43, 226, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.fusion-core-container.power-flare .fusion-core-flare {
+  background: radial-gradient(circle,
+    rgba(0, 255, 255, 0.95) 0%,
+    rgba(0, 191, 255, 0.8) 30%,
+    rgba(138, 43, 226, 0.6) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
 @keyframes energyFlareExplosion {
   0% {
-    transform: translate(-50%, -50%) scale(0.5);
+    transform: translate(-50%, -50%) scale(calc(0.5 * var(--flare-intensity)));
     opacity: 0;
   }
   20% {
-    transform: translate(-50%, -50%) scale(2);
+    transform: translate(-50%, -50%) scale(calc(2 * var(--flare-intensity)));
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) scale(5);
+    transform: translate(-50%, -50%) scale(calc(5 * var(--flare-intensity)));
     opacity: 0;
   }
 }

@@ -174,6 +174,22 @@ class EternalFusionCore {
     energyFlare.className = 'fusion-core-flare';
     energyFlare.id = 'fusionCoreFlare';
     
+    // Create energy streams
+    for (let i = 0; i < 6; i++) {
+      const stream = document.createElement('div');
+      stream.className = 'fusion-core-energy-stream';
+      stream.style.animationDelay = `${i * 0.25}s`;
+      coreContainer.appendChild(stream);
+    }
+    
+    // Create DNA helix visual indicator
+    const dnaHelix = document.createElement('div');
+    dnaHelix.className = 'dna-helix';
+    
+    // Create lore resonance ripple
+    const loreRipple = document.createElement('div');
+    loreRipple.className = 'lore-ripple';
+    
     // Add core status indicator
     const statusIndicator = document.createElement('div');
     statusIndicator.className = 'fusion-core-status';
@@ -186,6 +202,8 @@ class EternalFusionCore {
     
     coreContainer.appendChild(ambientGlow);
     coreContainer.appendChild(energyFlare);
+    coreContainer.appendChild(dnaHelix);
+    coreContainer.appendChild(loreRipple);
     coreContainer.appendChild(statusIndicator);
     
     // Insert into document
@@ -195,6 +213,8 @@ class EternalFusionCore {
       container: coreContainer,
       glow: ambientGlow,
       flare: energyFlare,
+      dnaHelix: dnaHelix,
+      loreRipple: loreRipple,
       status: statusIndicator
     };
     
@@ -264,16 +284,54 @@ class EternalFusionCore {
   /**
    * Trigger energy flare effect
    */
-  triggerEnergyFlare() {
+  triggerEnergyFlare(intensity = 1.0, type = 'standard') {
     if (!this.visualEffects) return;
     
     this.visualEffects.flare.classList.add('flare-active');
     
+    // Adjust flare based on type
+    if (type === 'broadcast') {
+      this.visualEffects.flare.style.setProperty('--flare-color', '#FFD700'); // Golden for broadcasts
+      this.visualEffects.container.classList.add('broadcast-flare');
+    } else if (type === 'relic-mint') {
+      this.visualEffects.flare.style.setProperty('--flare-color', '#FF6600'); // Orange for relic mints
+      this.visualEffects.container.classList.add('relic-flare');
+    } else if (type === 'power-surge') {
+      this.visualEffects.flare.style.setProperty('--flare-color', '#00FFFF'); // Cyan for power surges
+      this.visualEffects.container.classList.add('power-flare');
+    }
+    
+    // Scale intensity
+    this.visualEffects.flare.style.setProperty('--flare-intensity', intensity.toString());
+    
     setTimeout(() => {
       this.visualEffects.flare.classList.remove('flare-active');
+      this.visualEffects.container.classList.remove('broadcast-flare', 'relic-flare', 'power-flare');
     }, 2000);
     
-    console.log('⚡ Energy flare triggered');
+    console.log(`⚡ Energy flare triggered (${type}, intensity: ${intensity})`);
+  }
+
+  /**
+   * Trigger special broadcast cycle flare
+   */
+  triggerBroadcastFlare() {
+    this.triggerEnergyFlare(1.5, 'broadcast');
+    
+    // Also sync DNA helix and lore ripple for broadcast events
+    if (this.visualEffects.dnaHelix) {
+      this.visualEffects.dnaHelix.style.animationDuration = '2s';
+      setTimeout(() => {
+        this.visualEffects.dnaHelix.style.animationDuration = '8s';
+      }, 4000);
+    }
+    
+    if (this.visualEffects.loreRipple) {
+      this.visualEffects.loreRipple.style.animationDuration = '1s';
+      setTimeout(() => {
+        this.visualEffects.loreRipple.style.animationDuration = '2s';
+      }, 3000);
+    }
   }
 
   /**
