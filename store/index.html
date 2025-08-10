@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 Store - Superman Unstoppable Relic</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .store-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .product-card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+    .product-image {
+      width: 300px;
+      height: 300px;
+      margin: 20px auto;
+      border-radius: 10px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .product-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: #00ffff;
+      margin: 20px 0;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+    .product-description {
+      font-size: 1.2rem;
+      color: #ffffff;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    .product-price {
+      font-size: 2rem;
+      color: #ffaa00;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .buy-button {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      border: none;
+      color: white;
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .buy-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    }
+    .buy-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .wallet-status {
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .provider-badge {
+      display: inline-block;
+      background: rgba(0, 255, 255, 0.2);
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body class="vault">
+  <div class="store-container">
+    <h1 class="glow">⚡ ChaosKey333 Store ⚡</h1>
+    
+    <div class="product-card">
+      <div class="product-image">
+        🦸‍♂️
+      </div>
+      
+      <h2 class="product-title" id="productName">Superman Unstoppable Relic</h2>
+      
+      <div class="product-description" id="productDescription">
+        Unlock the power of the Superman Unstoppable Relic - an exclusive digital collectible that grants you access to the ChaosKey333 Vault. This legendary NFT represents unbreakable strength and unwavering determination.
+      </div>
+      
+      <div class="product-price" id="productPrice">$33.33</div>
+      
+      <div class="provider-badge" id="providerBadge">
+        Payment via: Loading...
+      </div>
+      
+      <div class="wallet-status" id="walletStatus">
+        🔌 Connect your wallet to continue
+      </div>
+      
+      <button id="connectWallet" class="buy-button">
+        🔌 Connect Wallet
+      </button>
+      
+      <button id="buyButton" class="buy-button" disabled>
+        💳 Buy Now
+      </button>
+    </div>
+    
+    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+      🔒 Secure payment processing • 🎯 Instant NFT delivery • ⚡ Powered by ChaosKey333
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    let walletAddress = null;
+    let connectedWalletType = null;
+    let paymentConfig = null;
+
+    // Load payment configuration
+    async function loadPaymentConfig() {
+      try {
+        const response = await fetch('/api/payment-config');
+        paymentConfig = await response.json();
+        
+        // Update UI with loaded config
+        document.getElementById('productName').textContent = paymentConfig.product.name;
+        document.getElementById('productDescription').textContent = paymentConfig.product.description;
+        document.getElementById('productPrice').textContent = `$${(paymentConfig.product.price / 100).toFixed(2)}`;
+        document.getElementById('providerBadge').textContent = `Payment via: ${paymentConfig.providerConfig.name}`;
+        
+        console.log('✅ Payment config loaded:', paymentConfig);
+      } catch (error) {
+        console.error('❌ Failed to load payment config:', error);
+        document.getElementById('providerBadge').textContent = 'Payment config error';
+      }
+    }
+
+    // Connect wallet function
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("🦊 MetaMask not detected. Please install MetaMask or Coinbase Wallet.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        walletAddress = accounts[0];
+        
+        // Detect wallet type
+        if (window.ethereum.isCoinbaseWallet) {
+          connectedWalletType = 'Coinbase Wallet';
+        } else if (window.ethereum.isMetaMask) {
+          connectedWalletType = 'MetaMask';
+        } else {
+          connectedWalletType = 'Web3 Wallet';
+        }
+        
+        // Update UI
+        document.getElementById("walletStatus").innerHTML = `🟢 Connected: ${connectedWalletType}<br/><small>${walletAddress}</small>`;
+        document.getElementById("connectWallet").style.display = 'none';
+        document.getElementById("buyButton").disabled = false;
+        
+        console.log('✅ Wallet connected:', walletAddress, connectedWalletType);
+      } catch (err) {
+        console.error('❌ Wallet connection failed:', err);
+        alert("⚠️ Wallet connection failed.");
+      }
+    }
+
+    // Buy now function
+    async function buyNow() {
+      if (!walletAddress) {
+        alert("⚠️ Please connect your wallet first.");
+        return;
+      }
+
+      if (!paymentConfig) {
+        alert("⚠️ Payment configuration not loaded.");
+        return;
+      }
+
+      document.getElementById("buyButton").disabled = true;
+      document.getElementById("buyButton").textContent = "Processing...";
+
+      try {
+        console.log('🔄 Starting checkout process...');
+        
+        const response = await fetch('/api/checkout/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            walletAddress: walletAddress,
+            connectedWalletType: connectedWalletType,
+            amount: paymentConfig.product.price,
+            currency: paymentConfig.product.currency,
+            productName: paymentConfig.product.name
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          console.log('✅ Checkout session created:', result.sessionId);
+          
+          // Redirect to payment provider
+          if (result.sessionUrl) {
+            window.location.href = result.sessionUrl;
+          } else {
+            alert("❌ Payment URL not provided");
+          }
+        } else {
+          throw new Error(result.error || 'Checkout failed');
+        }
+      } catch (error) {
+        console.error('❌ Checkout error:', error);
+        alert(`❌ Checkout failed: ${error.message}`);
+      } finally {
+        document.getElementById("buyButton").disabled = false;
+        document.getElementById("buyButton").textContent = "💳 Buy Now";
+      }
+    }
+
+    // Event listeners
+    document.getElementById("connectWallet").addEventListener("click", connectWallet);
+    document.getElementById("buyButton").addEventListener("click", buyNow);
+
+    // Auto-connect wallet if already connected
+    window.addEventListener('load', async () => {
+      await loadPaymentConfig();
+      
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            // Wallet already connected
+            walletAddress = accounts[0];
+            if (window.ethereum.isCoinbaseWallet) {
+              connectedWalletType = 'Coinbase Wallet';
+            } else if (window.ethereum.isMetaMask) {
+              connectedWalletType = 'MetaMask';
+            } else {
+              connectedWalletType = 'Web3 Wallet';
+            }
+            
+            document.getElementById("walletStatus").innerHTML = `🟢 Connected: ${connectedWalletType}<br/><small>${walletAddress}</small>`;
+            document.getElementById("connectWallet").style.display = 'none';
+            document.getElementById("buyButton").disabled = false;
+          }
+        } catch (err) {
+          console.log('No wallet auto-connection:', err);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

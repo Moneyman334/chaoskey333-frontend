@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Cancelled - ChaosKey333</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .cancel-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .cancel-card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border-radius: 15px;
+      padding: 40px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(255, 165, 0, 0.2);
+      border: 2px solid rgba(255, 165, 0, 0.3);
+    }
+    .cancel-icon {
+      font-size: 6rem;
+      color: #ffaa00;
+      margin: 20px 0;
+      animation: swing 1s ease-in-out infinite alternate;
+    }
+    .cancel-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: #ffaa00;
+      margin: 20px 0;
+      text-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+    .cancel-message {
+      font-size: 1.2rem;
+      color: #ffffff;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    .action-section {
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+    .retry-button {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      border: none;
+      color: white;
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+    .back-button {
+      background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+      border: none;
+      color: white;
+      padding: 10px 30px;
+      font-size: 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+    }
+    .provider-info {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .help-section {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 30px 0;
+      text-align: left;
+    }
+    @keyframes swing {
+      0% { transform: rotate(-10deg); }
+      100% { transform: rotate(10deg); }
+    }
+  </style>
+</head>
+<body class="vault">
+  <div class="cancel-container">
+    <div class="cancel-card">
+      <div class="cancel-icon">❌</div>
+      
+      <h1 class="cancel-title">Payment Cancelled</h1>
+      
+      <div class="cancel-message">
+        Your payment was cancelled or interrupted. Don't worry - no charges were made to your account.
+        You can try again whenever you're ready to claim your Superman Unstoppable Relic!
+      </div>
+      
+      <div class="provider-info" id="providerInfo">
+        <strong>Payment Method:</strong> <span id="providerName">Loading...</span><br/>
+        <strong>Status:</strong> Cancelled - No charge applied
+      </div>
+      
+      <div class="action-section">
+        <h3 style="color: #00ffff; margin-bottom: 15px;">🔄 Ready to Try Again?</h3>
+        <p style="margin: 15px 0;">
+          Your Superman Unstoppable Relic is still waiting for you! 
+          Click below to return to the store and complete your purchase.
+        </p>
+        
+        <button onclick="window.location.href='/store'" class="retry-button">
+          🛍️ Try Again
+        </button>
+      </div>
+      
+      <div class="help-section">
+        <h4 style="color: #ffaa00; margin-bottom: 10px;">💡 Need Help?</h4>
+        <ul style="text-align: left; color: #ccc;">
+          <li>Make sure you have sufficient funds in your payment method</li>
+          <li>Check that your wallet is properly connected</li>
+          <li>Verify your payment provider account is in good standing</li>
+          <li>Try refreshing the page and connecting your wallet again</li>
+        </ul>
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <button onclick="window.location.href='/store'" class="back-button">
+          🛍️ Back to Store
+        </button>
+        <button onclick="window.location.href='/'" class="back-button">
+          🏠 Home
+        </button>
+      </div>
+    </div>
+    
+    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+      🔒 Your data is secure • 💳 No charges were applied • ⚡ Ready when you are
+    </div>
+  </div>
+
+  <script>
+    // Extract URL parameters
+    function getUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const provider = urlParams.get('provider');
+      
+      console.log('Cancel page params:', { provider });
+      
+      // Update provider info
+      if (provider) {
+        const providerNames = {
+          'stripe': 'Stripe (Credit Card)',
+          'coinbase': 'Coinbase Commerce (Cryptocurrency)',
+          'paypal': 'PayPal'
+        };
+        
+        document.getElementById('providerName').textContent = providerNames[provider] || provider.toUpperCase();
+      } else {
+        document.getElementById('providerName').textContent = 'Unknown';
+      }
+    }
+
+    // Initialize page
+    window.addEventListener('load', () => {
+      getUrlParams();
+    });
+  </script>
+</body>
+</html>

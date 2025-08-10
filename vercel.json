@@ -1,0 +1,18 @@
+{
+  "builds": [
+    { "src": "server.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/store", "dest": "/store/index.html" },
+    { "src": "/store/success", "dest": "/store/success.html" },
+    { "src": "/store/cancel", "dest": "/store/cancel.html" },
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "env": {
+    "PAYMENTS_PROVIDER": "coinbase",
+    "PRODUCT_NAME": "Superman Unstoppable Relic",
+    "PRODUCT_DESCRIPTION": "Exclusive digital collectible relic from the ChaosKey333 Vault",
+    "PRODUCT_PRICE": "3333"
+  }
+}
