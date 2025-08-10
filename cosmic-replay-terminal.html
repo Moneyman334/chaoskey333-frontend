@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌀 Cosmic Replay Terminal - ChaosKey333 Vault</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .cosmic-terminal {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+      color: #00ffff;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    
+    .terminal-header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #00ffff;
+      padding-bottom: 15px;
+    }
+    
+    .replay-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0;
+      background: rgba(0, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #00ffff;
+    }
+    
+    .control-btn {
+      background: linear-gradient(45deg, #00ffff, #0088ff);
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+      background: linear-gradient(45deg, #0088ff, #00ffff);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ffff;
+    }
+    
+    .control-btn:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .speed-slider {
+      width: 100px;
+      background: #333;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    
+    .speed-slider:hover {
+      opacity: 1;
+    }
+    
+    .spectrogram-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      height: 300px;
+      overflow: hidden;
+    }
+    
+    .evolution-viewer {
+      background: rgba(16, 33, 62, 0.9);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      min-height: 200px;
+    }
+    
+    .relic-status {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .status-card {
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+    
+    .pulse-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #00ffff;
+      display: inline-block;
+      margin-right: 10px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .sync-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 255, 255, 0.2);
+      border: 1px solid #00ffff;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 12px;
+    }
+    
+    .evolution-timeline {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      height: 150px;
+      overflow-x: auto;
+    }
+    
+    .timeline-track {
+      width: 100%;
+      height: 40px;
+      background: #333;
+      border-radius: 20px;
+      position: relative;
+      margin: 20px 0;
+    }
+    
+    .timeline-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff, #0088ff);
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .timeline-marker {
+      position: absolute;
+      top: -10px;
+      width: 4px;
+      height: 60px;
+      background: #ff0080;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    
+    .marker-tooltip {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: #00ffff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      white-space: nowrap;
+      display: none;
+    }
+    
+    .timeline-marker:hover .marker-tooltip {
+      display: block;
+    }
+  </style>
+</head>
+<body class="cosmic-terminal">
+  <div class="sync-status" id="syncStatus">
+    <span class="pulse-indicator"></span>
+    <span id="syncText">Syncing with Spectral HUD...</span>
+  </div>
+
+  <div class="terminal-header">
+    <h1 data-i18n="cosmic_replay_terminal" data-i18n-ns="interface">🌀 COSMIC REPLAY TERMINAL</h1>
+    <p>🧬 Relic Evolution Playback & Spectral Analysis System</p>
+  </div>
+
+  <div class="replay-controls">
+    <button class="control-btn" id="playBtn" onclick="playReplay()" data-i18n="play" data-i18n-ns="interface">▶️ PLAY</button>
+    <button class="control-btn" id="pauseBtn" onclick="pauseReplay()" disabled data-i18n="pause" data-i18n-ns="interface">⏸️ PAUSE</button>
+    <button class="control-btn" id="stopBtn" onclick="stopReplay()" data-i18n="stop" data-i18n-ns="interface">⏹️ STOP</button>
+    
+    <div class="speed-control">
+      <label data-i18n="speed" data-i18n-ns="interface">⚡ Speed:</label>
+      <input type="range" class="speed-slider" id="speedSlider" 
+             min="0.1" max="2" step="0.1" value="1" 
+             onchange="updateSpeed(this.value)">
+      <span id="speedDisplay">1.0x</span>
+    </div>
+    
+    <button class="control-btn" id="spectrogramBtn" onclick="toggleSpectrogram()" data-i18n="spectrogram" data-i18n-ns="interface">
+      📊 SPECTROGRAM
+    </button>
+  </div>
+
+  <div class="evolution-timeline">
+    <h3>🧬 Evolution Timeline</h3>
+    <div class="timeline-track">
+      <div class="timeline-progress" id="timelineProgress"></div>
+      <div class="timeline-marker" style="left: 20%;" onclick="jumpToMoment('mutation1')">
+        <div class="marker-tooltip">First Mutation</div>
+      </div>
+      <div class="timeline-marker" style="left: 45%;" onclick="jumpToMoment('solver1')">
+        <div class="marker-tooltip">Solver Imprint</div>
+      </div>
+      <div class="timeline-marker" style="left: 70%;" onclick="jumpToMoment('lore1')">
+        <div class="marker-tooltip">Lore Fragment Unlock</div>
+      </div>
+      <div class="timeline-marker" style="left: 90%;" onclick="jumpToMoment('evolution1')">
+        <div class="marker-tooltip">Evolution Complete</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relic-status">
+    <div class="status-card">
+      <h4>🔮 Current State</h4>
+      <p id="currentState" data-i18n="origin_flare">Origin Flare</p>
+      <p><span class="pulse-indicator"></span><span id="stateTime">00:00</span></p>
+    </div>
+    <div class="status-card">
+      <h4>⚡ Mutation Count</h4>
+      <p id="mutationCount">0</p>
+    </div>
+    <div class="status-card">
+      <h4>🧠 Solver Imprints</h4>
+      <p id="solverCount">0</p>
+    </div>
+    <div class="status-card">
+      <h4>📜 Lore Fragments</h4>
+      <p id="loreCount">0</p>
+    </div>
+  </div>
+
+  <div class="spectrogram-container" id="spectrogramContainer" style="display: none;">
+    <h3>📊 Spectral Analysis - Evolution Frequency</h3>
+    <canvas id="spectrogramCanvas" width="800" height="250"></canvas>
+  </div>
+
+  <div class="evolution-viewer">
+    <h3>👁️ Evolution Viewer</h3>
+    <div id="evolutionDisplay">
+      <p>🌀 Ready to replay relic evolution...</p>
+      <p>Select a relic from your vault to begin spectral analysis.</p>
+    </div>
+  </div>
+
+  <script src="cosmic-replay-terminal.js"></script>
+  <script src="spectral-decode-hud.js"></script>
+  <script src="vault-pulse-timeline.js"></script>
+  <script src="multilingual-glyph-captions.js"></script>
+</body>
+</html>
