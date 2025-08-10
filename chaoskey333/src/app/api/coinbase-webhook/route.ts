@@ -84,6 +84,9 @@ export async function POST(request: NextRequest) {
         currency: order.currency,
         provider: 'coinbase'
       });
+
+      // In a real implementation, you would trigger analytics here
+      // trackPaymentCompleted({ orderId, amount: order.amount, currency: order.currency, provider: 'coinbase' });
     }
 
     return NextResponse.json({ received: true });

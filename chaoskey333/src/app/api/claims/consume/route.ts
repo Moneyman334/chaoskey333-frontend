@@ -58,6 +58,9 @@ export async function POST(request: NextRequest) {
       currency: claimData.currency
     });
 
+    // In a real implementation, you would trigger analytics here
+    // trackClaimConsumed({ orderId: claimData.orderId, amount: claimData.amount, currency: claimData.currency });
+
     return NextResponse.json({
       success: true,
       mintSignature,
