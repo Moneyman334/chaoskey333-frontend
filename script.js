@@ -8,6 +8,26 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Temporal Echo Layer variables
+let echoLayer = {
+  enabled: true,
+  opacity: 0.3,
+  frameCount: 3,
+  currentFrame: 0,
+  captureInterval: 1000, // ms
+  frames: [],
+  pulseSync: false,
+  glyphEffects: []
+};
+
+// HUD Decode System
+let hudDecode = {
+  active: false,
+  pulseInterval: 1500, // ms
+  decodeSequence: [],
+  currentSequence: 0
+};
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -34,6 +54,246 @@ async function initializeStripe() {
     }
   } catch (error) {
     console.error("❌ Failed to initialize Stripe:", error);
+  }
+}
+
+// Temporal Echo Layer Functions
+function initializeTemporalEchoLayer() {
+  console.log("🌌 Initializing Temporal Echo Layer...");
+  
+  // Create canvas for frame capture
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '999';
+  canvas.style.display = 'none';
+  canvas.id = 'temporalCanvas';
+  document.body.appendChild(canvas);
+  
+  // Set up echo layer opacity control
+  const opacitySlider = document.getElementById('echoOpacitySlider');
+  const opacityDisplay = document.getElementById('echoOpacityDisplay');
+  
+  if (opacitySlider && opacityDisplay) {
+    opacitySlider.addEventListener('input', (e) => {
+      echoLayer.opacity = e.target.value / 100;
+      opacityDisplay.textContent = e.target.value + '%';
+      updateEchoLayerOpacity();
+    });
+  }
+  
+  // Start frame capture cycle
+  startFrameCapture();
+  
+  // Initialize HUD decode system
+  initializeHUDDecodeSystem();
+  
+  console.log("✅ Temporal Echo Layer initialized");
+}
+
+function captureCurrentFrame() {
+  if (!echoLayer.enabled) return;
+  
+  const canvas = document.getElementById('temporalCanvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Use html2canvas-like approach or screenshot API when available
+  // For now, we'll create a visual representation using DOM elements
+  createEchoFrame();
+}
+
+function createEchoFrame() {
+  const container = document.getElementById('temporalEchoContainer');
+  if (!container) return;
+  
+  // Cycle through echo frames
+  const frameId = `echoFrame${(echoLayer.currentFrame % echoLayer.frameCount) + 1}`;
+  const frame = document.getElementById(frameId);
+  
+  if (frame) {
+    // Create echo effect by duplicating current visual state
+    const snapshot = createVisualSnapshot();
+    frame.innerHTML = snapshot;
+    frame.classList.add('active');
+    
+    // Add pulse sync if HUD is active
+    if (hudDecode.active) {
+      frame.classList.add('pulse-sync');
+    }
+    
+    // Remove previous frame's active state
+    const prevFrameId = `echoFrame${((echoLayer.currentFrame - 1 + echoLayer.frameCount) % echoLayer.frameCount) + 1}`;
+    const prevFrame = document.getElementById(prevFrameId);
+    if (prevFrame) {
+      setTimeout(() => {
+        prevFrame.classList.remove('active', 'pulse-sync');
+      }, 500);
+    }
+    
+    echoLayer.currentFrame++;
+  }
+}
+
+function createVisualSnapshot() {
+  // Create a simplified visual snapshot of key elements
+  const elements = document.querySelectorAll('.glow, .pulse, .resurrection-container h1, .frank-img');
+  let snapshot = '';
+  
+  elements.forEach((el, index) => {
+    if (el.offsetParent !== null) { // Element is visible
+      const rect = el.getBoundingClientRect();
+      const styles = window.getComputedStyle(el);
+      
+      snapshot += `<div class="echo-element" style="
+        position: absolute;
+        left: ${rect.left}px;
+        top: ${rect.top}px;
+        width: ${rect.width}px;
+        height: ${rect.height}px;
+        color: ${styles.color};
+        font-size: ${styles.fontSize};
+        opacity: 0.3;
+        transform: scale(0.98);
+        pointer-events: none;
+      ">${el.tagName === 'IMG' ? '🖼️' : el.textContent}</div>`;
+    }
+  });
+  
+  return snapshot;
+}
+
+function startFrameCapture() {
+  if (!echoLayer.enabled) return;
+  
+  // Capture frames at regular intervals
+  setInterval(() => {
+    captureCurrentFrame();
+  }, echoLayer.captureInterval);
+  
+  console.log("🔄 Frame capture started");
+}
+
+function updateEchoLayerOpacity() {
+  const container = document.getElementById('temporalEchoContainer');
+  if (container) {
+    container.style.opacity = echoLayer.opacity;
+  }
+}
+
+function initializeHUDDecodeSystem() {
+  console.log("🎯 Initializing HUD Decode System...");
+  
+  const hud = document.getElementById('spectralDecodeHUD');
+  if (hud) {
+    // Show HUD after terminal overlay disappears
+    setTimeout(() => {
+      hud.style.display = 'block';
+      hudDecode.active = true;
+      startDecodePulseSequence();
+    }, 4000);
+  }
+}
+
+function startDecodePulseSequence() {
+  if (!hudDecode.active) return;
+  
+  const decodeStatus = document.getElementById('decodeStatus');
+  const sequences = [
+    'Scanning temporal layers...',
+    'Detecting echo patterns...',
+    'Synchronizing frame data...',
+    'Amplifying glyph resonance...',
+    'Echo layer synchronized ✓'
+  ];
+  
+  let sequenceIndex = 0;
+  
+  const pulseInterval = setInterval(() => {
+    if (decodeStatus && sequenceIndex < sequences.length) {
+      decodeStatus.textContent = sequences[sequenceIndex];
+      
+      // Trigger glyph flash effect
+      if (sequenceIndex > 1) {
+        triggerGlyphFlash();
+      }
+      
+      // Sync echo layer pulses
+      syncEchoLayerPulse();
+      
+      sequenceIndex++;
+    } else {
+      clearInterval(pulseInterval);
+      // Continue with periodic pulses
+      startPeriodicPulses();
+    }
+  }, hudDecode.pulseInterval);
+}
+
+function startPeriodicPulses() {
+  setInterval(() => {
+    if (hudDecode.active) {
+      syncEchoLayerPulse();
+      if (Math.random() > 0.7) { // 30% chance
+        triggerGlyphFlash();
+      }
+    }
+  }, hudDecode.pulseInterval * 2);
+}
+
+function syncEchoLayerPulse() {
+  // Add pulse effect to all active echo frames
+  const frames = document.querySelectorAll('.echo-frame.active');
+  frames.forEach(frame => {
+    frame.classList.add('pulse-sync');
+    setTimeout(() => {
+      frame.classList.remove('pulse-sync');
+    }, 1000);
+  });
+}
+
+function triggerGlyphFlash() {
+  // Create random glyph effects
+  const glyphs = ['⚡', '🌌', '✨', '🔮', '💫', '⭐', '🌟', '💎'];
+  const glyph = glyphs[Math.floor(Math.random() * glyphs.length)];
+  
+  const glyphElement = document.createElement('div');
+  glyphElement.className = 'glyph-echo';
+  glyphElement.textContent = glyph;
+  glyphElement.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+  glyphElement.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+  
+  document.body.appendChild(glyphElement);
+  
+  // Remove after animation
+  setTimeout(() => {
+    if (glyphElement.parentNode) {
+      glyphElement.parentNode.removeChild(glyphElement);
+    }
+  }, 3000);
+  
+  // Add to echo effects
+  echoLayer.glyphEffects.push({
+    element: glyphElement,
+    timestamp: Date.now()
+  });
+}
+
+// Enhanced terminal overlay with echo layer integration
+function enhanceTerminalOverlay() {
+  const overlay = document.getElementById("terminalOverlay");
+  if (overlay) {
+    // Add echo effect to terminal text
+    overlay.style.textShadow = '0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00';
+    
+    // Enhanced flicker with temporal sync
+    overlay.style.animation = 'flicker 0.3s infinite alternate, temporalGlow 2s ease-in-out infinite';
   }
 }
 
@@ -371,6 +631,12 @@ window.onload = async function () {
   setTimeout(checkWalletAvailability, 500);
   
   await initializeStripe();
+
+  // Initialize Temporal Echo Layer system
+  initializeTemporalEchoLayer();
+  
+  // Enhance terminal overlay with echo effects
+  enhanceTerminalOverlay();
 
   setTimeout(() => {
     const overlay = document.getElementById("terminalOverlay");
