@@ -177,11 +177,38 @@ async function mintRelic() {
     mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
+  // Trigger temporal echo effects during minting
+  if (window.temporalEchoSystem) {
+    // Create glyph burst at mint start
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => {
+        const angle = (i / 12) * Math.PI * 2;
+        const radius = 150 + Math.random() * 100;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        window.temporalEchoSystem.createGlyphTrail(x, y, userWalletAddress);
+      }, i * 150);
+    }
+  }
+
   // Simulate minting process
   setTimeout(() => {
     console.log("🧬 Vault Relic Minted for", userWalletAddress);
     if (mintStatus) {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
+    }
+    
+    // Trigger relic mutation event after successful mint
+    if (window.temporalEchoSystem) {
+      // Dispatch custom event for temporal echo system
+      document.dispatchEvent(new CustomEvent('relicMinted', {
+        detail: { 
+          walletAddress: userWalletAddress,
+          timestamp: Date.now()
+        }
+      }));
     }
   }, 2000);
 }
