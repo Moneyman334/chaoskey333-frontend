@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sentinel Omniverse Evolution Graph - Genesis Build</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="evolution-graph.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="evolution-graph-body">
+  <div id="evolution-graph-container">
+    <div class="graph-header">
+      <h1 class="graph-title">⚡ SENTINEL OMNIVERSE EVOLUTION GRAPH ⚡</h1>
+      <div class="graph-subtitle">Genesis Build - Tracking ChaosKey333 Artifact Evolution</div>
+    </div>
+    
+    <div id="graph-canvas-container">
+      <canvas id="evolution-canvas"></canvas>
+      <div class="graph-overlay">
+        <div class="node-info-panel" id="nodeInfoPanel">
+          <h3>Node Information</h3>
+          <div id="nodeDetails">Select a node to view details</div>
+        </div>
+        
+        <div class="graph-controls">
+          <button id="resetView" class="control-btn">🎯 Reset View</button>
+          <button id="playAnimation" class="control-btn">▶️ Play Evolution</button>
+          <button id="pauseAnimation" class="control-btn">⏸️ Pause</button>
+          <button id="replayMode" class="control-btn">🔄 Replay Mode</button>
+        </div>
+        
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color relic-node"></div>
+            <span>Relic Nodes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color system-node"></div>
+            <span>System Nodes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color lore-node"></div>
+            <span>Lore Nodes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color apex-node"></div>
+            <span>Sentinel's Apex</span>
+          </div>
+        </div>
+        
+        <div class="collector-pathways">
+          <h4>Collector Pathways</h4>
+          <select id="collectorSelect">
+            <option value="all">All Pathways</option>
+            <option value="genesis">Genesis Collector</option>
+            <option value="vault-master">Vault Master</option>
+            <option value="relic-seeker">Relic Seeker</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="back-to-vault">
+      <a href="index.html" class="vault-return-btn">⚡ Return to Vault ⚡</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from '/node_modules/three/build/three.module.js';
+    window.THREE = THREE;
+  </script>
+  <script type="module" src="evolution-graph.js"></script>
+</body>
+</html>
