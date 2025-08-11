@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temporal Echo Layer - Test Suite</title>
+  <link rel="stylesheet" href="temporal-echo.css">
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 8px;
+    }
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .test-pass {
+      background: rgba(0, 255, 0, 0.2);
+      border: 1px solid #0f0;
+    }
+    .test-fail {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid #f00;
+    }
+    .test-controls {
+      margin: 10px 0;
+    }
+    .test-controls button {
+      margin: 5px;
+      padding: 8px 12px;
+      background: #333;
+      color: #fff;
+      border: 1px solid #666;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .test-controls button:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌀 Temporal Echo Layer - Test Suite</h1>
+  
+  <div class="test-section">
+    <h2>1. Initialization Tests</h2>
+    <div id="init-results"></div>
+    <div class="test-controls">
+      <button onclick="runInitTests()">Run Initialization Tests</button>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>2. Visual Effects Tests</h2>
+    <div id="effects-results"></div>
+    <div class="test-controls">
+      <button onclick="testColorShift()">Test Color Shift</button>
+      <button onclick="testMotionTrail()">Test Motion Trail</button>
+      <button onclick="testLoreFragment()">Test Lore Fragment</button>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>3. Audio Integration Tests</h2>
+    <div id="audio-results"></div>
+    <div class="test-controls">
+      <button onclick="testBassSync()">Test Bass Sync</button>
+      <button onclick="testOpacityBreath()">Test Opacity Breathing</button>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>4. Relic Evolution Tests</h2>
+    <div id="evolution-results"></div>
+    <div class="test-controls">
+      <button onclick="testRelicMutation()">Test Relic Mutation</button>
+      <button onclick="testGhostEvolution()">Test Ghost Evolution</button>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>5. State Persistence Tests</h2>
+    <div id="persistence-results"></div>
+    <div class="test-controls">
+      <button onclick="testStateSave()">Test State Save</button>
+      <button onclick="testStateLoad()">Test State Load</button>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Manual Visual Verification</h2>
+    <p>Look for the ghost overlay with breathing opacity effect in the background.</p>
+    <div class="test-controls">
+      <button onclick="toggleEchoVisibility()">Toggle Echo Visibility</button>
+      <button onclick="simulateDecodeEvent()">Simulate Decode Event</button>
+      <button onclick="simulateRelicEvolution()">Simulate Relic Evolution</button>
+    </div>
+  </div>
+
+  <script src="temporal-echo.js"></script>
+  <script>
+    let echoLayer = null;
+    let testResults = {
+      init: [],
+      effects: [],
+      audio: [],
+      evolution: [],
+      persistence: []
+    };
+
+    // Test utilities
+    function logResult(category, test, passed, message) {
+      const result = { test, passed, message, timestamp: new Date().toISOString() };
+      testResults[category].push(result);
+      
+      const resultsDiv = document.getElementById(`${category}-results`);
+      const resultElement = document.createElement('div');
+      resultElement.className = `test-result ${passed ? 'test-pass' : 'test-fail'}`;
+      resultElement.innerHTML = `
+        <strong>${passed ? '✅' : '❌'} ${test}</strong><br>
+        ${message}<br>
+        <small>${result.timestamp}</small>
+      `;
+      resultsDiv.appendChild(resultElement);
+    }
+
+    // 1. Initialization Tests
+    function runInitTests() {
+      const resultsDiv = document.getElementById('init-results');
+      resultsDiv.innerHTML = '';
+
+      try {
+        // Test 1: TemporalEchoLayer class exists
+        const classExists = typeof TemporalEchoLayer !== 'undefined';
+        logResult('init', 'Class Definition', classExists, 
+          classExists ? 'TemporalEchoLayer class is available' : 'TemporalEchoLayer class not found');
+
+        if (classExists) {
+          // Test 2: Can instantiate
+          try {
+            echoLayer = new TemporalEchoLayer({
+              minOpacity: 0.1,
+              maxOpacity: 0.3,
+              simulationMode: true
+            });
+            logResult('init', 'Instantiation', true, 'Successfully created TemporalEchoLayer instance');
+
+            // Test 3: DOM elements created
+            setTimeout(() => {
+              const container = document.getElementById('temporal-echo-container');
+              const overlay = document.getElementById('ghost-overlay');
+              
+              logResult('init', 'DOM Creation', !!(container && overlay), 
+                container && overlay ? 'Echo container and ghost overlay created' : 'DOM elements missing');
+            }, 100);
+
+          } catch (error) {
+            logResult('init', 'Instantiation', false, `Failed to create instance: ${error.message}`);
+          }
+        }
+      } catch (error) {
+        logResult('init', 'Initialization', false, `Test suite error: ${error.message}`);
+      }
+    }
+
+    // 2. Visual Effects Tests
+    function testColorShift() {
+      if (!echoLayer) {
+        logResult('effects', 'Color Shift', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        echoLayer.addColorShiftEffect();
+        
+        setTimeout(() => {
+          const colorShiftElements = document.querySelectorAll('.echo-color-shift');
+          logResult('effects', 'Color Shift', colorShiftElements.length > 0, 
+            `Color shift effect ${colorShiftElements.length > 0 ? 'triggered' : 'not found'}`);
+        }, 50);
+      } catch (error) {
+        logResult('effects', 'Color Shift', false, `Error: ${error.message}`);
+      }
+    }
+
+    function testMotionTrail() {
+      if (!echoLayer) {
+        logResult('effects', 'Motion Trail', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        echoLayer.addMotionTrail(document.body, { x: 200, y: 200 });
+        
+        setTimeout(() => {
+          const trailElements = document.querySelectorAll('.echo-motion-trail');
+          logResult('effects', 'Motion Trail', trailElements.length > 0, 
+            `Motion trail ${trailElements.length > 0 ? 'created' : 'not found'}`);
+        }, 50);
+      } catch (error) {
+        logResult('effects', 'Motion Trail', false, `Error: ${error.message}`);
+      }
+    }
+
+    function testLoreFragment() {
+      if (!echoLayer) {
+        logResult('effects', 'Lore Fragment', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        echoLayer.flashLoreFragment({ test: true });
+        
+        setTimeout(() => {
+          const fragmentElements = document.querySelectorAll('.echo-lore-fragment');
+          logResult('effects', 'Lore Fragment', fragmentElements.length > 0, 
+            `Lore fragment ${fragmentElements.length > 0 ? 'flashed' : 'not found'}`);
+        }, 50);
+      } catch (error) {
+        logResult('effects', 'Lore Fragment', false, `Error: ${error.message}`);
+      }
+    }
+
+    // 3. Audio Integration Tests
+    function testBassSync() {
+      if (!echoLayer) {
+        logResult('audio', 'Bass Sync', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        const initialOpacity = echoLayer.currentOpacity;
+        echoLayer.processBassData(0.8); // High bass intensity
+        
+        setTimeout(() => {
+          const opacityChanged = Math.abs(echoLayer.currentOpacity - initialOpacity) > 0.01;
+          logResult('audio', 'Bass Sync', opacityChanged, 
+            `Bass sync ${opacityChanged ? 'working' : 'not responding'} (${initialOpacity} → ${echoLayer.currentOpacity})`);
+        }, 100);
+      } catch (error) {
+        logResult('audio', 'Bass Sync', false, `Error: ${error.message}`);
+      }
+    }
+
+    function testOpacityBreath() {
+      if (!echoLayer) {
+        logResult('audio', 'Opacity Breathing', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        const overlay = document.getElementById('ghost-overlay');
+        if (overlay) {
+          const hasOpacity = parseFloat(overlay.style.opacity) > 0;
+          logResult('audio', 'Opacity Breathing', hasOpacity, 
+            `Ghost overlay opacity: ${overlay.style.opacity || 'not set'}`);
+        } else {
+          logResult('audio', 'Opacity Breathing', false, 'Ghost overlay not found');
+        }
+      } catch (error) {
+        logResult('audio', 'Opacity Breathing', false, `Error: ${error.message}`);
+      }
+    }
+
+    // 4. Relic Evolution Tests
+    function testRelicMutation() {
+      if (!echoLayer) {
+        logResult('evolution', 'Relic Mutation', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        const testData = {
+          type: 'test_mutation',
+          evolutionLevel: 3,
+          consciousness: 'evolved'
+        };
+        
+        echoLayer.onRelicMutation(testData);
+        logResult('evolution', 'Relic Mutation', true, 'Relic mutation processed successfully');
+      } catch (error) {
+        logResult('evolution', 'Relic Mutation', false, `Error: ${error.message}`);
+      }
+    }
+
+    function testGhostEvolution() {
+      if (!echoLayer) {
+        logResult('evolution', 'Ghost Evolution', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        echoLayer.relicState.consciousness = 'evolved';
+        echoLayer.evolveGhostMemory();
+        
+        const overlay = document.getElementById('ghost-overlay');
+        const hasEvolutionStyles = overlay && overlay.style.background.includes('rgba');
+        
+        logResult('evolution', 'Ghost Evolution', hasEvolutionStyles, 
+          `Ghost memory ${hasEvolutionStyles ? 'evolved' : 'unchanged'}`);
+      } catch (error) {
+        logResult('evolution', 'Ghost Evolution', false, `Error: ${error.message}`);
+      }
+    }
+
+    // 5. State Persistence Tests
+    function testStateSave() {
+      if (!echoLayer) {
+        logResult('persistence', 'State Save', false, 'Echo layer not initialized');
+        return;
+      }
+
+      try {
+        echoLayer.saveEchoState();
+        const savedState = localStorage.getItem('chaoskey:echo-state');
+        logResult('persistence', 'State Save', !!savedState, 
+          savedState ? 'Echo state saved to localStorage' : 'Failed to save state');
+      } catch (error) {
+        logResult('persistence', 'State Save', false, `Error: ${error.message}`);
+      }
+    }
+
+    function testStateLoad() {
+      try {
+        const testState = { test: true, timestamp: Date.now() };
+        localStorage.setItem('chaoskey:echo-state', JSON.stringify(testState));
+        
+        if (echoLayer) {
+          const loadedState = echoLayer.loadEchoState();
+          const stateLoaded = loadedState && loadedState.test === true;
+          logResult('persistence', 'State Load', stateLoaded, 
+            stateLoaded ? 'Echo state loaded successfully' : 'Failed to load state');
+        } else {
+          logResult('persistence', 'State Load', false, 'Echo layer not initialized');
+        }
+      } catch (error) {
+        logResult('persistence', 'State Load', false, `Error: ${error.message}`);
+      }
+    }
+
+    // Manual test functions
+    function toggleEchoVisibility() {
+      const container = document.getElementById('temporal-echo-container');
+      if (container) {
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    function simulateDecodeEvent() {
+      document.dispatchEvent(new CustomEvent('chaoskey:decode:start', {
+        detail: { type: 'test', timestamp: Date.now() }
+      }));
+      
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('chaoskey:decode:success', {
+          detail: { type: 'test', fragment: 'Test Fragment' }
+        }));
+      }, 800);
+    }
+
+    function simulateRelicEvolution() {
+      document.dispatchEvent(new CustomEvent('chaoskey:relic:mutate', {
+        detail: { 
+          type: 'test_evolution',
+          evolutionLevel: Math.floor(Math.random() * 10),
+          consciousness: ['dormant', 'awakening', 'evolved'][Math.floor(Math.random() * 3)]
+        }
+      }));
+    }
+
+    // Auto-run initialization tests when page loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        runInitTests();
+      }, 500);
+    });
+  </script>
+</body>
+</html>

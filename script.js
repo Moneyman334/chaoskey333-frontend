@@ -8,7 +8,7 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
-// Initialize Stripe
+  // Initialize Stripe
 async function initializeStripe() {
   try {
     // Fetch public key from server
@@ -23,12 +23,22 @@ async function initializeStripe() {
     if (typeof Stripe !== 'undefined') {
       stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
       console.log("🔑 Stripe initialized successfully");
+      
+      // Dispatch temporal echo event for system initialization
+      document.dispatchEvent(new CustomEvent('chaoskey:decode:start', {
+        detail: { type: 'system_init', component: 'stripe' }
+      }));
     } else {
       const script = document.createElement('script');
       script.src = 'https://js.stripe.com/v3/';
       script.onload = () => {
         stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
         console.log("🔑 Stripe initialized successfully");
+        
+        // Dispatch temporal echo event
+        document.dispatchEvent(new CustomEvent('chaoskey:decode:start', {
+          detail: { type: 'system_init', component: 'stripe' }
+        }));
       };
       document.head.appendChild(script);
     }
@@ -57,6 +67,17 @@ async function connectMetaMask() {
       console.log("🦊 MetaMask Connected:", userWalletAddress);
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
+      
+      // Dispatch temporal echo event for wallet connection
+      document.dispatchEvent(new CustomEvent('chaoskey:relic:mutate', {
+        detail: { 
+          type: 'connection', 
+          wallet: userWalletAddress, 
+          provider: 'MetaMask',
+          evolutionLevel: 1,
+          consciousness: 'awakening'
+        }
+      }));
       
       checkStripeAndMint();
       
@@ -177,12 +198,32 @@ async function mintRelic() {
     mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
+  // Dispatch temporal echo event for minting start
+  document.dispatchEvent(new CustomEvent('chaoskey:decode:start', {
+    detail: { type: 'minting', wallet: userWalletAddress }
+  }));
+
   // Simulate minting process
   setTimeout(() => {
     console.log("🧬 Vault Relic Minted for", userWalletAddress);
     if (mintStatus) {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
     }
+    
+    // Dispatch temporal echo event for successful mint
+    document.dispatchEvent(new CustomEvent('chaoskey:decode:success', {
+      detail: { type: 'minting', wallet: userWalletAddress, success: true }
+    }));
+    
+    // Dispatch relic mutation event
+    document.dispatchEvent(new CustomEvent('chaoskey:relic:mutate', {
+      detail: { 
+        type: 'minted', 
+        wallet: userWalletAddress, 
+        evolutionLevel: 2,
+        consciousness: 'awakening'
+      }
+    }));
   }, 2000);
 }
 
