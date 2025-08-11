@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel Omniverse Evolution Graph - ChaosKey333</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="omniverse-graph.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="omniverse">
+  <!-- Background Deep Space -->
+  <div class="deep-space-bg">
+    <canvas id="starsCanvas" class="stars-layer"></canvas>
+  </div>
+
+  <!-- Main Graph Container -->
+  <div class="graph-container">
+    <canvas id="omniverseCanvas" class="main-canvas"></canvas>
+    
+    <!-- Apex Node Lock Overlay -->
+    <div class="apex-node-container">
+      <div class="apex-node" id="apexNode">
+        <div class="node-core"></div>
+        <div class="prismatic-edges"></div>
+        <div class="lock-aura">
+          <div class="lattice-layer">
+            <div class="glyph-runner glyph-1">◊</div>
+            <div class="glyph-runner glyph-2">◇</div>
+            <div class="glyph-runner glyph-3">◊</div>
+            <div class="glyph-runner glyph-4">◇</div>
+          </div>
+        </div>
+        <div class="gravitational-ripple" id="gravRipple"></div>
+      </div>
+    </div>
+
+    <!-- Tease Trails -->
+    <div class="tease-trails-container" id="teaseTrails">
+      <!-- Dynamic trails will be generated here -->
+    </div>
+
+    <!-- Unlock Event Overlay -->
+    <div class="unlock-overlay" id="unlockOverlay" style="display: none;">
+      <div class="lattice-shatter"></div>
+      <div class="apex-interior"></div>
+    </div>
+  </div>
+
+  <!-- UI Controls -->
+  <div class="ui-controls">
+    <div class="vault-status" id="vaultStatus">
+      <span class="status-indicator"></span>
+      <span class="status-text">Vault Monitoring Active</span>
+    </div>
+    <div class="ascension-meter" id="ascensionMeter">
+      <div class="meter-fill" style="width: 0%"></div>
+      <span class="meter-label">Ascension Progress</span>
+    </div>
+    <button class="back-to-vault" onclick="window.location.href='index.html'">⚡ Return to Vault ⚡</button>
+  </div>
+
+  <!-- Audio System -->
+  <audio id="bassPresence" loop>
+    <source src="data:audio/wav;base64," type="audio/wav">
+  </audio>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="omniverse-graph.js"></script>
+</body>
+</html>
