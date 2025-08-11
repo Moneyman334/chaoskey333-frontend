@@ -1,0 +1,253 @@
+/* Temporal Echo Layer CSS Animations and Styles */
+
+/* Color shift pulse animation for glyph decoding */
+@keyframes colorShiftPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  20% {
+    opacity: 0.6;
+    transform: scale(1.0);
+  }
+  60% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+/* Motion trail fade animation */
+@keyframes trailFade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(0, 255, 204, 0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.8);
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+    box-shadow: 0 0 4px rgba(0, 255, 204, 0.2);
+  }
+}
+
+/* Lore fragment flash animation */
+@keyframes fragmentFlash {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 0 30px rgba(138, 43, 226, 0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8) rotate(360deg);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  }
+}
+
+/* Enhanced breathing animation for ghost overlay */
+@keyframes ghostBreathe {
+  0% {
+    opacity: 0.2;
+    filter: blur(1px) brightness(0.8);
+  }
+  50% {
+    opacity: 0.4;
+    filter: blur(1.5px) brightness(1.2);
+  }
+  100% {
+    opacity: 0.2;
+    filter: blur(1px) brightness(0.8);
+  }
+}
+
+/* Relic consciousness evolution effects */
+.echo-dormant {
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.05) 50%,
+    transparent 70%);
+}
+
+.echo-awakening {
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(255, 215, 0, 0.15) 0%,
+    rgba(138, 43, 226, 0.08) 40%,
+    rgba(0, 255, 255, 0.05) 70%,
+    transparent 90%);
+  animation: consciousnessAwakening 3s ease-in-out infinite;
+}
+
+.echo-evolved {
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(255, 215, 0, 0.2) 0%,
+    rgba(138, 43, 226, 0.12) 30%,
+    rgba(0, 255, 255, 0.08) 60%,
+    rgba(255, 0, 128, 0.05) 80%,
+    transparent 95%);
+  animation: consciousnessEvolved 2s ease-in-out infinite;
+}
+
+@keyframes consciousnessAwakening {
+  0%, 100% {
+    filter: blur(1px) brightness(1) hue-rotate(0deg);
+  }
+  50% {
+    filter: blur(2px) brightness(1.3) hue-rotate(30deg);
+  }
+}
+
+@keyframes consciousnessEvolved {
+  0%, 100% {
+    filter: blur(1.5px) brightness(1.2) hue-rotate(0deg);
+  }
+  33% {
+    filter: blur(2px) brightness(1.5) hue-rotate(120deg);
+  }
+  66% {
+    filter: blur(1px) brightness(1.8) hue-rotate(240deg);
+  }
+}
+
+/* Bass-reactive glow effects */
+.echo-bass-pulse {
+  animation: bassPulse 0.2s ease-out;
+}
+
+@keyframes bassPulse {
+  0% {
+    filter: blur(1px) brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: blur(3px) brightness(1.8) saturate(1.5);
+    transform: scale(1.02);
+  }
+  100% {
+    filter: blur(1px) brightness(1);
+    transform: scale(1);
+  }
+}
+
+/* HUD Glyph enhancements for decode sequences */
+.hud-glyph {
+  position: relative;
+  transition: all 0.3s ease-out;
+}
+
+.hud-glyph.decoding {
+  color: #FFD700;
+  text-shadow: 
+    0 0 5px rgba(255, 215, 0, 0.8),
+    0 0 10px rgba(138, 43, 226, 0.6),
+    0 0 15px rgba(0, 255, 255, 0.4);
+  animation: glyphDecode 0.8s ease-in-out;
+}
+
+@keyframes glyphDecode {
+  0% {
+    transform: scale(1) rotate(0deg);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+    text-shadow: 
+      0 0 8px rgba(255, 215, 0, 1),
+      0 0 12px rgba(138, 43, 226, 0.8);
+  }
+  50% {
+    transform: scale(1.15) rotate(-3deg);
+    text-shadow: 
+      0 0 10px rgba(255, 215, 0, 1),
+      0 0 15px rgba(138, 43, 226, 1),
+      0 0 20px rgba(0, 255, 255, 0.6);
+  }
+  75% {
+    transform: scale(1.05) rotate(2deg);
+    text-shadow: 
+      0 0 8px rgba(255, 215, 0, 0.9),
+      0 0 12px rgba(138, 43, 226, 0.7);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Motion trail container optimization */
+#temporal-echo-container {
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Ghost overlay optimizations */
+#ghost-overlay {
+  will-change: opacity, filter;
+  transform: translateZ(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .echo-lore-fragment {
+    font-size: 18px !important;
+  }
+  
+  .echo-motion-trail {
+    width: 3px !important;
+    height: 3px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .echo-lore-fragment {
+    font-size: 14px !important;
+  }
+  
+  .echo-motion-trail {
+    width: 2px !important;
+    height: 2px !important;
+  }
+}
+
+/* Performance optimizations for older browsers */
+@supports not (backdrop-filter: blur(5px)) {
+  #temporal-echo-container {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Accessibility considerations */
+@media (prefers-reduced-motion: reduce) {
+  .echo-color-shift,
+  .echo-motion-trail,
+  .echo-lore-fragment,
+  #ghost-overlay {
+    animation: none !important;
+    transition: opacity 0.3s ease-out !important;
+  }
+}
+
+/* Debug mode styles */
+.temporal-echo-debug .echo-motion-trail {
+  background: rgba(255, 0, 0, 0.8) !important;
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.temporal-echo-debug #ghost-overlay {
+  border: 2px dashed rgba(255, 255, 0, 0.5);
+}
