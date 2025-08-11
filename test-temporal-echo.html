@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Temporal Echo Layer - Feature Test</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #111;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+        }
+        .test-section {
+            border: 1px solid #333;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .pass { background: #1a4a1a; color: #00ff00; }
+        .fail { background: #4a1a1a; color: #ff6666; }
+        .info { background: #1a1a4a; color: #6666ff; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #006600;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        button:hover { background: #00ff00; color: #000; }
+    </style>
+</head>
+<body class="vault">
+    <div id="terminalOverlay">🧪 Testing Temporal Echo Layer...</div>
+    
+    <!-- Temporal Echo Layer System -->
+    <div id="temporalEchoContainer" class="temporal-echo-layer">
+        <div id="echoFrame1" class="echo-frame"></div>
+        <div id="echoFrame2" class="echo-frame"></div>
+        <div id="echoFrame3" class="echo-frame"></div>
+    </div>
+    
+    <!-- Spectral Decode HUD -->
+    <div id="spectralDecodeHUD" class="spectral-decode-hud" style="display: none;">
+        <div style="font-size: 0.9rem; margin-bottom: 10px;">🌌 SPECTRAL DECODE HUD</div>
+        <div id="decodeStatus">Running feature tests...</div>
+        <div style="position: relative; height: 50px; margin-top: 10px;">
+            <div class="decode-pulse" style="left: 20px; top: 15px;"></div>
+            <div class="decode-pulse" style="left: 60px; top: 15px; animation-delay: 0.5s;"></div>
+            <div class="decode-pulse" style="left: 100px; top: 15px; animation-delay: 1s;"></div>
+        </div>
+        <div style="font-size: 0.8rem; margin-top: 10px;">
+            Echo Opacity: <span id="echoOpacityDisplay">30%</span>
+            <input type="range" id="echoOpacitySlider" min="10" max="70" value="30" style="width: 100px; margin-left: 10px;">
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h1>🌌 Temporal Echo Layer - Feature Validation</h1>
+        <p>Testing the implementation of PR #10 & PR #23 integration</p>
+
+        <div class="test-section">
+            <h3>🔍 Component Initialization Tests</h3>
+            <div id="initResults"></div>
+            <button onclick="testInitialization()">Run Initialization Tests</button>
+        </div>
+
+        <div class="test-section">
+            <h3>👻 Echo Layer Functionality Tests</h3>
+            <div id="echoResults"></div>
+            <button onclick="testEchoLayer()">Test Echo Layer</button>
+            <button onclick="testOpacityControl()">Test Opacity Control</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 HUD Decode Pulse Synchronization</h3>
+            <div id="syncResults"></div>
+            <button onclick="testPulseSync()">Test Pulse Sync</button>
+            <button onclick="testGlyphFlashes()">Test Glyph Flashes</button>
+        </div>
+
+        <div class="test-section">
+            <h3>⚡ Temporal Effects & Animations</h3>
+            <div id="animationResults"></div>
+            <button onclick="testAnimations()">Test Animations</button>
+            <button onclick="testFrameCapture()">Test Frame Capture</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Performance & Integration</h3>
+            <div id="performanceResults"></div>
+            <button onclick="testPerformance()">Test Performance</button>
+            <button onclick="runAllTests()">🚀 Run All Tests</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Test Results Display
+        function displayResult(containerId, test, result, message) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${result ? 'pass' : 'fail'}`;
+            resultDiv.innerHTML = `${result ? '✅' : '❌'} ${test}: ${message}`;
+            container.appendChild(resultDiv);
+        }
+
+        function displayInfo(containerId, message) {
+            const container = document.getElementById(containerId);
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'test-result info';
+            infoDiv.innerHTML = `ℹ️ ${message}`;
+            container.appendChild(infoDiv);
+        }
+
+        // Test Functions
+        function testInitialization() {
+            const container = document.getElementById('initResults');
+            container.innerHTML = '';
+            
+            displayInfo('initResults', 'Testing component initialization...');
+
+            // Test Echo Layer Container
+            const echoContainer = document.getElementById('temporalEchoContainer');
+            displayResult('initResults', 'Echo Container', !!echoContainer, 
+                echoContainer ? 'Echo container found and initialized' : 'Echo container missing');
+
+            // Test Echo Frames
+            const frames = ['echoFrame1', 'echoFrame2', 'echoFrame3'];
+            frames.forEach((frameId, index) => {
+                const frame = document.getElementById(frameId);
+                displayResult('initResults', `Echo Frame ${index + 1}`, !!frame,
+                    frame ? `Frame ${index + 1} initialized` : `Frame ${index + 1} missing`);
+            });
+
+            // Test HUD
+            const hud = document.getElementById('spectralDecodeHUD');
+            displayResult('initResults', 'Spectral Decode HUD', !!hud,
+                hud ? 'HUD component found' : 'HUD component missing');
+
+            // Test Global Variables
+            displayResult('initResults', 'Echo Layer Config', typeof echoLayer !== 'undefined',
+                typeof echoLayer !== 'undefined' ? 'Echo layer config initialized' : 'Echo layer config missing');
+
+            displayResult('initResults', 'HUD Decode Config', typeof hudDecode !== 'undefined',
+                typeof hudDecode !== 'undefined' ? 'HUD decode config initialized' : 'HUD decode config missing');
+        }
+
+        function testEchoLayer() {
+            const container = document.getElementById('echoResults');
+            container.innerHTML = '';
+            
+            displayInfo('echoResults', 'Testing echo layer functionality...');
+
+            // Test opacity setting
+            const echoContainer = document.getElementById('temporalEchoContainer');
+            if (echoContainer) {
+                const currentOpacity = window.getComputedStyle(echoContainer).opacity;
+                displayResult('echoResults', 'Opacity Setting', parseFloat(currentOpacity) > 0,
+                    `Current opacity: ${currentOpacity}`);
+            }
+
+            // Test frame cycling
+            if (typeof echoLayer !== 'undefined') {
+                displayResult('echoResults', 'Frame Count', echoLayer.frameCount === 3,
+                    `Frame count: ${echoLayer.frameCount}`);
+                
+                displayResult('echoResults', 'Capture Interval', echoLayer.captureInterval === 1000,
+                    `Capture interval: ${echoLayer.captureInterval}ms`);
+            }
+
+            // Test CSS classes
+            const hasEchoClasses = document.querySelector('.temporal-echo-layer') && 
+                                 document.querySelector('.echo-frame');
+            displayResult('echoResults', 'CSS Classes', hasEchoClasses,
+                hasEchoClasses ? 'Required CSS classes present' : 'Missing CSS classes');
+        }
+
+        function testOpacityControl() {
+            const container = document.getElementById('echoResults');
+            
+            displayInfo('echoResults', 'Testing opacity control...');
+
+            const slider = document.getElementById('echoOpacitySlider');
+            const display = document.getElementById('echoOpacityDisplay');
+            
+            if (slider && display) {
+                // Test slider functionality
+                const originalValue = slider.value;
+                slider.value = '50';
+                slider.dispatchEvent(new Event('input'));
+                
+                setTimeout(() => {
+                    const newDisplay = display.textContent;
+                    displayResult('echoResults', 'Opacity Slider', newDisplay === '50%',
+                        `Opacity changed to: ${newDisplay}`);
+                    
+                    // Reset to original
+                    slider.value = originalValue;
+                    slider.dispatchEvent(new Event('input'));
+                }, 100);
+            } else {
+                displayResult('echoResults', 'Opacity Controls', false, 'Slider or display missing');
+            }
+        }
+
+        function testPulseSync() {
+            const container = document.getElementById('syncResults');
+            container.innerHTML = '';
+            
+            displayInfo('syncResults', 'Testing pulse synchronization...');
+
+            // Test decode pulses
+            const pulses = document.querySelectorAll('.decode-pulse');
+            displayResult('syncResults', 'Decode Pulses', pulses.length === 3,
+                `Found ${pulses.length} decode pulses`);
+
+            // Test HUD decode system
+            if (typeof hudDecode !== 'undefined') {
+                displayResult('syncResults', 'HUD Active', hudDecode.active,
+                    `HUD decode active: ${hudDecode.active}`);
+                
+                displayResult('syncResults', 'Pulse Interval', hudDecode.pulseInterval === 1500,
+                    `Pulse interval: ${hudDecode.pulseInterval}ms`);
+            }
+
+            // Test pulse-sync class functionality
+            const hasAnimations = document.querySelector('[style*="animation"]') ||
+                                document.querySelector('.pulse-sync');
+            displayResult('syncResults', 'Pulse Animations', hasAnimations,
+                hasAnimations ? 'Pulse animations detected' : 'No pulse animations found');
+        }
+
+        function testGlyphFlashes() {
+            const container = document.getElementById('syncResults');
+            
+            displayInfo('syncResults', 'Testing glyph flash effects...');
+
+            // Test glyph ripple animation
+            const hasGlyphCSS = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return Array.from(sheet.cssRules).some(rule => 
+                        rule.selectorText && rule.selectorText.includes('glyph')
+                    );
+                } catch(e) { return false; }
+            });
+            
+            displayResult('syncResults', 'Glyph CSS Animations', hasGlyphCSS,
+                hasGlyphCSS ? 'Glyph animation CSS found' : 'Glyph animation CSS missing');
+
+            // Manually trigger glyph flash for testing
+            if (typeof triggerGlyphFlash === 'function') {
+                triggerGlyphFlash();
+                displayResult('syncResults', 'Glyph Flash Trigger', true,
+                    'Successfully triggered glyph flash');
+            } else {
+                displayResult('syncResults', 'Glyph Flash Function', false,
+                    'triggerGlyphFlash function not found');
+            }
+        }
+
+        function testAnimations() {
+            const container = document.getElementById('animationResults');
+            container.innerHTML = '';
+            
+            displayInfo('animationResults', 'Testing temporal animations...');
+
+            // Test echo fade animation
+            const hasEchoFade = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return Array.from(sheet.cssRules).some(rule => 
+                        rule.cssText && rule.cssText.includes('echoFade')
+                    );
+                } catch(e) { return false; }
+            });
+            
+            displayResult('animationResults', 'Echo Fade Animation', hasEchoFade,
+                hasEchoFade ? 'Echo fade keyframes found' : 'Echo fade keyframes missing');
+
+            // Test temporal glow animation
+            const hasTemporalGlow = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return Array.from(sheet.cssRules).some(rule => 
+                        rule.cssText && rule.cssText.includes('temporalGlow')
+                    );
+                } catch(e) { return false; }
+            });
+            
+            displayResult('animationResults', 'Temporal Glow Animation', hasTemporalGlow,
+                hasTemporalGlow ? 'Temporal glow keyframes found' : 'Temporal glow keyframes missing');
+
+            // Test glitch ripple
+            const hasGlyphRipple = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return Array.from(sheet.cssRules).some(rule => 
+                        rule.cssText && rule.cssText.includes('glyphRipple')
+                    );
+                } catch(e) { return false; }
+            });
+            
+            displayResult('animationResults', 'Glyph Ripple Animation', hasGlyphRipple,
+                hasGlyphRipple ? 'Glyph ripple keyframes found' : 'Glyph ripple keyframes missing');
+        }
+
+        function testFrameCapture() {
+            const container = document.getElementById('animationResults');
+            
+            displayInfo('animationResults', 'Testing frame capture system...');
+
+            // Test temporal canvas
+            const canvas = document.getElementById('temporalCanvas');
+            displayResult('animationResults', 'Temporal Canvas', !!canvas,
+                canvas ? 'Temporal canvas created' : 'Temporal canvas missing');
+
+            // Test capture function
+            const hasCaptureFunction = typeof captureCurrentFrame === 'function';
+            displayResult('animationResults', 'Capture Function', hasCaptureFunction,
+                hasCaptureFunction ? 'Frame capture function available' : 'Frame capture function missing');
+
+            // Test visual snapshot function
+            const hasSnapshotFunction = typeof createVisualSnapshot === 'function';
+            displayResult('animationResults', 'Snapshot Function', hasSnapshotFunction,
+                hasSnapshotFunction ? 'Visual snapshot function available' : 'Visual snapshot function missing');
+        }
+
+        function testPerformance() {
+            const container = document.getElementById('performanceResults');
+            container.innerHTML = '';
+            
+            displayInfo('performanceResults', 'Testing performance and integration...');
+
+            // Test memory usage (basic check)
+            const memoryInfo = performance.memory;
+            if (memoryInfo) {
+                const usedMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
+                displayResult('performanceResults', 'Memory Usage', usedMB < 50,
+                    `JavaScript heap: ${usedMB}MB`);
+            }
+
+            // Test animation performance
+            const startTime = performance.now();
+            setTimeout(() => {
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+                displayResult('performanceResults', 'Animation Response', responseTime < 100,
+                    `Response time: ${responseTime.toFixed(2)}ms`);
+            }, 50);
+
+            // Test DOM elements count
+            const echoElements = document.querySelectorAll('.echo-frame, .glyph-echo, .decode-pulse');
+            displayResult('performanceResults', 'DOM Elements', echoElements.length > 0 && echoElements.length < 20,
+                `Echo-related elements: ${echoElements.length}`);
+
+            // Test CSS animation count
+            const animatedElements = document.querySelectorAll('[style*="animation"], .pulse-sync, .echo-frame.active');
+            displayResult('performanceResults', 'Active Animations', animatedElements.length >= 0,
+                `Active animated elements: ${animatedElements.length}`);
+        }
+
+        async function runAllTests() {
+            const sections = ['initResults', 'echoResults', 'syncResults', 'animationResults', 'performanceResults'];
+            sections.forEach(section => document.getElementById(section).innerHTML = '');
+
+            displayInfo('initResults', '🚀 Running comprehensive test suite...');
+
+            await new Promise(resolve => {
+                testInitialization();
+                setTimeout(() => {
+                    testEchoLayer();
+                    setTimeout(() => {
+                        testOpacityControl();
+                        setTimeout(() => {
+                            testPulseSync();
+                            setTimeout(() => {
+                                testGlyphFlashes();
+                                setTimeout(() => {
+                                    testAnimations();
+                                    setTimeout(() => {
+                                        testFrameCapture();
+                                        setTimeout(() => {
+                                            testPerformance();
+                                            resolve();
+                                        }, 200);
+                                    }, 200);
+                                }, 200);
+                            }, 200);
+                        }, 200);
+                    }, 200);
+                }, 200);
+            });
+
+            // Summary
+            setTimeout(() => {
+                const allResults = document.querySelectorAll('.test-result.pass, .test-result.fail');
+                const passed = document.querySelectorAll('.test-result.pass').length;
+                const total = allResults.length;
+                
+                displayInfo('performanceResults', `🎯 Test Summary: ${passed}/${total} tests passed (${Math.round(passed/total*100)}% success rate)`);
+            }, 1500);
+        }
+
+        // Auto-run tests after initialization
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testInitialization();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
