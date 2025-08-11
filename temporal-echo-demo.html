@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temporal Echo Layer - ChaosKey333</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="temporal-echo-layer.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div class="resurrection-container">
+    <h1 class="glow">⚡ Temporal Echo Layer ⚡</h1>
+    <p class="pulse">History Cloud with Echo Resonance Drift</p>
+    
+    <!-- Main History Cloud Visualization -->
+    <div class="history-cloud">
+      <div class="history-cloud-title">Living Memory Map</div>
+      
+      <!-- Temporal Echo Layer Canvas -->
+      <div class="temporal-echo-container">
+        <canvas id="temporalEchoCanvas" class="temporal-echo-canvas"></canvas>
+        
+        <!-- Controls -->
+        <div class="temporal-echo-controls">
+          <button id="spectralModeBtn" title="Toggle Spectral Analysis Mode">SPECTRAL</button>
+          <button id="slowPlaybackBtn" title="Toggle Slow Playback">SLOW</button>
+          <button id="legendBtn" title="Toggle Legend">LEGEND</button>
+          <button id="simulateBtn" title="Simulate Decode Events">SIMULATE</button>
+        </div>
+        
+        <!-- Legend -->
+        <div id="temporalLegend" class="temporal-legend">
+          <h4>Chrono-Tint Guide</h4>
+          <div class="legend-item">
+            <div class="legend-color fresh"></div>
+            <span>Fresh Echoes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color aged"></div>
+            <span>Aged Echoes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color ancient"></div>
+            <span>Ancient Echoes</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color decode-trail"></div>
+            <span>Decode Trails</span>
+          </div>
+        </div>
+        
+        <!-- Info Panel -->
+        <div id="temporalInfo" class="temporal-echo-info">
+          Echo Resonance Drift: Active<br>
+          Chrono-Tint Shift: Gold → Violet-Black<br>
+          Decode Signature Trails: Ready<br>
+          <span style="color: #00ffff;">Click to trigger decode events</span>
+        </div>
+        
+        <!-- Interactive Decode Triggers -->
+        <div class="decode-trigger" style="top: 30%; left: 20%;" data-solver="0x1234567890abcdef1234567890abcdef12345678" data-decode="QUANTUM_KEY_ALPHA"></div>
+        <div class="decode-trigger" style="top: 60%; left: 70%;" data-solver="0xabcdef1234567890abcdef1234567890abcdef12" data-decode="TEMPORAL_SIGNATURE_BETA"></div>
+        <div class="decode-trigger" style="top: 80%; left: 40%;" data-solver="0x567890abcdef1234567890abcdef1234567890ab" data-decode="CHAOS_RESONANCE_GAMMA"></div>
+      </div>
+    </div>
+    
+    <!-- Feature Description -->
+    <div style="margin-top: 30px; padding: 20px; border: 1px solid #6d28d9; border-radius: 10px; background: rgba(109, 40, 217, 0.1);">
+      <h2 style="color: #ffd700; margin-top: 0;">New Upgrades Implemented</h2>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #8b5cf6;">1. Chrono-Tint Shift</h3>
+        <p style="color: #ffffff; font-size: 14px; line-height: 1.6;">
+          As echoes drift outward, their hue slowly changes to mark age:<br>
+          🟡 <strong>Fresh echoes</strong> = vibrant gold<br>
+          🟣 <strong>Ancient echoes</strong> = deep violet-black<br>
+          Creates a visual timeline of the relic's history.
+        </p>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #8b5cf6;">2. Decode Signature Trails</h3>
+        <p style="color: #ffffff; font-size: 14px; line-height: 1.6;">
+          Each decoded event's drift particle carries a faint, glyph-shaped trail:<br>
+          ⟡ <strong>Glyph shapes</strong> match the solver's imprint<br>
+          👁 <strong>Visibility</strong> enhanced in slow playback or spectral analysis<br>
+          Makes the history cloud a living record of every interaction.
+        </p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="backToVault" style="background: #ff6600; border: 2px solid #ff8800; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron', sans-serif;">
+          ⬅ Back to Vault
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="temporal-echo-layer.js"></script>
+  <script>
+    // Initialize Temporal Echo Layer
+    let echoLayer;
+    let isSlowPlayback = false;
+    let isSpectralMode = false;
+    let showLegend = false;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the echo layer
+      echoLayer = new TemporalEchoLayer('temporalEchoCanvas', {
+        particleCount: 100,
+        driftSpeed: 1.0,
+        echoLifetime: 15000,
+        spectralMode: false
+      });
+      
+      // Start the animation
+      echoLayer.start();
+      
+      // Set up controls
+      setupControls();
+      
+      // Set up interactive decode triggers
+      setupDecodeTriggers();
+      
+      // Set up canvas click handler for manual decode events
+      setupCanvasInteraction();
+      
+      // Generate some initial history
+      setTimeout(() => {
+        echoLayer.simulateHistoricalEvents();
+      }, 2000);
+    });
+    
+    function setupControls() {
+      // Spectral mode toggle
+      document.getElementById('spectralModeBtn').addEventListener('click', () => {
+        isSpectralMode = !isSpectralMode;
+        echoLayer.toggleSpectralMode();
+        
+        const btn = document.getElementById('spectralModeBtn');
+        const info = document.getElementById('temporalInfo');
+        
+        if (isSpectralMode) {
+          btn.classList.add('active');
+          info.classList.add('spectral-mode');
+          info.innerHTML = `
+            SPECTRAL ANALYSIS: Active<br>
+            Signature Trails: Enhanced Visibility<br>
+            Solver Imprints: Displayed<br>
+            <span style="color: #ffd700;">All decode signatures visible</span>
+          `;
+        } else {
+          btn.classList.remove('active');
+          info.classList.remove('spectral-mode');
+          info.innerHTML = `
+            Echo Resonance Drift: Active<br>
+            Chrono-Tint Shift: Gold → Violet-Black<br>
+            Decode Signature Trails: Ready<br>
+            <span style="color: #00ffff;">Click to trigger decode events</span>
+          `;
+        }
+      });
+      
+      // Slow playback toggle
+      document.getElementById('slowPlaybackBtn').addEventListener('click', () => {
+        isSlowPlayback = !isSlowPlayback;
+        
+        const btn = document.getElementById('slowPlaybackBtn');
+        
+        if (isSlowPlayback) {
+          btn.classList.add('active');
+          echoLayer.options.driftSpeed = 0.2;
+        } else {
+          btn.classList.remove('active');
+          echoLayer.options.driftSpeed = 1.0;
+        }
+      });
+      
+      // Legend toggle
+      document.getElementById('legendBtn').addEventListener('click', () => {
+        showLegend = !showLegend;
+        const legend = document.getElementById('temporalLegend');
+        const btn = document.getElementById('legendBtn');
+        
+        if (showLegend) {
+          legend.classList.add('visible');
+          btn.classList.add('active');
+        } else {
+          legend.classList.remove('visible');
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Simulate button
+      document.getElementById('simulateBtn').addEventListener('click', () => {
+        echoLayer.simulateHistoricalEvents();
+      });
+      
+      // Back to vault button
+      document.getElementById('backToVault').addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    }
+    
+    function setupDecodeTriggers() {
+      const triggers = document.querySelectorAll('.decode-trigger');
+      
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          const rect = trigger.getBoundingClientRect();
+          const containerRect = document.getElementById('temporalEchoCanvas').getBoundingClientRect();
+          
+          const x = rect.left + rect.width / 2 - containerRect.left;
+          const y = rect.top + rect.height / 2 - containerRect.top;
+          
+          const solverAddress = trigger.dataset.solver;
+          const decodeData = trigger.dataset.decode;
+          
+          echoLayer.triggerDecodeEvent(x, y, solverAddress, decodeData);
+          
+          // Visual feedback
+          trigger.style.transform = 'scale(1.5)';
+          setTimeout(() => {
+            trigger.style.transform = 'scale(1)';
+          }, 300);
+        });
+      });
+    }
+    
+    function setupCanvasInteraction() {
+      const canvas = document.getElementById('temporalEchoCanvas');
+      
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Generate random solver address and decode data
+        const solverAddresses = [
+          '0x1234567890abcdef1234567890abcdef12345678',
+          '0xabcdef1234567890abcdef1234567890abcdef12',
+          '0x567890abcdef1234567890abcdef1234567890ab',
+          '0xfedcba0987654321fedcba0987654321fedcba09',
+          '0x9876543210fedcba9876543210fedcba98765432'
+        ];
+        
+        const decodePatterns = [
+          'QUANTUM_KEY_ALPHA',
+          'TEMPORAL_SIGNATURE_BETA',
+          'CHAOS_RESONANCE_GAMMA',
+          'VOID_CIPHER_DELTA',
+          'ECHO_MATRIX_EPSILON',
+          'FRACTAL_CODE_ZETA'
+        ];
+        
+        const randomSolver = solverAddresses[Math.floor(Math.random() * solverAddresses.length)];
+        const randomDecode = decodePatterns[Math.floor(Math.random() * decodePatterns.length)];
+        
+        echoLayer.triggerDecodeEvent(x, y, randomSolver, randomDecode);
+      });
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (echoLayer) {
+        echoLayer.resizeCanvas();
+      }
+    });
+    
+    // Handle visibility change (pause when tab is not visible)
+    document.addEventListener('visibilitychange', () => {
+      if (echoLayer) {
+        if (document.hidden) {
+          echoLayer.stop();
+        } else {
+          echoLayer.start();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

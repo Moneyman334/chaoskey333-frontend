@@ -1,0 +1,302 @@
+/* Temporal Echo Layer Styles - ChaosKey333 Frontend */
+
+.temporal-echo-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #000000, #1a0d26, #000000);
+  border: 2px solid #6d28d9;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 
+    0 0 20px rgba(109, 40, 217, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.temporal-echo-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.temporal-echo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.temporal-echo-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.temporal-echo-controls button {
+  background: rgba(109, 40, 217, 0.8);
+  color: #ffffff;
+  border: 1px solid #8b5cf6;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.temporal-echo-controls button:hover {
+  background: rgba(139, 92, 246, 1);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+.temporal-echo-controls button.active {
+  background: rgba(255, 215, 0, 0.8);
+  color: #000000;
+  border-color: #ffd700;
+}
+
+.temporal-echo-info {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 2;
+  max-width: 200px;
+}
+
+.temporal-echo-info.spectral-mode {
+  color: rgba(255, 215, 0, 0.9);
+}
+
+.temporal-legend {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(109, 40, 217, 0.5);
+  border-radius: 5px;
+  padding: 10px;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  backdrop-filter: blur(5px);
+  display: none;
+}
+
+.temporal-legend.visible {
+  display: block;
+}
+
+.temporal-legend h4 {
+  margin: 0 0 8px 0;
+  color: #ffd700;
+  font-size: 11px;
+}
+
+.temporal-legend .legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.temporal-legend .legend-color {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+.temporal-legend .legend-color.fresh {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+}
+
+.temporal-legend .legend-color.aged {
+  background: linear-gradient(45deg, #8a2be2, #a855f7);
+}
+
+.temporal-legend .legend-color.ancient {
+  background: linear-gradient(45deg, #190033, #4c1d95);
+}
+
+.temporal-legend .legend-color.decode-trail {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  animation: pulseTrail 2s infinite;
+}
+
+@keyframes pulseTrail {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* History Cloud Visualization */
+.history-cloud {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+  border: 2px solid #333333;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.history-cloud::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(25, 0, 51, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.history-cloud-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffd700;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Interactive Elements */
+.decode-trigger {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent);
+  border: 2px solid rgba(255, 215, 0, 0.7);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulseGlow 2s infinite alternate;
+}
+
+.decode-trigger:hover {
+  transform: scale(1.2);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.6), transparent);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.decode-trigger::before {
+  content: '⟡';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffd700;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .temporal-echo-container {
+    height: 300px;
+  }
+  
+  .temporal-echo-controls {
+    top: 5px;
+    right: 5px;
+  }
+  
+  .temporal-echo-controls button {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+  
+  .temporal-echo-info {
+    bottom: 5px;
+    left: 5px;
+    font-size: 9px;
+    max-width: 150px;
+  }
+  
+  .temporal-legend {
+    top: 5px;
+    left: 5px;
+    padding: 8px;
+    font-size: 9px;
+  }
+  
+  .history-cloud {
+    height: 400px;
+  }
+  
+  .history-cloud-title {
+    font-size: 14px;
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .temporal-echo-container {
+    background: linear-gradient(135deg, #000000, #2d1b69, #000000);
+    border-color: #8b5cf6;
+  }
+  
+  .temporal-echo-controls button {
+    background: rgba(139, 92, 246, 0.9);
+    border-color: #a855f7;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .temporal-echo-container,
+  .decode-trigger,
+  .temporal-legend .legend-color.decode-trail {
+    animation: none;
+  }
+  
+  .temporal-echo-controls button {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .temporal-echo-container {
+    background: #ffffff;
+    border: 2px solid #000000;
+  }
+  
+  .temporal-echo-controls,
+  .temporal-echo-info {
+    display: none;
+  }
+}
