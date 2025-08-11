@@ -1,0 +1,489 @@
+/* Omniverse Graph Styles */
+
+.omniverse {
+  background: #000;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* Deep Space Background */
+.deep-space-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.stars-layer {
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+/* Main Graph Container */
+.graph-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Apex Node Container */
+.apex-node-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+/* Apex Node Core */
+.apex-node {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+}
+
+.node-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, #fff 0%, #ffd700 40%, #fff 100%);
+  border-radius: 50%;
+  animation: coreRotation 8s linear infinite, corePulse 3s ease-in-out infinite alternate;
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.9),
+    inset 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes coreRotation {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes corePulse {
+  0% { 
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.9),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  100% { 
+    box-shadow: 
+      0 0 50px rgba(255, 215, 0, 1),
+      inset 0 0 30px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Prismatic Edges */
+.prismatic-edges {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  background: conic-gradient(
+    from 0deg,
+    #ff0080 0deg,
+    #0080ff 60deg,
+    #80ff00 120deg,
+    #ff8000 180deg,
+    #8000ff 240deg,
+    #00ff80 300deg,
+    #ff0080 360deg
+  );
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: prismRotation 12s linear infinite;
+  mask: radial-gradient(circle, transparent 65%, black 70%, transparent 75%);
+  -webkit-mask: radial-gradient(circle, transparent 65%, black 70%, transparent 75%);
+}
+
+@keyframes prismRotation {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+/* Lock Aura */
+.lock-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+}
+
+.lattice-layer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(0, 255, 255, 0.6);
+  border-radius: 20px;
+  animation: latticePulse 4s ease-in-out infinite alternate;
+  background: linear-gradient(45deg, 
+    transparent 40%, 
+    rgba(0, 255, 255, 0.1) 50%, 
+    transparent 60%);
+}
+
+@keyframes latticePulse {
+  0% { 
+    border-color: rgba(0, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  }
+  100% { 
+    border-color: rgba(0, 255, 255, 1);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+  }
+}
+
+/* Racing Glyphs */
+.glyph-runner {
+  position: absolute;
+  font-size: 14px;
+  color: #00ffff;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00ffff;
+  animation: runGlyph 3s linear infinite;
+}
+
+.glyph-1 {
+  top: 0;
+  left: 0;
+  animation-delay: 0s;
+}
+
+.glyph-2 {
+  top: 0;
+  right: 0;
+  animation-delay: 0.75s;
+}
+
+.glyph-3 {
+  bottom: 0;
+  right: 0;
+  animation-delay: 1.5s;
+}
+
+.glyph-4 {
+  bottom: 0;
+  left: 0;
+  animation-delay: 2.25s;
+}
+
+@keyframes runGlyph {
+  0% { opacity: 0; transform: scale(0.5); }
+  10% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.5); }
+}
+
+/* Gravitational Ripple */
+.gravitational-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 50%;
+  animation: gravRipple 6s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gravRipple {
+  0% {
+    width: 120px;
+    height: 120px;
+    opacity: 0.8;
+    border-width: 2px;
+  }
+  100% {
+    width: 600px;
+    height: 600px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+/* Tease Trails */
+.tease-trails-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tease-trail {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(180deg, 
+    rgba(0, 255, 255, 0.8) 0%,
+    rgba(0, 255, 255, 0.4) 70%,
+    transparent 100%);
+  animation: trailPulse 4s ease-in-out infinite;
+}
+
+.tease-trail.broken {
+  background: linear-gradient(180deg, 
+    rgba(0, 255, 255, 0.8) 0%,
+    rgba(0, 255, 255, 0.4) 50%,
+    transparent 60%,
+    rgba(255, 0, 0, 0.3) 70%,
+    transparent 100%);
+}
+
+@keyframes trailPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Vault Broadcast Effect */
+.apex-node.broadcast-active .node-core {
+  animation: 
+    coreRotation 8s linear infinite, 
+    corePulse 1.5s ease-in-out infinite alternate,
+    broadcastGlow 2s ease-in-out infinite;
+}
+
+@keyframes broadcastGlow {
+  0% { 
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.9),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  50% { 
+    box-shadow: 
+      0 0 80px rgba(255, 100, 0, 1),
+      0 0 120px rgba(255, 215, 0, 0.8),
+      inset 0 0 40px rgba(255, 255, 255, 0.9);
+  }
+  100% { 
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.9),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Unlock Event Styles */
+.unlock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lattice-shatter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(0, 255, 255, 0.8);
+  border-radius: 20px;
+  animation: shatterEffect 3s ease-out forwards;
+}
+
+@keyframes shatterEffect {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    border-color: rgba(255, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2) rotate(180deg);
+    border-width: 0;
+  }
+}
+
+.apex-interior {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 215, 0, 0.9) 30%,
+    rgba(0, 255, 255, 0.7) 60%,
+    rgba(255, 0, 255, 0.5) 100%);
+  border-radius: 50%;
+  animation: interiorReveal 3s ease-out forwards 1s;
+  box-shadow: 
+    0 0 100px rgba(255, 255, 255, 1),
+    0 0 200px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes interiorReveal {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* UI Controls */
+.ui-controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.vault-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  border-radius: 8px;
+  color: #00ffff;
+  font-size: 14px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  background: #00ff00;
+  border-radius: 50%;
+  animation: statusBlink 2s ease-in-out infinite;
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.ascension-meter {
+  position: relative;
+  width: 200px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 215, 0, 0.8) 0%,
+    rgba(255, 255, 255, 1) 100%);
+  transition: width 0.5s ease-out;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+.meter-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.back-to-vault {
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #ff6600, #ff9900);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.back-to-vault:hover {
+  background: linear-gradient(45deg, #ff9900, #ffcc00);
+  box-shadow: 0 0 20px rgba(255, 153, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .apex-node {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .node-core {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .prismatic-edges {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .lock-aura {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .ui-controls {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .ascension-meter {
+    width: 150px;
+  }
+}
