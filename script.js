@@ -327,12 +327,15 @@ function checkStripeAndMint() {
   }
 }
 
-// Resurrection function
+// Resurrection function with Plasma Flare and Apex Node Glyph
 function resurrect() {
   const audio = document.getElementById("bassDrop");
   if (audio) {
     audio.play();
   }
+
+  // Trigger plasma flare animation
+  triggerPlasmaFlare();
 
   setTimeout(() => {
     document.body.style.animation = "none";
@@ -340,6 +343,193 @@ function resurrect() {
   }, 1000);
 
   alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
+}
+
+// Apex Node Glyph System Variables
+let glyphDiscovered = false;
+let spectralModeActive = false;
+let frameAnalysisActive = false;
+let firstSolverRewardClaimed = false;
+
+// Trigger Plasma Flare Animation with Hidden Glyph
+function triggerPlasmaFlare() {
+  const flareContainer = document.getElementById("plasmaFlareContainer");
+  const glyph = document.getElementById("apexNodeGlyph");
+  const terminal = document.getElementById("cosmicReplayTerminal");
+  
+  // Activate plasma flare
+  flareContainer.classList.add("active");
+  
+  // Activate glyph with frame-flash mode (1/60th second visibility)
+  glyph.classList.remove("primary-mode", "spectral-mode");
+  glyph.classList.add("frame-flash");
+  
+  // Show cosmic replay terminal
+  setTimeout(() => {
+    terminal.classList.add("active");
+    updateTerminalOutput("⚡ Singularity cascade detected! Plasma flare at maximum intensity...");
+  }, 1000);
+  
+  // Reset after animation
+  setTimeout(() => {
+    flareContainer.classList.remove("active");
+    glyph.classList.remove("frame-flash");
+    glyph.classList.add("primary-mode");
+  }, 4000);
+}
+
+// Toggle Spectral Mode for Glyph Detection
+function toggleSpectralMode() {
+  const glyph = document.getElementById("apexNodeGlyph");
+  const terminal = document.getElementById("cosmicReplayTerminal");
+  
+  spectralModeActive = !spectralModeActive;
+  
+  if (spectralModeActive) {
+    glyph.classList.remove("primary-mode");
+    glyph.classList.add("spectral-mode");
+    updateTerminalOutput("🔍 Spectral inversion activated... Gold-violet signature detected at 2% opacity!");
+    
+    // Check if user discovered the glyph
+    if (!glyphDiscovered) {
+      setTimeout(() => {
+        detectApexNodeGlyph();
+      }, 2000);
+    }
+  } else {
+    glyph.classList.remove("spectral-mode");
+    glyph.classList.add("primary-mode");
+    updateTerminalOutput("📡 Spectral mode deactivated. Scanning for anomalies...");
+  }
+}
+
+// Frame-by-Frame Analysis Mode
+function frameByFrameMode() {
+  const glyph = document.getElementById("apexNodeGlyph");
+  
+  frameAnalysisActive = true;
+  updateTerminalOutput("🎯 Frame-by-frame analysis initiated... Scanning at 60fps intervals...");
+  
+  // Trigger the 1/60th second flash
+  glyph.classList.remove("primary-mode", "spectral-mode");
+  glyph.classList.add("frame-flash");
+  
+  setTimeout(() => {
+    if (!glyphDiscovered) {
+      detectApexNodeGlyph();
+    }
+  }, 2000); // 50% through the 4-second animation
+  
+  setTimeout(() => {
+    glyph.classList.remove("frame-flash");
+    glyph.classList.add("primary-mode");
+    frameAnalysisActive = false;
+  }, 4000);
+}
+
+// Detect Apex Node Glyph Discovery
+function detectApexNodeGlyph() {
+  if (glyphDiscovered) return;
+  
+  glyphDiscovered = true;
+  
+  updateTerminalOutput("🌟 APEX NODE GLYPH DETECTED! 🌟\n\nCoordinates: Singularity Core Center\nSignature: Gold-Violet Harmonic\nStatus: The key above all keys FOUND!");
+  
+  // Trigger Ascended emblem
+  showAscendedEmblem();
+  
+  // Grant Apex Access Tier
+  grantApexAccessTier();
+  
+  // Play discovery sound
+  playDiscoverySound();
+}
+
+// Show Ascended Emblem with HUD Pulse
+function showAscendedEmblem() {
+  const emblem = document.getElementById("ascendedEmblem");
+  emblem.classList.add("active");
+  
+  setTimeout(() => {
+    emblem.classList.remove("active");
+  }, 3000);
+}
+
+// Grant Apex Access Tier (First Solver Reward)
+function grantApexAccessTier() {
+  if (firstSolverRewardClaimed) {
+    updateTerminalOutput("🔓 Apex Access Tier already claimed by another solver.");
+    return;
+  }
+  
+  // Check if this is the first solver
+  const solverData = {
+    walletAddress: userWalletAddress,
+    timestamp: new Date().toISOString(),
+    glyphDiscovered: true,
+    apexAccessGranted: true
+  };
+  
+  // Store in localStorage (in real implementation, this would be blockchain/server)
+  localStorage.setItem('apexNodeDiscoverer', JSON.stringify(solverData));
+  firstSolverRewardClaimed = true;
+  
+  updateTerminalOutput("🏆 CONGRATULATIONS! 🏆\n\nYou are the FIRST SOLVER to discover the Apex Node Glyph!\n\n✨ Apex Access Tier GRANTED\n🎁 Exclusive relic unlock available\n⚡ Permanent vault upgrade activated");
+  
+  // Trigger special first solver animation
+  document.body.style.background = "linear-gradient(45deg, #FFD700, #9370DB, #00FFFF)";
+  document.body.style.animation = "backgroundFlash 0.5s infinite";
+  
+  setTimeout(() => {
+    document.body.style.background = "#000";
+    document.body.style.animation = "backgroundFlash 6s infinite alternate";
+  }, 5000);
+}
+
+// Update Terminal Output
+function updateTerminalOutput(message) {
+  const output = document.getElementById("terminalOutput");
+  output.innerHTML = message;
+}
+
+// Play Discovery Sound Effect
+function playDiscoverySound() {
+  // Create audio context for discovery sound
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  
+  // Create a sequence of tones for the discovery sound
+  const frequencies = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+  
+  frequencies.forEach((freq, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + index * 0.2);
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime + index * 0.2);
+    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + index * 0.2 + 0.1);
+    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + index * 0.2 + 0.3);
+    
+    oscillator.start(audioContext.currentTime + index * 0.2);
+    oscillator.stop(audioContext.currentTime + index * 0.2 + 0.3);
+  });
+}
+
+// Check if Glyph Already Discovered (on page load)
+function checkGlyphDiscoveryStatus() {
+  const discovererData = localStorage.getItem('apexNodeDiscoverer');
+  if (discovererData) {
+    const data = JSON.parse(discovererData);
+    if (data.glyphDiscovered) {
+      glyphDiscovered = true;
+      firstSolverRewardClaimed = true;
+      updateTerminalOutput("📜 Apex Node Glyph previously discovered.\n\nFirst Solver: " + (data.walletAddress ? data.walletAddress.slice(0, 8) + "..." : "Unknown") + "\nDate: " + new Date(data.timestamp).toLocaleDateString());
+    }
+  }
 }
 
 // Initialize on page load
@@ -394,6 +584,9 @@ window.onload = async function () {
   if (paymentBtn) {
     paymentBtn.onclick = createStripePayment;
   }
+
+  // Check if Apex Node Glyph was already discovered
+  checkGlyphDiscoveryStatus();
 
   checkStripeAndMint();
 
