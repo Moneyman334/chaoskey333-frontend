@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 Temporal Vault Viewer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="temporal-echo-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0d001a 0%, #1a0033 50%, #000000 100%);
+      color: #FFD700;
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .vault-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .vault-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #8A2BE2;
+      text-shadow: 
+        0 0 10px rgba(138, 43, 226, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6);
+      margin-bottom: 10px;
+      animation: titlePulse 4s ease-in-out infinite;
+    }
+    
+    .vault-subtitle {
+      font-size: 1.2rem;
+      color: #FFD700;
+      opacity: 0.8;
+      font-family: 'Courier Prime', monospace;
+    }
+    
+    @keyframes titlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .wallet-input-section {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      border: 1px solid rgba(138, 43, 226, 0.3);
+    }
+    
+    .wallet-input {
+      width: 300px;
+      max-width: 90%;
+      padding: 12px 15px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid rgba(255, 215, 0, 0.5);
+      border-radius: 8px;
+      color: #FFD700;
+      font-family: 'Courier Prime', monospace;
+      margin-right: 10px;
+    }
+    
+    .wallet-input:focus {
+      outline: none;
+      border-color: #8A2BE2;
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+    }
+    
+    .check-vault-btn {
+      padding: 12px 20px;
+      background: linear-gradient(45deg, #8A2BE2, #FFD700);
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .check-vault-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+    
+    .relics-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .demo-section {
+      text-align: center;
+      margin: 40px 0;
+      padding: 20px;
+      background: rgba(138, 43, 226, 0.1);
+      border-radius: 15px;
+      border: 1px solid rgba(138, 43, 226, 0.3);
+    }
+    
+    .demo-btn {
+      padding: 10px 20px;
+      margin: 5px;
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid #FFD700;
+      border-radius: 6px;
+      color: #FFD700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .demo-btn:hover {
+      background: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Echo Controls Panel -->
+    <div class="echo-controls">
+      <h4>⚡ Temporal Echo Controls</h4>
+      
+      <label for="driftSpeed">Drift Speed:</label>
+      <input type="range" id="driftSpeed" min="0.1" max="3.0" step="0.1" value="0.5">
+      
+      <label for="driftTrajectory">Drift Pattern:</label>
+      <select id="driftTrajectory">
+        <option value="radial">Radial Expansion</option>
+        <option value="spiral">Spiral Drift</option>
+        <option value="linear">Linear Motion</option>
+      </select>
+      
+      <label for="maxEchoes">Max Echoes:</label>
+      <input type="range" id="maxEchoes" min="3" max="15" step="1" value="8">
+      
+      <div style="margin-top: 10px;">
+        <button id="pauseBtn">⏸️ Pause</button>
+        <button id="resumeBtn">▶️ Resume</button>
+        <button id="clearBtn">🗑️ Clear</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="vault-header">
+      <h1 class="vault-title">🔮 ChaosKey333 Temporal Vault 🔮</h1>
+      <p class="vault-subtitle">Witness the evolutionary journey of your relics through time</p>
+    </div>
+
+    <!-- Wallet Input Section -->
+    <div class="wallet-input-section">
+      <h3>🔍 Enter your wallet address to view your temporal relic history</h3>
+      <input type="text" id="walletInput" class="wallet-input" placeholder="0x..." />
+      <button onclick="checkVault()" class="check-vault-btn">🔓 Access Vault</button>
+    </div>
+
+    <!-- Demo Section -->
+    <div class="demo-section">
+      <h3>🧪 Experience the Temporal Echo Layer</h3>
+      <p>Click buttons below to simulate relic decode events and see Echo Resonance Drift in action:</p>
+      <button onclick="simulateDecodeEvent()" class="demo-btn">⚡ Simulate Decode Event</button>
+      <button onclick="simulateMultipleEvents()" class="demo-btn">🌀 Multiple Events</button>
+      <button onclick="demonstrateFeatures()" class="demo-btn">🎭 Feature Demo</button>
+    </div>
+
+    <!-- Results Container -->
+    <div id="result" class="relics-container"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="temporal-echo-layer.js"></script>
+  <script type="module">
+    // Global variables
+    let temporalEchoLayer = null;
+    let demoContainer = null;
+
+    // Initialize the demo environment
+    function initializeDemo() {
+      // Create a demo container for the temporal echo layer
+      demoContainer = document.createElement('div');
+      demoContainer.className = 'vault-container-enhanced';
+      demoContainer.style.height = '400px';
+      demoContainer.style.margin = '20px auto';
+      demoContainer.style.position = 'relative';
+      
+      const demoContent = document.createElement('div');
+      demoContent.className = 'relic-core';
+      demoContent.innerHTML = `
+        <h3 style="text-align: center; margin: 0; color: #FFD700;">🔥 Demo Relic Core</h3>
+        <p style="text-align: center; margin: 10px 0; color: #8A2BE2; font-size: 14px;">
+          Temporal echoes will emanate from this core
+        </p>
+      `;
+      
+      demoContainer.appendChild(demoContent);
+      
+      const demoSection = document.querySelector('.demo-section');
+      demoSection.appendChild(demoContainer);
+      
+      // Initialize temporal echo layer
+      temporalEchoLayer = new TemporalEchoLayer(demoContainer);
+      
+      setupControls();
+    }
+
+    // Setup control panel functionality
+    function setupControls() {
+      const driftSpeedSlider = document.getElementById('driftSpeed');
+      const driftTrajectorySelect = document.getElementById('driftTrajectory');
+      const maxEchoesSlider = document.getElementById('maxEchoes');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resumeBtn = document.getElementById('resumeBtn');
+      const clearBtn = document.getElementById('clearBtn');
+
+      driftSpeedSlider.addEventListener('input', (e) => {
+        temporalEchoLayer.setDriftSpeed(parseFloat(e.target.value));
+      });
+
+      driftTrajectorySelect.addEventListener('change', (e) => {
+        temporalEchoLayer.setDriftTrajectory(e.target.value);
+      });
+
+      maxEchoesSlider.addEventListener('input', (e) => {
+        temporalEchoLayer.setMaxEchoes(parseInt(e.target.value));
+      });
+
+      pauseBtn.addEventListener('click', () => {
+        temporalEchoLayer.pause();
+      });
+
+      resumeBtn.addEventListener('click', () => {
+        temporalEchoLayer.resume();
+      });
+
+      clearBtn.addEventListener('click', () => {
+        temporalEchoLayer.clear();
+      });
+    }
+
+    // Simulate a decode event
+    window.simulateDecodeEvent = function() {
+      if (!temporalEchoLayer) return;
+      
+      const mockRelicData = {
+        id: Math.random().toString(36).substr(2, 9),
+        type: 'Origin Flare',
+        timestamp: Date.now(),
+        walletAddress: '0x' + Math.random().toString(16).substr(2, 40)
+      };
+      
+      temporalEchoLayer.onDecodeEvent(mockRelicData);
+    };
+
+    // Simulate multiple events
+    window.simulateMultipleEvents = function() {
+      if (!temporalEchoLayer) return;
+      
+      let count = 0;
+      const interval = setInterval(() => {
+        simulateDecodeEvent();
+        count++;
+        if (count >= 5) {
+          clearInterval(interval);
+        }
+      }, 800);
+    };
+
+    // Demonstrate different features
+    window.demonstrateFeatures = function() {
+      if (!temporalEchoLayer) return;
+      
+      // Demonstrate different trajectories
+      const trajectories = ['radial', 'spiral', 'linear'];
+      let index = 0;
+      
+      const demoInterval = setInterval(() => {
+        temporalEchoLayer.setDriftTrajectory(trajectories[index]);
+        document.getElementById('driftTrajectory').value = trajectories[index];
+        simulateDecodeEvent();
+        
+        index++;
+        if (index >= trajectories.length) {
+          clearInterval(demoInterval);
+          // Reset to radial
+          setTimeout(() => {
+            temporalEchoLayer.setDriftTrajectory('radial');
+            document.getElementById('driftTrajectory').value = 'radial';
+          }, 2000);
+        }
+      }, 1500);
+    };
+
+    // Firebase integration (placeholder - would need real config)
+    window.checkVault = async function() {
+      const walletAddress = document.getElementById('walletInput').value.trim();
+      const resultDiv = document.getElementById('result');
+      
+      if (!walletAddress) {
+        alert('Please enter a wallet address');
+        return;
+      }
+      
+      // Mock data for demonstration
+      resultDiv.innerHTML = '';
+      
+      // Create a relic card with temporal echo layer
+      const relicCard = document.createElement('div');
+      relicCard.className = 'vault-container-enhanced';
+      relicCard.style.height = '500px';
+      
+      relicCard.innerHTML = `
+        <div class="relic-core">
+          <h3>🔥 Legacy Relic #${Math.floor(Math.random() * 1000)}</h3>
+          <p><strong>Wallet:</strong> ${walletAddress}</p>
+          <p><strong>Type:</strong> Origin Flare Relic</p>
+          <p><strong>Minted:</strong> ${new Date().toLocaleDateString()}</p>
+          <p><strong>Status:</strong> <span style="color: #00ff00;">Active</span></p>
+          <div style="margin-top: 15px; text-align: center;">
+            <button onclick="triggerRelicEcho(this)" class="demo-btn">
+              ⚡ Trigger Echo Event
+            </button>
+          </div>
+        </div>
+      `;
+      
+      resultDiv.appendChild(relicCard);
+      
+      // Initialize temporal echo layer for this relic
+      const relicEchoLayer = new TemporalEchoLayer(relicCard);
+      
+      // Store reference for the trigger button
+      relicCard.echoLayer = relicEchoLayer;
+      
+      // Auto-trigger some initial echoes
+      setTimeout(() => relicEchoLayer.onDecodeEvent({ type: 'Initial Load' }), 500);
+      setTimeout(() => relicEchoLayer.onDecodeEvent({ type: 'Vault Access' }), 1200);
+    };
+
+    // Trigger echo for specific relic
+    window.triggerRelicEcho = function(button) {
+      const relicCard = button.closest('.vault-container-enhanced');
+      if (relicCard && relicCard.echoLayer) {
+        const mockEvent = {
+          type: 'Manual Trigger',
+          timestamp: Date.now()
+        };
+        relicCard.echoLayer.onDecodeEvent(mockEvent);
+      }
+    };
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initializeDemo, 500);
+    });
+  </script>
+</body>
+</html>

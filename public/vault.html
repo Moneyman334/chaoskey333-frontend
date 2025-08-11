@@ -6,16 +6,39 @@
   <title>ChaosKey333 Vault Drop</title>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <link rel="stylesheet" href="../temporal-echo-styles.css">
   <style>
     body {
-      background: #0d001a;
+      background: linear-gradient(135deg, #0d001a 0%, #1a0033 50%, #000000 100%);
       color: white;
       font-family: 'Courier New', monospace;
       text-align: center;
       padding: 50px 20px;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .vault-container {
+      position: relative;
+      background: radial-gradient(circle at center,
+        rgba(13, 0, 26, 0.95) 0%,
+        rgba(26, 0, 52, 0.9) 50%,
+        rgba(0, 0, 0, 1) 100%
+      );
+      border: 2px solid #8A2BE2;
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 1rem auto;
+      max-width: 600px;
+      box-shadow: 
+        0 0 30px rgba(138, 43, 226, 0.4),
+        inset 0 0 20px rgba(255, 215, 0, 0.1);
+      overflow: hidden;
+      height: 500px;
+    }
+    
     .vault-btn {
-      background: #33ccff;
+      background: linear-gradient(45deg, #8A2BE2, #FFD700);
       color: #000;
       font-weight: bold;
       border: none;
@@ -25,34 +48,94 @@
       border-radius: 16px;
       cursor: pointer;
       transition: 0.3s;
+      position: relative;
+      z-index: 30;
     }
     .vault-btn:hover {
-      background: #00aaff;
-      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
     }
     .mint-status {
       margin-top: 40px;
       font-size: 20px;
       color: #ffcc00;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      position: relative;
+      z-index: 30;
+    }
+    
+    .vault-title {
+      font-size: 2.5rem;
+      color: #8A2BE2;
+      text-shadow: 
+        0 0 10px rgba(138, 43, 226, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 30;
     }
   </style>
 </head>
 <body>
-  <h1>🔥 ChaosKey333 Vault Drop 🔥</h1>
-  <p>Mint your VIP Relic for $33</p>
+  <div class="vault-container">
+    <h1 class="vault-title">🔥 ChaosKey333 Vault Drop 🔥</h1>
+    <p>Mint your VIP Relic for $33</p>
+    <p style="color: #8A2BE2; font-size: 14px; margin: 10px 0;">
+      ⚡ Experience the Temporal Echo Layer - witness your relic's evolution through time
+    </p>
 
-  <button class="vault-btn" id="stripeBtn">💸 Mint with Stripe</button>
+    <button class="vault-btn" id="stripeBtn">💸 Mint with Stripe</button>
 
-  <div class="mint-status" id="mintStatus">🔒 Awaiting payment...</div>
+    <div class="mint-status" id="mintStatus">🔒 Awaiting payment...</div>
+  </div>
 
+  <script src="../temporal-echo-layer.js"></script>
   <script>
     const stripe = Stripe("pk_live_YOUR_PUBLIC_KEY"); // Replace with your real key
+    let temporalEchoLayer = null;
+
+    // Initialize temporal echo layer on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const vaultContainer = document.querySelector('.vault-container');
+      temporalEchoLayer = new TemporalEchoLayer(vaultContainer);
+      
+      // Create some ambient echoes
+      setTimeout(() => {
+        temporalEchoLayer.onDecodeEvent({ type: 'Vault Initialization', timestamp: Date.now() });
+      }, 1000);
+      
+      setTimeout(() => {
+        temporalEchoLayer.onDecodeEvent({ type: 'Access Detection', timestamp: Date.now() });
+      }, 2500);
+    });
 
     document.getElementById("stripeBtn").onclick = () => {
+      // Trigger echo for mint attempt
+      if (temporalEchoLayer) {
+        temporalEchoLayer.onDecodeEvent({ type: 'Mint Initiated', timestamp: Date.now() });
+      }
+      
       fetch("/create-checkout-session")
         .then((res) => res.json())
         .then((session) => {
-          stripe.redirectToCheckout({ sessionId: session.
+          stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .catch((err) => {
+          console.error("Checkout error:", err);
+          document.getElementById("mintStatus").innerText = "❌ Payment failed";
+        });
+    };
+
+    // Simulate successful mint with echo
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'MINT_SUCCESS') {
+        if (temporalEchoLayer) {
+          temporalEchoLayer.onDecodeEvent({ type: 'Mint Success', timestamp: Date.now() });
+        }
+        document.getElementById("mintStatus").innerText = "✅ Relic minted successfully!";
+      }
+    });
+  </script>
             /public
               └── vault.html   ✅ ← this exact name and location
             firebase.json
