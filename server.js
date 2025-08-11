@@ -6,7 +6,18 @@ const path = require('path');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available and not placeholder
+let stripe = null;
+if (STRIPE_SECRET_KEY && !STRIPE_SECRET_KEY.includes('placeholder')) {
+  try {
+    stripe = require('stripe')(STRIPE_SECRET_KEY);
+    console.log('🔑 Stripe initialized successfully');
+  } catch (error) {
+    console.log('⚠️ Stripe initialization failed:', error.message);
+  }
+} else {
+  console.log('⚠️ Stripe not initialized - using placeholder keys for development');
+}
 
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
@@ -24,10 +35,22 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Serve Cosmic Replay Terminal
+app.get('/cosmic-replay', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cosmic-replay-terminal.html'));
+});
+
 // Test Stripe connection endpoint
 app.get('/api/test-stripe', async (req, res) => {
   try {
     console.log('🧪 Testing Stripe connection...');
+
+    if (!stripe) {
+      return res.json({
+        success: false,
+        error: 'Stripe not initialized - development mode'
+      });
+    }
 
     // Test Stripe connection by retrieving account info
     const account = await stripe.accounts.retrieve();
