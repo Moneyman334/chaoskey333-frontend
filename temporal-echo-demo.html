@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 - Temporal Echo Layer Integration</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div id="terminalOverlay">Initializing Temporal Echo Layer...</div>
+  
+  <div class="resurrection-container">
+    <h1 class="glow">⚡ ChaosKey333 Temporal Echo Layer ⚡</h1>
+    <p class="pulse">Relic Evolution & Chrono-Tint Integration</p>
+    
+    <!-- Main Demo Controls -->
+    <div style="margin: 20px 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+      <button id="connectWallet" class="demo-btn">🔌 Connect Wallet</button>
+      <button id="triggerMutation" class="demo-btn">🧬 Trigger Relic Mutation</button>
+      <button id="generateGlyphs" class="demo-btn">✨ Generate Glyph Burst</button>
+      <button id="resetSystem" class="demo-btn">🔄 Reset Timeline</button>
+    </div>
+    
+    <!-- System Status Display -->
+    <div id="systemStatus" style="background: rgba(0,0,0,0.8); border: 1px solid #00ffff; border-radius: 10px; padding: 15px; margin: 20px 0; font-family: monospace; font-size: 14px;">
+      <div style="color: #00ffff; font-weight: bold; margin-bottom: 10px;">🌀 Temporal Echo System Status</div>
+      <div id="statusContent">Initializing...</div>
+    </div>
+    
+    <!-- Instruction Panel -->
+    <div style="background: rgba(138, 43, 226, 0.1); border: 1px solid #8A2BE2; border-radius: 10px; padding: 15px; margin: 20px 0;">
+      <h3 style="color: #8A2BE2; margin-top: 0;">Integration Features:</h3>
+      <ul style="color: #fff; text-align: left; font-size: 14px;">
+        <li><strong>Timeline Synchronization:</strong> Chrono-Tint hue transitions align with relic mutations (gold → violet-black)</li>
+        <li><strong>Glyph Trails Fusion:</strong> Mouse movements create solver-specific glyph trails that lock into timeline</li>
+        <li><strong>Lore Mutation Overlay:</strong> Visual mutation events combine tint shifts and glyph trails</li>
+        <li><strong>Evolution Stages:</strong> 5-stage progression with visual timeline at bottom</li>
+        <li><strong>Solver DNA Log:</strong> Top-right panel tracks individual solver signatures</li>
+      </ul>
+      
+      <div style="margin-top: 15px; font-size: 12px; color: #ffaa00;">
+        💡 <strong>Controls:</strong> Move mouse to create glyph trails | Ctrl+M to trigger mutations | Connect wallet for personalized signatures
+      </div>
+    </div>
+    
+    <div id="mintStatus">🔒 Temporal Echo Layer Ready - Experience the Evolution</div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="temporal-echo-system.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    // Demo-specific functionality
+    let demoWalletConnected = false;
+    let demoWalletAddress = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🌀 Temporal Echo Demo initialized');
+      
+      // Initialize demo controls
+      initializeDemoControls();
+      
+      // Start status updates
+      updateSystemStatus();
+      setInterval(updateSystemStatus, 2000);
+      
+      // Auto-generate some initial activity
+      setTimeout(() => {
+        if (window.temporalEchoSystem) {
+          // Create some initial glyph trails
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              const x = Math.random() * window.innerWidth;
+              const y = Math.random() * window.innerHeight;
+              window.temporalEchoSystem.createGlyphTrail(x, y);
+            }, i * 500);
+          }
+        }
+      }, 2000);
+    });
+    
+    function initializeDemoControls() {
+      // Connect Wallet Demo
+      document.getElementById('connectWallet').addEventListener('click', function() {
+        if (!demoWalletConnected) {
+          demoWalletAddress = '0x' + Math.random().toString(16).substr(2, 40);
+          demoWalletConnected = true;
+          this.textContent = '✅ Wallet Connected';
+          this.style.backgroundColor = '#28a745';
+          
+          // Set global wallet address for temporal echo system
+          window.userWalletAddress = demoWalletAddress;
+          
+          console.log('Demo wallet connected:', demoWalletAddress);
+        }
+      });
+      
+      // Trigger Mutation
+      document.getElementById('triggerMutation').addEventListener('click', function() {
+        if (window.temporalEchoSystem) {
+          window.temporalEchoSystem.triggerRelicMutation();
+        }
+      });
+      
+      // Generate Glyph Burst
+      document.getElementById('generateGlyphs').addEventListener('click', function() {
+        if (window.temporalEchoSystem) {
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          
+          for (let i = 0; i < 16; i++) {
+            setTimeout(() => {
+              const angle = (i / 16) * Math.PI * 2;
+              const radius = 200 + Math.random() * 150;
+              const x = centerX + Math.cos(angle) * radius;
+              const y = centerY + Math.sin(angle) * radius;
+              
+              window.temporalEchoSystem.createGlyphTrail(x, y, demoWalletAddress);
+            }, i * 100);
+          }
+        }
+      });
+      
+      // Reset System
+      document.getElementById('resetSystem').addEventListener('click', function() {
+        if (window.temporalEchoSystem) {
+          // Reset evolution stage
+          window.temporalEchoSystem.currentEvolutionStage = 0;
+          window.temporalEchoSystem.glyphTrails = [];
+          window.temporalEchoSystem.solverHistory.clear();
+          
+          // Update displays
+          window.temporalEchoSystem.updateEvolutionTimeline();
+          window.temporalEchoSystem.updateSignatureDisplay();
+          
+          console.log('🔄 Temporal Echo System reset');
+        }
+      });
+    }
+    
+    function updateSystemStatus() {
+      if (!window.temporalEchoSystem) {
+        document.getElementById('statusContent').innerHTML = 'System initializing...';
+        return;
+      }
+      
+      const evolution = window.temporalEchoSystem.getEvolutionStage();
+      const solverStats = window.temporalEchoSystem.getSolverHistory();
+      const totalTrails = window.temporalEchoSystem.glyphTrails.length;
+      const lockedTrails = window.temporalEchoSystem.glyphTrails.filter(t => t.locked).length;
+      
+      const statusHtml = `
+        <div style="color: #00ffff;">Evolution Stage: ${evolution.current}/${window.temporalEchoSystem.maxEvolutionStages - 1} - ${evolution.name}</div>
+        <div style="color: #ffff00;">Progress: ${evolution.progress.toFixed(1)}%</div>
+        <div style="color: #ff00ff;">Glyph Trails: ${totalTrails} (${lockedTrails} locked)</div>
+        <div style="color: #00ff00;">Active Solvers: ${solverStats.length}</div>
+        <div style="color: #ff6600;">Chrono-Tint Phase: ${window.temporalEchoSystem.chronoTintPhase}/4</div>
+        <div style="color: #888; font-size: 12px; margin-top: 5px;">
+          Wallet: ${demoWalletConnected ? demoWalletAddress.slice(0,6) + '...' + demoWalletAddress.slice(-4) : 'Not connected'}
+        </div>
+      `;
+      
+      document.getElementById('statusContent').innerHTML = statusHtml;
+    }
+  </script>
+
+  <style>
+    .demo-btn {
+      background: #6772e5;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .demo-btn:hover {
+      background: #5a6fd8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(103, 114, 229, 0.3);
+    }
+    
+    .demo-btn:active {
+      transform: translateY(0);
+    }
+  </style>
+</body>
+</html>
