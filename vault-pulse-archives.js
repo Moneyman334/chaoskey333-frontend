@@ -320,9 +320,17 @@ class VaultPulseArchives {
         rgba(255, 0, 0, ${intensity * 0.6}) 100%)`;
     }
     
+    // Update resonance indicator
+    this.updateResonanceIndicator();
+    
     // Randomly generate new glyph effects
     if (Math.random() < 0.1) { // 10% chance each second
       this.generateGlyphEffects();
+    }
+    
+    // Randomly generate quantum particles
+    if (Math.random() < 0.15) { // 15% chance each second
+      this.generateQuantumParticles();
     }
   }
 
@@ -358,6 +366,50 @@ class VaultPulseArchives {
         glyph.parentNode.removeChild(glyph);
       }
     }, 6000);
+  }
+
+  generateQuantumParticles() {
+    if (this.currentFilter === 'soundscape') return;
+    
+    const viewer = document.getElementById('replayViewer');
+    
+    // Limit particles for performance
+    const existingParticles = viewer.querySelectorAll('.quantum-particle');
+    if (existingParticles.length > 10) {
+      existingParticles[0].remove();
+    }
+    
+    // Create new quantum particle
+    const particle = document.createElement('div');
+    particle.className = 'quantum-particle';
+    particle.style.left = Math.random() * 10 + '%';
+    particle.style.top = Math.random() * 80 + 10 + '%';
+    particle.style.animationDelay = Math.random() * 2 + 's';
+    
+    viewer.appendChild(particle);
+    
+    // Remove particle after animation
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 8000);
+  }
+
+  updateResonanceIndicator() {
+    const indicator = document.getElementById('resonanceIndicator');
+    if (!indicator) return;
+    
+    // Change resonance color based on current mode and activity
+    const colors = {
+      'full': '#00ff00',
+      'glyphs': '#ff00ff', 
+      'soundscape': '#ffff00'
+    };
+    
+    const intensity = Math.sin(this.currentTime * 0.2) * 0.5 + 0.5;
+    indicator.style.background = colors[this.currentFilter] || '#00ff00';
+    indicator.style.boxShadow = `0 0 ${10 + intensity * 15}px ${colors[this.currentFilter] || '#00ff00'}`;
   }
 
   setupEventListeners() {
