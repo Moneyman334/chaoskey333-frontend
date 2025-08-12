@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Replay Marker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        .marker {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        .status {
+            background: rgba(0, 255, 0, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+            margin-top: 1rem;
+        }
+        .timestamp {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+        #smoke-test-marker {
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="marker">🌌</div>
+        <div class="title">Cosmic Replay Marker</div>
+        <div class="subtitle">Smoke Test & UI Verification Point</div>
+        
+        <div class="status">
+            <div id="smoke-test-marker">✅ REPLAY_MARKER_ACTIVE</div>
+            <div>Status: Operational</div>
+        </div>
+        
+        <div class="timestamp">
+            Loaded: <span id="timestamp"></span>
+        </div>
+    </div>
+
+    <script>
+        // Set current timestamp
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+        
+        // Simple animation for the marker
+        const marker = document.querySelector('.marker');
+        setInterval(() => {
+            marker.style.transform = marker.style.transform === 'scale(1.1)' ? 'scale(1)' : 'scale(1.1)';
+        }, 2000);
+    </script>
+</body>
+</html>
