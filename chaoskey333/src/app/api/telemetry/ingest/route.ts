@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { kv } from '@/lib/kv-mock';
 import { TelemetryEvent, TelemetryIngestRequest } from '@/types/telemetry';
 
 function getClientIP(request: NextRequest): string {

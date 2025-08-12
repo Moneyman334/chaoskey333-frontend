@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { kv } from '@/lib/kv-mock';
 import { TelemetryRollup, TelemetryManualRollupRequest, TelemetryManualRollupResponse } from '@/types/telemetry';
 
 function formatDateKey(date: Date): string {
