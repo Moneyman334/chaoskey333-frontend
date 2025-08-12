@@ -1,0 +1,499 @@
+/* Ascension Replay Nexus - Cosmic Circuit Schematic Styles */
+
+.nexus-schematic {
+  background: linear-gradient(135deg, #000011 0%, #001122 25%, #000033 50%, #001122 75%, #000011 100%);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  color: #00ffff;
+  overflow-x: auto;
+}
+
+/* Header Styles */
+.cosmic-header {
+  text-align: center;
+  padding: 2rem 0;
+  background: linear-gradient(180deg, rgba(0,255,255,0.1) 0%, transparent 100%);
+  border-bottom: 2px solid #00ffff30;
+}
+
+.nexus-title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0;
+  text-shadow: 0 0 20px #00ffff, 0 0 40px #0088ff;
+  animation: titlePulse 3s infinite alternate;
+}
+
+.nexus-subtitle {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  opacity: 0.8;
+  animation: subtitleGlow 4s infinite alternate;
+}
+
+.nexus-nav {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #00ffff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid #00ffff50;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.nav-link:hover {
+  background: #00ffff20;
+  box-shadow: 0 0 15px #00ffff50;
+  transform: translateY(-2px);
+}
+
+/* Circuit Container */
+.circuit-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.cosmic-circuit {
+  width: 100%;
+  height: auto;
+  background: radial-gradient(circle at 50% 50%, rgba(0,255,255,0.05) 0%, transparent 70%);
+  border: 2px solid #00ffff30;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+/* Section Backgrounds */
+.section-bg {
+  fill: none;
+  stroke-width: 2;
+  filter: url(#glow);
+}
+
+.replay-bg {
+  stroke: #ff6600;
+  fill: rgba(255,102,0,0.1);
+}
+
+.decode-bg {
+  stroke: #00ff88;
+  fill: rgba(0,255,136,0.1);
+}
+
+.evolve-bg {
+  stroke: #ff00ff;
+  fill: rgba(255,0,255,0.1);
+}
+
+/* Section Titles */
+.section-title {
+  fill: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+  filter: url(#glow);
+}
+
+/* PR Nodes */
+.pr-node {
+  stroke-width: 3;
+  filter: url(#pulse);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pr-8 {
+  fill: #ff6600;
+  stroke: #ff8833;
+  animation: nodeRipple 2s infinite;
+}
+
+.pr-9 {
+  fill: #ff8800;
+  stroke: #ffaa33;
+  animation: nodeRipple 2.5s infinite;
+}
+
+.pr-10 {
+  fill: #ffaa00;
+  stroke: #ffcc33;
+  animation: nodeRipple 3s infinite;
+}
+
+.pr-23 {
+  fill: #00ff88;
+  stroke: #33ffaa;
+  animation: decodePulse 2s infinite;
+}
+
+.pr-24 {
+  fill: #ff00ff;
+  stroke: #ff33ff;
+  animation: evolveSpin 4s infinite linear;
+}
+
+/* PR Labels */
+.pr-label {
+  fill: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Component Descriptions */
+.component-desc {
+  fill: #cccccc;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  text-anchor: middle;
+  opacity: 0.8;
+}
+
+/* Nexus Core */
+.core-outer {
+  fill: none;
+  stroke: #00ffff;
+  stroke-width: 3;
+  animation: coreRotate 8s infinite linear;
+}
+
+.core-inner {
+  fill: rgba(0,255,255,0.2);
+  stroke: #00ccff;
+  stroke-width: 2;
+  animation: coreRotate 6s infinite linear reverse;
+}
+
+.core-center {
+  fill: #00ffff;
+  stroke: #ffffff;
+  stroke-width: 1;
+  animation: corePulse 2s infinite alternate;
+}
+
+.core-label {
+  fill: #000000;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.core-desc {
+  fill: #00ffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  text-anchor: middle;
+  opacity: 0.9;
+}
+
+/* Flow Arrows */
+.flow-arrow {
+  fill: none;
+  stroke: #00ffff;
+  stroke-width: 2;
+  marker-end: url(#arrowhead);
+}
+
+.major-flow {
+  fill: none;
+  stroke-width: 4;
+  opacity: 0.8;
+  animation: flowPulse 3s infinite;
+}
+
+.replay-flow {
+  stroke: #ff6600;
+}
+
+.decode-flow {
+  stroke: #00ff88;
+}
+
+.evolve-flow {
+  stroke: #ff00ff;
+}
+
+.loop-flow {
+  stroke: #ffff00;
+  stroke-width: 5;
+  stroke-dasharray: 10,5;
+  animation: dashFlow 2s infinite linear, loopGlow 3s infinite alternate;
+}
+
+/* Flow Labels */
+.flow-label {
+  fill: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  opacity: 0.9;
+}
+
+.loop-label {
+  fill: #ffff00;
+  animation: labelFlash 2s infinite;
+}
+
+/* Spectral Lines */
+.spectral-line {
+  fill: none;
+  stroke: #00ff88;
+  stroke-width: 1;
+  opacity: 0.6;
+  animation: spectralFlow 3s infinite ease-in-out;
+}
+
+/* Evolution Particles */
+.evolution-particle {
+  fill: #ff00ff;
+  animation: particleFloat 2s infinite ease-in-out;
+}
+
+/* Documentation Section */
+.documentation-section {
+  max-width: 1400px;
+  margin: 4rem auto;
+  padding: 2rem;
+}
+
+.doc-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px #00ffff;
+}
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.doc-card {
+  background: linear-gradient(135deg, rgba(0,255,255,0.1) 0%, transparent 100%);
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 1.5rem;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doc-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,255,255,0.3);
+}
+
+.replay-card {
+  border-color: #ff6600;
+}
+
+.decode-card {
+  border-color: #00ff88;
+}
+
+.evolve-card {
+  border-color: #ff00ff;
+}
+
+.loop-card {
+  border-color: #ffff00;
+}
+
+.doc-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+}
+
+.pr-chain {
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.doc-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.doc-card li {
+  padding: 0.3rem 0;
+  border-left: 3px solid #00ffff50;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+}
+
+/* Impact Section */
+.impact-section {
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.impact-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px #00ffff;
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.impact-item {
+  background: linear-gradient(135deg, rgba(0,255,255,0.1) 0%, transparent 100%);
+  border: 1px solid #00ffff30;
+  border-radius: 10px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.impact-item:hover {
+  transform: scale(1.05);
+  border-color: #00ffff;
+}
+
+.impact-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: iconFloat 3s infinite ease-in-out;
+}
+
+.impact-item h4 {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+
+/* Animations */
+@keyframes titlePulse {
+  0% { text-shadow: 0 0 20px #00ffff, 0 0 40px #0088ff; }
+  100% { text-shadow: 0 0 30px #00ffff, 0 0 60px #0088ff, 0 0 80px #0066ff; }
+}
+
+@keyframes subtitleGlow {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; text-shadow: 0 0 10px #00ffff; }
+}
+
+@keyframes nodeRipple {
+  0% { r: 25; opacity: 1; }
+  50% { r: 30; opacity: 0.8; }
+  100% { r: 25; opacity: 1; }
+}
+
+@keyframes decodePulse {
+  0%, 100% { r: 35; fill: #00ff88; }
+  50% { r: 40; fill: #33ffaa; }
+}
+
+@keyframes evolveSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes coreRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes corePulse {
+  0% { fill: #00ffff; }
+  100% { fill: #66ffff; r: 22; }
+}
+
+@keyframes flowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes dashFlow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 15; }
+}
+
+@keyframes loopGlow {
+  0% { stroke: #ffff00; stroke-width: 5; }
+  100% { stroke: #ffff88; stroke-width: 7; }
+}
+
+@keyframes labelFlash {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; fill: #ffffff; }
+}
+
+@keyframes spectralFlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(-10px); opacity: 1; }
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nexus-title {
+    font-size: 2rem;
+  }
+  
+  .nexus-nav {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .circuit-container {
+    padding: 0 0.5rem;
+  }
+  
+  .doc-grid,
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cosmic-circuit {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nexus-title {
+    font-size: 1.5rem;
+  }
+  
+  .nexus-subtitle {
+    font-size: 1rem;
+  }
+  
+  .doc-title,
+  .impact-title {
+    font-size: 2rem;
+  }
+}

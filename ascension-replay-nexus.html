@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ascension Replay Nexus - Cosmic Circuit Schematic</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nexus-schematic.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="nexus-schematic">
+  <div class="cosmic-header">
+    <h1 class="nexus-title">⚡ ASCENSION REPLAY NEXUS ⚡</h1>
+    <p class="nexus-subtitle">Cosmic Circuit Schematic - Closed-Loop Relic Ecosystem</p>
+    <nav class="nexus-nav">
+      <a href="index.html" class="nav-link">🏠 Main Vault</a>
+      <a href="vault.html" class="nav-link">🔐 Vault Interface</a>
+      <a href="#documentation" class="nav-link">📚 Documentation</a>
+    </nav>
+  </div>
+
+  <div class="circuit-container">
+    <svg class="cosmic-circuit" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background Grid -->
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00ffff20" stroke-width="1"/>
+        </pattern>
+        
+        <!-- Glowing Effects -->
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        
+        <filter id="pulse">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <rect width="100%" height="100%" fill="url(#grid)" opacity="0.3"/>
+      
+      <!-- REPLAY TERMINAL SECTION (PR #8 → #9 → #10) -->
+      <g class="replay-section">
+        <rect x="50" y="100" width="280" height="180" rx="15" class="section-bg replay-bg" />
+        <text x="190" y="130" class="section-title">COSMIC REPLAY TERMINAL v2.0</text>
+        
+        <!-- PR Chain Flow -->
+        <circle cx="100" cy="170" r="25" class="pr-node pr-8" />
+        <text x="100" y="175" class="pr-label">PR #8</text>
+        
+        <path d="M 125 170 L 155 170" class="flow-arrow" marker-end="url(#arrowhead)" />
+        
+        <circle cx="180" cy="170" r="25" class="pr-node pr-9" />
+        <text x="180" y="175" class="pr-label">PR #9</text>
+        
+        <path d="M 205 170 L 235 170" class="flow-arrow" marker-end="url(#arrowhead)" />
+        
+        <circle cx="260" cy="170" r="25" class="pr-node pr-10" />
+        <text x="260" y="175" class="pr-label">PR #10</text>
+        
+        <text x="190" y="250" class="component-desc">Playback Engine Enhancement</text>
+      </g>
+      
+      <!-- DECODE HUD SECTION (PR #23) -->
+      <g class="decode-section">
+        <rect x="400" y="100" width="280" height="180" rx="15" class="section-bg decode-bg" />
+        <text x="540" y="130" class="section-title">LIVE SPECTRAL DECODE HUD</text>
+        
+        <circle cx="540" cy="170" r="35" class="pr-node pr-23" />
+        <text x="540" y="175" class="pr-label">PR #23</text>
+        
+        <text x="540" y="250" class="component-desc">Real-time Decode Interface</text>
+        
+        <!-- Spectral Lines -->
+        <path d="M 460 190 Q 540 200 620 190" class="spectral-line" />
+        <path d="M 460 200 Q 540 210 620 200" class="spectral-line" />
+        <path d="M 460 210 Q 540 220 620 210" class="spectral-line" />
+      </g>
+      
+      <!-- EVOLUTION TRIGGER SECTION (PR #24) -->
+      <g class="evolve-section">
+        <rect x="750" y="100" width="280" height="180" rx="15" class="section-bg evolve-bg" />
+        <text x="890" y="130" class="section-title">PERMANENT RELIC EVOLUTION</text>
+        
+        <circle cx="890" cy="170" r="35" class="pr-node pr-24" />
+        <text x="890" y="175" class="pr-label">PR #24</text>
+        
+        <text x="890" y="250" class="component-desc">Evolution Trigger System</text>
+        
+        <!-- Evolution Particles -->
+        <circle cx="820" cy="160" r="3" class="evolution-particle" />
+        <circle cx="830" cy="180" r="2" class="evolution-particle" />
+        <circle cx="950" cy="160" r="3" class="evolution-particle" />
+        <circle cx="960" cy="180" r="2" class="evolution-particle" />
+      </g>
+      
+      <!-- NEXUS CORE (Central Hub) -->
+      <g class="nexus-core">
+        <circle cx="600" cy="400" r="60" class="core-outer" />
+        <circle cx="600" cy="400" r="40" class="core-inner" />
+        <circle cx="600" cy="400" r="20" class="core-center" />
+        <text x="600" y="405" class="core-label">NEXUS</text>
+        <text x="600" y="480" class="core-desc">Relic Ecosystem Core</text>
+      </g>
+      
+      <!-- CONNECTION FLOWS -->
+      <!-- Replay to Nexus -->
+      <path d="M 330 190 Q 450 300 540 380" class="major-flow replay-flow" marker-end="url(#arrowhead)" />
+      
+      <!-- Decode to Nexus -->
+      <path d="M 540 280 L 540 340" class="major-flow decode-flow" marker-end="url(#arrowhead)" />
+      
+      <!-- Evolve to Nexus -->
+      <path d="M 750 190 Q 650 300 660 380" class="major-flow evolve-flow" marker-end="url(#arrowhead)" />
+      
+      <!-- Loop Back Flow (Nexus to Replay) -->
+      <path d="M 540 400 Q 300 500 100 350 Q 80 300 100 250" class="loop-flow" marker-end="url(#arrowhead)" />
+      
+      <!-- Arrow Markers -->
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00ffff" />
+        </marker>
+      </defs>
+      
+      <!-- Flow Labels -->
+      <text x="450" y="320" class="flow-label">BROADCAST</text>
+      <text x="570" y="320" class="flow-label">DECODE</text>
+      <text x="700" y="320" class="flow-label">EVOLVE</text>
+      <text x="250" y="380" class="flow-label loop-label">AUTO-FEED LOOP</text>
+    </svg>
+  </div>
+
+  <!-- Documentation Section -->
+  <div id="documentation" class="documentation-section">
+    <h2 class="doc-title">🌌 Ecosystem Documentation</h2>
+    
+    <div class="doc-grid">
+      <div class="doc-card replay-card">
+        <h3>⚡ REPLAY TERMINAL</h3>
+        <div class="pr-chain">PR #8 → PR #9 → PR #10</div>
+        <p>Enhanced Cosmic Replay Terminal v2.0 provides the foundation for all vault broadcasts. Each playback triggers the entire ecosystem chain.</p>
+        <ul>
+          <li>🎮 Advanced playback controls</li>
+          <li>🔊 High-fidelity audio processing</li>
+          <li>⚡ Real-time synchronization</li>
+        </ul>
+      </div>
+      
+      <div class="doc-card decode-card">
+        <h3>🔍 SPECTRAL DECODE HUD</h3>
+        <div class="pr-chain">PR #23</div>
+        <p>Live Spectral Decode HUD captures and analyzes every playback event, creating fresh decoding opportunities for collectors.</p>
+        <ul>
+          <li>📊 Real-time spectral analysis</li>
+          <li>🌈 Visual frequency mapping</li>
+          <li>🔗 Interactive decode triggers</li>
+        </ul>
+      </div>
+      
+      <div class="doc-card evolve-card">
+        <h3>🧬 EVOLUTION TRIGGER</h3>
+        <div class="pr-chain">PR #24</div>
+        <p>Permanent Relic Evolution Trigger enables continuous transformation of relics through collector interactions.</p>
+        <ul>
+          <li>🔄 Automated evolution cycles</li>
+          <li>💎 Relic transformation tracking</li>
+          <li>🌟 Collector lore integration</li>
+        </ul>
+      </div>
+      
+      <div class="doc-card loop-card">
+        <h3>🔄 CLOSED-LOOP ECOSYSTEM</h3>
+        <div class="pr-chain">Full Cycle</div>
+        <p>The auto-feed loop ensures that evolved relics automatically return to the Replay Nexus, creating a living, shape-shifting relic history.</p>
+        <ul>
+          <li>🔁 Continuous cycle operation</li>
+          <li>📜 Dynamic lore generation</li>
+          <li>👥 Collector co-authorship</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impact Summary -->
+  <div class="impact-section">
+    <h2 class="impact-title">🌟 Ecosystem Impact</h2>
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="impact-icon">🎬</div>
+        <h4>Fresh Decoding Opportunities</h4>
+        <p>Every playback triggers new decode possibilities</p>
+      </div>
+      <div class="impact-item">
+        <div class="impact-icon">🧬</div>
+        <h4>Living Relic History</h4>
+        <p>Multiple evolutions create shape-shifting artifacts</p>
+      </div>
+      <div class="impact-item">
+        <div class="impact-icon">✍️</div>
+        <h4>Collector Co-authorship</h4>
+        <p>Direct participation in lore creation through loops</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="nexus-schematic.js"></script>
+</body>
+</html>
