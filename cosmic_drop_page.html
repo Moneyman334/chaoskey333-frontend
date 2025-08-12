@@ -4,21 +4,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Drop Page</title>
+  <title>⚡ Ascension Replay Nexus - Cosmic Terminal v2.0 ⚡</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="ascension-nexus.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap');
+  </style>
 </head>
-<body>
-  <h1>Welcome to the Cosmic Drop</h1>
-  <p>Explore the cosmic wonders through our exclusive drops.</p>
-  <button onclick="startCosmicJourney()">Start Your Journey</button>
-  <div id="cosmicStatus">Prepare for launch...</div>
+<body class="nexus-body">
+  <!-- Terminal Header -->
+  <div class="nexus-header">
+    <h1 class="nexus-title">⚡ ASCENSION REPLAY NEXUS ⚡</h1>
+    <div class="terminal-status">
+      <span class="status-indicator"></span>
+      <span id="systemStatus">COSMIC TERMINAL v2.0 - ONLINE</span>
+    </div>
+  </div>
 
-  <script>
-    function startCosmicJourney() {
-      alert('Your cosmic journey has begun!');
-      document.getElementById('cosmicStatus').innerText = 'Journey in progress...';
-    }
-  </script>
+  <!-- Main Container -->
+  <div class="nexus-container">
+    <!-- 2D Starmap Visualization Container -->
+    <div class="holo-layer-container">
+      <div class="holo-header">
+        <h3>🌌 HOLO-LAYER REPLAY VISUALIZATION</h3>
+        <div class="holo-controls">
+          <button id="resetView" class="control-btn">🎯 Reset View</button>
+          <button id="togglePulse" class="control-btn">💫 Toggle Pulse</button>
+        </div>
+      </div>
+      <canvas id="starmap2D" class="starmap-canvas" width="800" height="500"></canvas>
+      <div class="starmap-overlay">
+        <div class="coordinates">
+          <span id="currentCoords">NEXUS COORDINATES: [0, 0, 0]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time-Thread Markers Panel -->
+    <div class="time-thread-panel">
+      <div class="thread-header">
+        <h3>⏰ TIME-THREAD MARKERS</h3>
+        <div class="pulse-indicator">
+          <span class="pulse-dot"></span>
+          <span>VAULT BROADCAST PULSE</span>
+        </div>
+      </div>
+      
+      <!-- Timeline Scrubber -->
+      <div class="timeline-scrubber">
+        <div class="timeline-track">
+          <div id="playhead" class="playhead"></div>
+          <div class="time-markers">
+            <div class="marker genesis" data-time="0" title="Genesis Pulse">⚡</div>
+            <div class="marker vault" data-time="25" title="Vault Resonance">🔮</div>
+            <div class="marker chaos" data-time="50" title="Chaos Emergence">🌪️</div>
+            <div class="marker nexus" data-time="75" title="Nexus Convergence">⭐</div>
+            <div class="marker ascension" data-time="100" title="Final Ascension">🚀</div>
+          </div>
+        </div>
+        <div class="timeline-controls">
+          <button id="playBtn" class="play-btn">▶️ PLAY</button>
+          <button id="pauseBtn" class="pause-btn">⏸️ PAUSE</button>
+          <span id="currentTime">00:00</span> / <span id="totalTime">05:33</span>
+        </div>
+      </div>
+
+      <!-- Event Details -->
+      <div class="event-details">
+        <h4 id="eventTitle">🔮 Genesis Pulse</h4>
+        <p id="eventDescription">The initial vault resonance that sparked the cosmic replay sequence...</p>
+        <div class="event-metrics">
+          <span class="metric">⚡ Energy: <span id="energyLevel">2847</span></span>
+          <span class="metric">🌌 Depth: <span id="depthLevel">∞</span></span>
+          <span class="metric">🔥 Intensity: <span id="intensityLevel">MAX</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instant Export Panel -->
+    <div class="export-panel">
+      <div class="export-header">
+        <h3>📡 INSTANT EXPORT TO LORE ARCHIVE</h3>
+        <div class="archive-status">
+          <span class="archive-indicator"></span>
+          <span id="archiveStatus">READY FOR MINT</span>
+        </div>
+      </div>
+
+      <div class="export-options">
+        <div class="clip-preview">
+          <div class="preview-screen">
+            <canvas id="clipPreview" width="200" height="150"></canvas>
+            <div class="preview-overlay">
+              <span>CLIP PREVIEW</span>
+            </div>
+          </div>
+          <div class="clip-controls">
+            <button id="captureClip" class="capture-btn">📸 CAPTURE CLIP</button>
+            <button id="generateThumb" class="thumb-btn">🖼️ GENERATE THUMB</button>
+          </div>
+        </div>
+
+        <div class="export-actions">
+          <button id="mintClip" class="mint-btn">⚡ MINT TO VAULT</button>
+          <button id="pushLive" class="live-btn">🔴 PUSH LIVE</button>
+          <button id="exportLore" class="lore-btn">📚 EXPORT TO LORE</button>
+        </div>
+      </div>
+
+      <div class="export-status">
+        <div id="exportProgress" class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <span id="exportMessage">Awaiting user action...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection Status Footer -->
+  <div class="nexus-footer">
+    <div class="connection-status">
+      <span id="walletStatus">🔌 Wallet: DISCONNECTED</span>
+      <span id="networkStatus">🌐 Network: STANDBY</span>
+      <span id="cosmicStatus">🌌 Cosmic Link: ACTIVE</span>
+    </div>
+    <button id="connectSystems" class="connect-btn">🔗 CONNECT SYSTEMS</button>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="ascension-nexus-2d.js"></script>
 </body>
 </html>
 
