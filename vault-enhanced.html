@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vault - Cosmic Replay Terminal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div class="vault-container">
+    <h1 class="glow">🌌 Cosmic Vault Interface 🌌</h1>
+    <div class="vault-status">
+      <div id="mintStatus">🔒 Vault interface ready - Cosmic Replay Terminal active</div>
+    </div>
+    
+    <!-- 🪙 ChaosKey333 Manual Relic Mint Trigger -->
+    <button onclick="mintRelic()">⚡ Manually Mint Origin Flare Relic</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="cosmic-replay-terminal.js"></script>
+  <script>
+    async function mintRelic() {
+      try {
+        // Trigger vault broadcast pulse
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'relic_mint_attempt',
+            action: 'manual_mint_origin_flare',
+            timestamp: Date.now(),
+            user_action: true
+          });
+        }
+
+        const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+        const abi = [
+          {
+            "inputs": [],
+            "name": "mintRelic",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ];
+
+        if (!window.ethereum) {
+          alert("⚠️ MetaMask not detected. Please install it to mint.");
+          return;
+        }
+
+        await ethereum.request({ method: 'eth_requestAccounts' });
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        const tx = await contract.mintRelic();
+        
+        // Capture transaction submission
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'relic_mint_transaction',
+            txHash: tx.hash,
+            timestamp: Date.now(),
+            status: 'submitted'
+          });
+        }
+
+        await tx.wait();
+
+        // Capture successful mint
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'relic_mint_success',
+            txHash: tx.hash,
+            timestamp: Date.now(),
+            message: 'Origin Flare Relic minted successfully'
+          });
+        }
+
+        alert("🔥 Origin Flare Relic minted successfully! You're now encoded in Syndicate history.");
+      } catch (err) {
+        console.error("❌ Minting error:", err);
+        
+        // Capture minting error
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'relic_mint_error',
+            error: err.message,
+            timestamp: Date.now(),
+            status: 'failed'
+          });
+        }
+
+        alert("Mint failed. Please check your wallet connection and try again.");
+      }
+    }
+
+    // Enhanced vault operations monitoring
+    window.onload = async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentSuccess = urlParams.get("payment") === "success";
+
+      // Capture page load event
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'vault_interface_loaded',
+          paymentSuccess: paymentSuccess,
+          timestamp: Date.now(),
+          url: window.location.href
+        });
+      }
+
+      if (paymentSuccess && typeof window.ethereum !== "undefined") {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            "0xYourContractAddress", // TODO: Replace with your live Goerli contract
+            ["function mint(address to, string memory tokenURI) public"],
+            signer
+          );
+
+          const walletAddress = await signer.getAddress();
+          const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash"; // TODO: Replace with real metadata
+
+          const mintStatus = document.getElementById("mintStatus");
+          mintStatus.innerText = "🌀 Minting your relic...";
+
+          const tx = await contract.mint(walletAddress, tokenURI);
+          await tx.wait();
+
+          mintStatus.innerText = `✅ Relic minted to ${walletAddress}`;
+          
+          // Capture automatic mint success
+          if (window.cosmicReplayTerminal) {
+            window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+              type: 'auto_relic_mint_success',
+              walletAddress: walletAddress,
+              txHash: tx.hash,
+              timestamp: Date.now()
+            });
+          }
+        } catch (err) {
+          console.error("Minting failed:", err);
+          document.getElementById("mintStatus").innerText = "❌ Mint failed. See console.";
+          
+          // Capture automatic mint failure
+          if (window.cosmicReplayTerminal) {
+            window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+              type: 'auto_relic_mint_error',
+              error: err.message,
+              timestamp: Date.now()
+            });
+          }
+        }
+      }
+    };
+  </script>
+</body>
+</html>

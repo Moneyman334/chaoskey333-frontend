@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cosmic Replay Terminal Demo - PR #10 Ascension Edition</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    .demo-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #00ff88;
+      font-family: 'Courier New', monospace;
+    }
+    .demo-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+      background: rgba(0, 255, 136, 0.05);
+    }
+    .demo-button {
+      background: #003322;
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .demo-button:hover {
+      background: #00ff88;
+      color: #000;
+    }
+    .event-log {
+      background: #000011;
+      border: 1px solid #333;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body class="vault">
+  <div class="demo-container">
+    <h1 class="glow">🌌 Cosmic Replay Terminal Demo 🌌</h1>
+    <p>PR #10 Ascension Edition - Permanent Real-Time Replay Buffer</p>
+    
+    <div class="demo-section">
+      <h3>🔮 Terminal Status</h3>
+      <div id="terminal-status">Initializing...</div>
+      <div id="event-count">Events captured: 0</div>
+    </div>
+    
+    <div class="demo-section">
+      <h3>⚡ Simulate Vault Events</h3>
+      <button class="demo-button" onclick="simulateWalletConnection()">🦊 Connect MetaMask</button>
+      <button class="demo-button" onclick="simulatePayment()">💳 Stripe Payment</button>
+      <button class="demo-button" onclick="simulateRelic()">🧿 Mint Relic</button>
+      <button class="demo-button" onclick="simulateError()">❌ Error Event</button>
+    </div>
+    
+    <div class="demo-section">
+      <h3>🌀 Live Event Log</h3>
+      <div id="live-events" class="event-log">
+        Events will appear here as they're captured...
+      </div>
+    </div>
+    
+    <div class="demo-section">
+      <h3>📤 Export & Integration</h3>
+      <button class="demo-button" onclick="exportDemo()">📤 Export Replay Archive</button>
+      <button class="demo-button" onclick="clearDemo()">🗑️ Clear Events</button>
+      <div id="export-info">
+        Ready for future PR integrations: auto-highlights, relic mutation triggers, lore exports
+      </div>
+    </div>
+  </div>
+
+  <script src="cosmic-replay-terminal.js"></script>
+  <script>
+    let eventCounter = 0;
+    
+    // Wait for terminal to initialize
+    setTimeout(() => {
+      if (window.cosmicReplayTerminal) {
+        updateStatus('✅ Cosmic Replay Terminal ACTIVE - Auto-archiving enabled');
+        
+        // Override the callback to show live events
+        window.cosmicReplayTerminal.callbacks.onEventCaptured = (event) => {
+          eventCounter++;
+          document.getElementById('event-count').textContent = `Events captured: ${eventCounter}`;
+          
+          const liveEvents = document.getElementById('live-events');
+          const eventDiv = document.createElement('div');
+          eventDiv.innerHTML = `
+            <span style="color: #666">[${new Date(event.timestamp).toLocaleTimeString()}]</span>
+            <span style="color: #ffaa00">${event.type}</span>
+            <span style="color: #00ff88"> - ${JSON.stringify(event.data.action || event.data.type || 'unknown')}</span>
+          `;
+          liveEvents.appendChild(eventDiv);
+          liveEvents.scrollTop = liveEvents.scrollHeight;
+        };
+      } else {
+        updateStatus('❌ Terminal failed to initialize');
+      }
+    }, 1000);
+    
+    function updateStatus(status) {
+      document.getElementById('terminal-status').textContent = status;
+    }
+    
+    function simulateWalletConnection() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'wallet_connection_demo',
+          wallet_type: 'MetaMask',
+          address: '0x742d35Cc6634C0532925a3b8D7dc01fBc18C7CC4',
+          action: 'demo_connect',
+          timestamp: Date.now()
+        });
+      }
+    }
+    
+    function simulatePayment() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'stripe_payment_demo',
+          action: 'payment_simulation',
+          amount: 3333,
+          currency: 'usd',
+          timestamp: Date.now()
+        });
+      }
+    }
+    
+    function simulateRelic() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'relic_mint_demo',
+          action: 'demo_mint_success',
+          relic_type: 'Origin Flare',
+          tx_hash: '0x' + Math.random().toString(16).substr(2, 40),
+          timestamp: Date.now()
+        });
+      }
+    }
+    
+    function simulateError() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'error_demo',
+          action: 'demo_error',
+          error: 'Simulated error for testing',
+          timestamp: Date.now()
+        });
+      }
+    }
+    
+    function exportDemo() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.exportReplayArchive();
+        document.getElementById('export-info').innerHTML = 
+          '✅ Archive exported! Compatible with future PR #23 → #24 evolution chains';
+      }
+    }
+    
+    function clearDemo() {
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.clearReplayBuffer();
+        document.getElementById('live-events').innerHTML = 'Events cleared...';
+        eventCounter = 0;
+        document.getElementById('event-count').textContent = `Events captured: ${eventCounter}`;
+      }
+    }
+    
+    // Demonstrate automatic event capture on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'demo_page_load',
+            action: 'ascension_demo_initialized',
+            pr_version: 'PR#10-Ascension-Edition',
+            timestamp: Date.now()
+          });
+        }
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

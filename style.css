@@ -49,6 +49,62 @@ body {
   animation: flicker 2s infinite alternate;
 }
 
+/* Cosmic Replay Terminal Integration Styles */
+.vault .cosmic-terminal-container {
+  border-color: #ff6600 !important;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.3) !important;
+}
+
+.vault .cosmic-terminal-header {
+  background: linear-gradient(90deg, #331100, #662200) !important;
+  border-bottom-color: #ff6600 !important;
+}
+
+.vault .terminal-title {
+  color: #ff6600 !important;
+}
+
+.vault .terminal-btn {
+  border-color: #ff6600 !important;
+  color: #ff6600 !important;
+  background: #331100 !important;
+}
+
+.vault .terminal-btn:hover {
+  background: #ff6600 !important;
+  color: #000 !important;
+}
+
+.vault .timeline-btn {
+  border-color: #ff6600 !important;
+  color: #ff6600 !important;
+  background: #442200 !important;
+}
+
+.vault .timeline-btn:hover {
+  background: #ff6600 !important;
+  color: #000 !important;
+}
+
+.vault .terminal-output {
+  color: #ff8844 !important;
+}
+
+/* Enhanced vault container styles */
+.vault-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.vault-status {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 102, 0, 0.1);
+  border: 1px solid #ff6600;
+  border-radius: 8px;
+}
+
 h1 {
   font-size: 2.5em;
   text-shadow: 0 0 10px #00ffff, 0 0 20px #00ccff, 0 0 40px #00ccff;
