@@ -49,6 +49,626 @@ body {
   animation: flicker 2s infinite alternate;
 }
 
+/* Apex Node Ignition Protocol Styles */
+.apex-ignition-active {
+  background: radial-gradient(circle, #1a0033, #330066, #000);
+  animation: apexPulse 3s infinite ease-in-out;
+}
+
+@keyframes apexPulse {
+  0% { 
+    background: radial-gradient(circle, #1a0033, #330066, #000);
+    box-shadow: inset 0 0 50px rgba(255, 215, 0, 0.2);
+  }
+  50% { 
+    background: radial-gradient(circle, #330066, #660099, #1a0033);
+    box-shadow: inset 0 0 100px rgba(255, 215, 0, 0.4);
+  }
+  100% { 
+    background: radial-gradient(circle, #1a0033, #330066, #000);
+    box-shadow: inset 0 0 50px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.apex-flare-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.singularity-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #ffd700, #9932cc, transparent);
+  border-radius: 50%;
+  animation: singularityIgnition 5s ease-out;
+}
+
+@keyframes singularityIgnition {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+  }
+  25% {
+    width: 200px;
+    height: 200px;
+    opacity: 1;
+    box-shadow: 0 0 200px #ffd700;
+  }
+  50% {
+    width: 400px;
+    height: 400px;
+    opacity: 0.8;
+    box-shadow: 0 0 400px #9932cc;
+  }
+  100% {
+    width: 800px;
+    height: 800px;
+    opacity: 0;
+    box-shadow: 0 0 800px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.neural-conduit {
+  position: absolute;
+  background: linear-gradient(45deg, transparent, #ffd700, #9932cc, transparent);
+  opacity: 0;
+  animation: neuralSurge 3s ease-out forwards;
+}
+
+.conduit-1 {
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 4px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation-delay: 0.5s;
+}
+
+.conduit-2 {
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 4px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  animation-delay: 1s;
+}
+
+.conduit-3 {
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 4px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation-delay: 1.5s;
+}
+
+.conduit-4 {
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 4px;
+  transform: translate(-50%, -50%) rotate(135deg);
+  animation-delay: 2s;
+}
+
+@keyframes neuralSurge {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1);
+    box-shadow: 0 0 20px #ffd700;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(1.5);
+  }
+}
+
+.apex-ignition-text {
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700;
+  animation: ignitionTextPulse 2s infinite;
+}
+
+@keyframes ignitionTextPulse {
+  0%, 100% { 
+    text-shadow: 0 0 10px #ffd700; 
+    color: #ffd700;
+  }
+  50% { 
+    text-shadow: 0 0 20px #9932cc; 
+    color: #9932cc;
+  }
+}
+
+.ignition-complete {
+  color: #00ff00;
+  text-shadow: 0 0 15px #00ff00;
+  animation: completionGlow 3s ease-out;
+}
+
+@keyframes completionGlow {
+  0% { 
+    text-shadow: 0 0 15px #00ff00; 
+  }
+  50% { 
+    text-shadow: 0 0 30px #00ff00, 0 0 40px #00ff00; 
+  }
+  100% { 
+    text-shadow: 0 0 15px #00ff00; 
+  }
+}
+
+/* Spectral Decode HUD Styles */
+.spectral-decode-hud {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+  color: #00ffff;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  z-index: 1001;
+  backdrop-filter: blur(10px);
+}
+
+.hud-header {
+  background: linear-gradient(90deg, #001133, #003366);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #00ffff;
+}
+
+.hud-title {
+  font-weight: bold;
+  color: #00ffff;
+}
+
+.hud-status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.status-monitoring {
+  background: #333;
+  color: #fff;
+}
+
+.status-decoding {
+  background: #ff6600;
+  color: #fff;
+  animation: statusBlink 1s infinite;
+}
+
+.status-success {
+  background: #00ff00;
+  color: #000;
+}
+
+.status-failed {
+  background: #ff0000;
+  color: #fff;
+}
+
+@keyframes statusBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.5; }
+}
+
+.decode-grid {
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.decode-channel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.channel-label {
+  font-weight: bold;
+  color: #ffff00;
+  min-width: 30px;
+}
+
+.spectral-bar {
+  flex: 1;
+  height: 8px;
+  background: #001122;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00);
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+@keyframes spectralPulse {
+  0% { width: 0; }
+  25% { width: 50%; }
+  50% { width: 100%; }
+  75% { width: 75%; }
+  100% { width: 90%; }
+}
+
+.solver-input-section {
+  padding: 15px;
+  border-top: 1px solid #003366;
+}
+
+.signature-input {
+  width: 100%;
+  padding: 8px;
+  background: #001122;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  color: #00ffff;
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 10px;
+}
+
+.signature-input::placeholder {
+  color: #006666;
+}
+
+.decode-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(45deg, #003366, #006699);
+  border: none;
+  border-radius: 6px;
+  color: #00ffff;
+  font-family: 'Orbitron', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.decode-button:hover {
+  background: linear-gradient(45deg, #006699, #0099cc);
+  box-shadow: 0 0 15px #00ffff;
+}
+
+.decode-results {
+  padding: 15px;
+  border-top: 1px solid #003366;
+  background: #000022;
+  min-height: 60px;
+  border-radius: 0 0 8px 8px;
+}
+
+.success-indicator {
+  color: #00ff00;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+.failure-indicator {
+  color: #ff6600;
+  font-style: italic;
+}
+
+.decode-success {
+  border-color: #00ff00;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+  animation: successPulse 2s ease-out;
+}
+
+@keyframes successPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.8); }
+}
+
+/* Cosmic Replay Terminal Styles */
+.cosmic-replay-terminal {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 600px;
+  height: 400px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid #9932cc;
+  border-radius: 12px;
+  color: #9932cc;
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  z-index: 1002;
+  backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-header {
+  background: linear-gradient(90deg, #1a0033, #330066);
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #9932cc;
+  border-radius: 10px 10px 0 0;
+}
+
+.terminal-title {
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.terminal-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.control-btn {
+  background: #660099;
+  border: none;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn:hover {
+  background: #9932cc;
+}
+
+.terminal-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-title {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 10px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 2px;
+}
+
+.broadcast-section, .replay-section, .evolution-log, .asset-display {
+  background: rgba(25, 0, 51, 0.5);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #330066;
+}
+
+.status-display {
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.status-display.broadcasting {
+  color: #ff6600;
+  animation: broadcastPulse 1s infinite;
+}
+
+@keyframes broadcastPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.client-count {
+  color: #00ffff;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.replay-controls {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.replay-btn {
+  background: #330066;
+  border: 1px solid #9932cc;
+  color: #9932cc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.replay-btn:hover {
+  background: #660099;
+  color: #fff;
+}
+
+.scrub-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scrub-slider {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  background: #330066;
+  border-radius: 2px;
+  outline: none;
+}
+
+.scrub-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #9932cc;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.scrub-time {
+  color: #00ffff;
+  font-size: 9px;
+  min-width: 80px;
+}
+
+.log-display {
+  height: 100px;
+  overflow-y: auto;
+  background: #000011;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #330066;
+}
+
+.log-entry {
+  font-size: 9px;
+  margin: 2px 0;
+  color: #cccccc;
+}
+
+.log-entry .timestamp {
+  color: #666;
+}
+
+.asset-preview {
+  height: 80px;
+  background: #001122;
+  border: 1px solid #330066;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.asset-placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+.evolved-asset-preview {
+  padding: 10px;
+  text-align: left;
+}
+
+.asset-title {
+  color: #ffd700;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.asset-seed {
+  color: #00ffff;
+  font-size: 9px;
+  margin-bottom: 5px;
+}
+
+.asset-formats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 5px 0;
+}
+
+.format-item {
+  color: #00ff00;
+  font-size: 8px;
+}
+
+.asset-timestamp {
+  color: #999;
+  font-size: 8px;
+}
+
+/* Apex Status Styling */
+.apex-status {
+  margin-top: 15px;
+  padding: 10px;
+  background: linear-gradient(45deg, #1a0033, #330066);
+  border: 2px solid #9932cc;
+  border-radius: 8px;
+  color: #ffd700;
+  font-size: 0.9rem;
+  text-align: center;
+  animation: apexStatusPulse 3s infinite ease-in-out;
+}
+
+@keyframes apexStatusPulse {
+  0%, 100% { 
+    border-color: #9932cc;
+    box-shadow: 0 0 10px rgba(153, 50, 204, 0.5);
+  }
+  50% { 
+    border-color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+  }
+}
+
+/* Additional UI enhancements */
+#testApexButton {
+  position: relative;
+  overflow: hidden;
+}
+
+#testApexButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+#testApexButton:hover::before {
+  left: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .spectral-decode-hud {
+    width: 90%;
+    right: 5%;
+    top: 10px;
+  }
+  
+  .cosmic-replay-terminal {
+    width: 90%;
+    left: 5%;
+    height: 300px;
+  }
+}
+
 h1 {
   font-size: 2.5em;
   text-shadow: 0 0 10px #00ffff, 0 0 20px #00ccff, 0 0 40px #00ccff;
