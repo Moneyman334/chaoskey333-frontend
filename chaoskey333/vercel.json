@@ -1,0 +1,15 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/evolution-digest",
+      "schedule": "* * * * *"
+    }
+  ],
+  "env": {
+    "EVOLUTION_AUTO_FEED": "true",
+    "EVOLUTION_MIN_SIGNALS": "3",
+    "EVOLUTION_COOLDOWN_SEC": "300",
+    "EVOLUTION_MAX_PER_HOUR": "10",
+    "EVOLUTION_DRY_RUN": "false"
+  }
+}
