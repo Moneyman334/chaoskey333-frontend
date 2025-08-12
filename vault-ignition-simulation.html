@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Vault Ignition Simulation - PR #77 Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: radial-gradient(circle at center, #000 0%, #1a0000 50%, #000 100%);
+            color: #00ff88;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        .simulation-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-bottom: 2px solid #00ff88;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        .header .status {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #ffaa00;
+        }
+
+        .main-display {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            padding: 100px 20px 20px 20px;
+            height: 100vh;
+        }
+
+        .central-vault {
+            position: relative;
+            background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, rgba(0,0,0,0.8) 70%);
+            border: 3px solid #00ff88;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            margin: auto;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .vault-core {
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, #ff4400 0%, #ff0066 30%, #6600ff 70%, #000 100%);
+            border-radius: 50%;
+            animation: spin 8s linear infinite;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .singularity {
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ffffff, inset 0 0 20px #000;
+            animation: singularitySpin 2s linear infinite;
+        }
+
+        .conduit {
+            position: absolute;
+            width: 4px;
+            height: 150px;
+            background: linear-gradient(to bottom, #00ff88, transparent);
+            animation: conduitPulse 1.5s infinite alternate;
+        }
+
+        .conduit:nth-child(1) { transform: rotate(0deg) translateY(-75px); }
+        .conduit:nth-child(2) { transform: rotate(45deg) translateY(-75px); }
+        .conduit:nth-child(3) { transform: rotate(90deg) translateY(-75px); }
+        .conduit:nth-child(4) { transform: rotate(135deg) translateY(-75px); }
+        .conduit:nth-child(5) { transform: rotate(180deg) translateY(-75px); }
+        .conduit:nth-child(6) { transform: rotate(225deg) translateY(-75px); }
+        .conduit:nth-child(7) { transform: rotate(270deg) translateY(-75px); }
+        .conduit:nth-child(8) { transform: rotate(315deg) translateY(-75px); }
+
+        .halo {
+            position: absolute;
+            border: 2px solid rgba(255, 170, 0, 0.6);
+            border-radius: 50%;
+            animation: haloExpand 3s infinite;
+        }
+
+        .halo:nth-child(1) { width: 200px; height: 200px; animation-delay: 0s; }
+        .halo:nth-child(2) { width: 300px; height: 300px; animation-delay: 1s; }
+        .halo:nth-child(3) { width: 400px; height: 400px; animation-delay: 2s; }
+
+        .telemetry-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .telemetry-panel h3 {
+            color: #ffaa00;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .metric {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00ff88;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .metric-bar {
+            width: 100%;
+            height: 8px;
+            background: #222;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4400, #ffaa00, #00ff88);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .glyph-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .glyph {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 170, 0, 0.8);
+            animation: glyphFloat 6s infinite linear;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #ff4400, #ff0066);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 68, 0, 0.4);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 68, 0, 0.6);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.ignition {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .control-btn.ignition:hover {
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #00ff88; }
+            50% { text-shadow: 0 0 35px #00ff88, 0 0 45px #00ffaa; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes singularitySpin {
+            from { transform: rotate(0deg) scale(1); }
+            to { transform: rotate(-360deg) scale(1.2); }
+        }
+
+        @keyframes conduitPulse {
+            from { 
+                background: linear-gradient(to bottom, #00ff88, transparent);
+                box-shadow: 0 0 10px #00ff88;
+            }
+            to { 
+                background: linear-gradient(to bottom, #ffaa00, transparent);
+                box-shadow: 0 0 20px #ffaa00;
+            }
+        }
+
+        @keyframes haloExpand {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        @keyframes glyphFloat {
+            0% { 
+                transform: translateY(100vh) translateX(var(--x-pos)) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) translateX(var(--x-pos)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .chain-reaction {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        .evolution-trigger {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ffffff;
+            animation: evolutionPulse 0.5s infinite;
+        }
+
+        @keyframes evolutionPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="simulation-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔥 VAULT IGNITION SIMULATION - PR #77 PREVIEW 🔥</h1>
+            <div class="status" id="simulationStatus">Initializing Omni-Singularity Chain Reaction...</div>
+        </div>
+
+        <!-- Glyph overlay system -->
+        <div class="glyph-container" id="glyphContainer"></div>
+
+        <!-- Chain reaction effects -->
+        <div class="chain-reaction" id="chainReaction"></div>
+
+        <!-- Main display area -->
+        <div class="main-display">
+            <!-- Central vault visualization -->
+            <div class="central-vault">
+                <!-- Expanding halos -->
+                <div class="halo"></div>
+                <div class="halo"></div>
+                <div class="halo"></div>
+                
+                <!-- Vault core with singularity -->
+                <div class="vault-core" id="vaultCore">
+                    <!-- Energy conduits -->
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    <div class="conduit"></div>
+                    
+                    <!-- Central singularity -->
+                    <div class="singularity" id="singularity"></div>
+                </div>
+            </div>
+
+            <!-- Telemetry panel -->
+            <div class="telemetry-panel">
+                <h3>🔬 LIVE TELEMETRY OVERLAY</h3>
+                
+                <div class="metric">
+                    <div class="metric-label">Conduit Charge Rate</div>
+                    <div class="metric-value" id="conduitCharge">0.00 THz</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="conduitChargeBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Singularity Spin Velocity</div>
+                    <div class="metric-value" id="singularityVelocity">0.00 RPM</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="singularityVelocityBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Glyph-Whisper Alignment</div>
+                    <div class="metric-value" id="glyphAlignment">0.00%</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="glyphAlignmentBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Chain Reaction Progress</div>
+                    <div class="metric-value" id="chainProgress">0.00%</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="chainProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Evolution Triggers</div>
+                    <div class="metric-value" id="evolutionTriggers">0 / 8</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="evolutionTriggersBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Halo Pulse Sync</div>
+                    <div class="metric-value" id="haloPulseSync">STANDBY</div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="haloPulseSyncBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control buttons -->
+        <div class="controls">
+            <button class="control-btn ignition" onclick="initiateIgnition()">🚀 INITIATE IGNITION</button>
+            <button class="control-btn" onclick="resetSimulation()">🔄 RESET</button>
+            <button class="control-btn" onclick="goToVault()">🏠 RETURN TO VAULT</button>
+        </div>
+    </div>
+
+    <script>
+        class VaultIgnitionSimulation {
+            constructor() {
+                this.isRunning = false;
+                this.startTime = null;
+                this.animationId = null;
+                this.glyphSymbols = ['⚡', '🔮', '🌀', '💫', '⭐', '🔥', '💎', '🌟'];
+                this.evolutionTriggerCount = 0;
+                this.maxEvolutionTriggers = 8;
+                
+                // Telemetry data
+                this.telemetry = {
+                    conduitCharge: 0,
+                    singularityVelocity: 0,
+                    glyphAlignment: 0,
+                    chainProgress: 0,
+                    evolutionTriggers: 0,
+                    haloPulseSync: 0
+                };
+
+                this.updateStatus("Simulation Loaded - Ready for Ignition");
+                this.startGlyphGeneration();
+            }
+
+            updateStatus(message) {
+                document.getElementById('simulationStatus').textContent = message;
+            }
+
+            updateTelemetry() {
+                if (!this.isRunning) return;
+
+                const elapsed = (Date.now() - this.startTime) / 1000;
+                const progress = Math.min(elapsed / 30, 1); // 30-second simulation
+
+                // Calculate realistic telemetry values
+                this.telemetry.conduitCharge = Math.sin(elapsed * 2) * 50 + 50 + (progress * 100);
+                this.telemetry.singularityVelocity = Math.sin(elapsed * 1.5) * 1000 + 2000 + (progress * 3000);
+                this.telemetry.glyphAlignment = Math.sin(elapsed * 0.8) * 30 + 70 + (progress * 25);
+                this.telemetry.chainProgress = progress * 100;
+                this.telemetry.haloPulseSync = Math.sin(elapsed * 3) * 40 + 60;
+
+                // Update evolution triggers based on progress
+                const expectedTriggers = Math.floor(progress * this.maxEvolutionTriggers);
+                if (expectedTriggers > this.telemetry.evolutionTriggers) {
+                    this.telemetry.evolutionTriggers = expectedTriggers;
+                    this.createEvolutionTrigger();
+                }
+
+                // Update DOM elements
+                document.getElementById('conduitCharge').textContent = this.telemetry.conduitCharge.toFixed(2) + ' THz';
+                document.getElementById('singularityVelocity').textContent = this.telemetry.singularityVelocity.toFixed(0) + ' RPM';
+                document.getElementById('glyphAlignment').textContent = this.telemetry.glyphAlignment.toFixed(1) + '%';
+                document.getElementById('chainProgress').textContent = this.telemetry.chainProgress.toFixed(1) + '%';
+                document.getElementById('evolutionTriggers').textContent = this.telemetry.evolutionTriggers + ' / ' + this.maxEvolutionTriggers;
+                document.getElementById('haloPulseSync').textContent = this.telemetry.haloPulseSync.toFixed(0) + '%';
+
+                // Update progress bars
+                document.getElementById('conduitChargeBar').style.width = Math.min(this.telemetry.conduitCharge / 2, 100) + '%';
+                document.getElementById('singularityVelocityBar').style.width = Math.min(this.telemetry.singularityVelocity / 50, 100) + '%';
+                document.getElementById('glyphAlignmentBar').style.width = this.telemetry.glyphAlignment + '%';
+                document.getElementById('chainProgressBar').style.width = this.telemetry.chainProgress + '%';
+                document.getElementById('evolutionTriggersBar').style.width = (this.telemetry.evolutionTriggers / this.maxEvolutionTriggers) * 100 + '%';
+                document.getElementById('haloPulseSyncBar').style.width = this.telemetry.haloPulseSync + '%';
+
+                // Update visual effects based on progress
+                this.updateVisualEffects(progress);
+            }
+
+            updateVisualEffects(progress) {
+                const vaultCore = document.getElementById('vaultCore');
+                const singularity = document.getElementById('singularity');
+
+                // Increase spin speed based on progress
+                const spinSpeed = 8 - (progress * 6); // From 8s to 2s
+                vaultCore.style.animationDuration = spinSpeed + 's';
+
+                // Change singularity size and glow
+                const scale = 1 + (progress * 0.5);
+                const glow = 30 + (progress * 20);
+                singularity.style.transform = `scale(${scale})`;
+                singularity.style.boxShadow = `0 0 ${glow}px #ffffff, inset 0 0 20px #000`;
+
+                // Update status based on progress
+                if (progress < 0.2) {
+                    this.updateStatus("Conduits charging... Energy levels rising");
+                } else if (progress < 0.4) {
+                    this.updateStatus("Singularity spin velocity approaching critical threshold");
+                } else if (progress < 0.6) {
+                    this.updateStatus("Glyph-whisper alignment stabilizing... Chain reaction initiating");
+                } else if (progress < 0.8) {
+                    this.updateStatus("Evolution triggers firing... Halo pulses synchronizing");
+                } else if (progress < 1.0) {
+                    this.updateStatus("Omni-Singularity chain reaction at 90%... Final sync in progress");
+                } else {
+                    this.updateStatus("🔥 IGNITION COMPLETE - Perfect synchronization achieved! 🔥");
+                    this.completeIgnition();
+                }
+            }
+
+            startGlyphGeneration() {
+                setInterval(() => {
+                    this.createGlyph();
+                }, 2000);
+            }
+
+            createGlyph() {
+                const glyph = document.createElement('div');
+                glyph.className = 'glyph';
+                glyph.textContent = this.glyphSymbols[Math.floor(Math.random() * this.glyphSymbols.length)];
+                
+                const xPos = Math.random() * 100;
+                glyph.style.setProperty('--x-pos', xPos + 'vw');
+                glyph.style.left = xPos + 'vw';
+                
+                document.getElementById('glyphContainer').appendChild(glyph);
+
+                // Remove glyph after animation
+                setTimeout(() => {
+                    glyph.remove();
+                }, 6000);
+            }
+
+            createEvolutionTrigger() {
+                const trigger = document.createElement('div');
+                trigger.className = 'evolution-trigger';
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                trigger.style.left = x + 'px';
+                trigger.style.top = y + 'px';
+                
+                document.getElementById('chainReaction').appendChild(trigger);
+
+                // Remove trigger after animation
+                setTimeout(() => {
+                    trigger.remove();
+                }, 1000);
+            }
+
+            initiateIgnition() {
+                if (this.isRunning) return;
+
+                this.isRunning = true;
+                this.startTime = Date.now();
+                this.evolutionTriggerCount = 0;
+                this.telemetry.evolutionTriggers = 0;
+
+                this.updateStatus("🚀 IGNITION INITIATED - All systems engaging");
+
+                // Start the simulation loop
+                this.simulationLoop();
+            }
+
+            simulationLoop() {
+                if (!this.isRunning) return;
+
+                this.updateTelemetry();
+                this.animationId = requestAnimationFrame(() => this.simulationLoop());
+            }
+
+            completeIgnition() {
+                setTimeout(() => {
+                    this.resetSimulation();
+                }, 3000);
+            }
+
+            resetSimulation() {
+                this.isRunning = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+
+                // Reset all telemetry
+                this.telemetry = {
+                    conduitCharge: 0,
+                    singularityVelocity: 0,
+                    glyphAlignment: 0,
+                    chainProgress: 0,
+                    evolutionTriggers: 0,
+                    haloPulseSync: 0
+                };
+
+                // Reset visual effects
+                const vaultCore = document.getElementById('vaultCore');
+                const singularity = document.getElementById('singularity');
+                vaultCore.style.animationDuration = '8s';
+                singularity.style.transform = 'scale(1)';
+                singularity.style.boxShadow = '0 0 30px #ffffff, inset 0 0 20px #000';
+
+                // Update UI
+                this.updateTelemetry();
+                this.updateStatus("Simulation Reset - Ready for Next Ignition");
+
+                // Clear any existing evolution triggers
+                document.getElementById('chainReaction').innerHTML = '';
+            }
+
+            goToVault() {
+                if (confirm('Return to main vault interface?')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // Global functions for button clicks
+        let simulation;
+
+        function initiateIgnition() {
+            simulation.initiateIgnition();
+        }
+
+        function resetSimulation() {
+            simulation.resetSimulation();
+        }
+
+        function goToVault() {
+            simulation.goToVault();
+        }
+
+        // Initialize simulation when page loads
+        window.addEventListener('load', () => {
+            simulation = new VaultIgnitionSimulation();
+        });
+    </script>
+</body>
+</html>
