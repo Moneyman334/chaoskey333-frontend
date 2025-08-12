@@ -177,6 +177,12 @@ async function mintRelic() {
     mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
+  // Generate unique relic ID for this minting
+  const relicId = `relic_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+  // Execute PR #23 → PR #24 → PR #76 sequence
+  await executeEvolutionChain(relicId);
+
   // Simulate minting process
   setTimeout(() => {
     console.log("🧬 Vault Relic Minted for", userWalletAddress);
@@ -184,6 +190,91 @@ async function mintRelic() {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
     }
   }, 2000);
+}
+
+// Execute PR #23 → PR #24 → PR #76 Evolution Chain
+async function executeEvolutionChain(relicId) {
+  try {
+    console.log("🌌 Executing PR #23 → PR #24 → PR #76 evolution chain...");
+    
+    // PR #23: Activate Spectral Decode HUD
+    console.log("⚡ PR #23: Activating Spectral Decode HUD...");
+    const spectralHUD = await activateSpectralDecodeHUD();
+    
+    // PR #24: Trigger Permanent Relic Evolution  
+    console.log("🔮 PR #24: Triggering Permanent Relic Evolution...");
+    const evolutionResult = await triggerPermanentRelicEvolution(relicId, spectralHUD);
+    
+    // PR #76: Spectral-Lock Memory Caching
+    console.log("💾 PR #76: Spectral-Lock Memory Caching...");
+    if (window.spectralCache) {
+      const cachedEvent = window.spectralCache.cacheEvolutionEvent({
+        prChain: ['PR-23', 'PR-24', 'PR-76'],
+        walletAddress: userWalletAddress,
+        relicId: relicId,
+        evolutionStage: evolutionResult.stage,
+        cosmicState: {
+          spectralHUD: spectralHUD,
+          evolutionTimestamp: Date.now(),
+          userWallet: userWalletAddress
+        }
+      });
+      
+      console.log("🌟 Evolution event cached as eternal echo:", cachedEvent.id);
+    }
+    
+    console.log("✅ Evolution chain completed successfully");
+    
+  } catch (error) {
+    console.error("❌ Evolution chain failed:", error);
+  }
+}
+
+// PR #23: Activate Spectral Decode HUD
+async function activateSpectralDecodeHUD() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const hudData = {
+        activated: true,
+        timestamp: Date.now(),
+        spectralFrequency: Math.random() * 1000 + 2000,
+        decodeMatrix: generateDecodeMatrix(),
+        status: 'SPECTRAL_ACTIVE'
+      };
+      
+      console.log("🔍 Spectral Decode HUD activated with frequency:", hudData.spectralFrequency);
+      resolve(hudData);
+    }, 500);
+  });
+}
+
+// PR #24: Trigger Permanent Relic Evolution
+async function triggerPermanentRelicEvolution(relicId, spectralHUD) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const evolutionData = {
+        relicId: relicId,
+        stage: 'PERMANENT_EVOLUTION',
+        timestamp: Date.now(),
+        spectralAlignment: spectralHUD.spectralFrequency,
+        mutationIndex: Math.floor(Math.random() * 999) + 1,
+        permanentState: true,
+        status: 'EVOLUTION_COMPLETE'
+      };
+      
+      console.log("🧬 Permanent Relic Evolution triggered for:", relicId);
+      resolve(evolutionData);
+    }, 1000);
+  });
+}
+
+// Helper function to generate decode matrix
+function generateDecodeMatrix() {
+  const matrix = [];
+  for (let i = 0; i < 8; i++) {
+    matrix.push(Math.random().toString(36).substr(2, 8));
+  }
+  return matrix;
 }
 
 // Test Stripe Connection

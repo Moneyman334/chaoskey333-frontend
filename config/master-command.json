@@ -1,1 +1,48 @@
-{"systemVersion":"Omni-Singularity v2.0","defaultMode":"Vault Broadcast","prSequence":[{"id":1,"name":"Initialize Vault Core"},{"id":2,"name":"Establish Outer Halo Heartbeat"},{"id":3,"name":"Sync Glyph Structures"},{"id":4,"name":"Engage Cosmic Bass Resonance"},{"id":5,"name":"Lock Halo Stability"},{"id":6,"name":"Expand Rings"},{"id":7,"name":"Integrate Temporal Ripples"},{"id":8,"name":"Layer Narrative Arc 1"},{"id":9,"name":"Layer Narrative Arc 2"},{"id":10,"name":"Layer Narrative Arc 3"},{"id":11,"name":"Layer Narrative Arc 4"},{"id":12,"name":"Layer Narrative Arc 5"},{"id":13,"name":"Layer Narrative Arc 6"},{"id":14,"name":"Layer Narrative Arc 7"},{"id":15,"name":"Layer Narrative Arc 8"},{"id":16,"name":"Layer Narrative Arc 9"},{"id":17,"name":"Layer Narrative Arc 10 (Temporal Mastery)"},{"id":18,"name":"Activate Core Nexus Hum"},{"id":19,"name":"Cascade Plasma Bursts"},{"id":20,"name":"Flash Infinity Icon"},{"id":21,"name":"Unify Energy Fields"},{"id":22,"name":"Prime for Decode Mode"},{"id":23,"name":"Activate Spectral Decode HUD"},{"id":24,"name":"Trigger Permanent Relic Evolution"}],"replayTerminal":{"version":"2.0 – Ascension Edition","features":["autoSave","indexedTimeline","mutationPlayback","exportFormats"],"exportFormats":["mp4","gif","webm","nftMetadata"]},"security":{"authRequired":true,"authMethod":"ChaosKey333Vault","walletIntegration":true,"onChainCommit":true}}
+{
+  "systemVersion": "Omni-Singularity v2.0",
+  "defaultMode": "Vault Broadcast",
+  "prSequence": [
+    {"id": 1, "name": "Initialize Vault Core"},
+    {"id": 2, "name": "Establish Outer Halo Heartbeat"},
+    {"id": 3, "name": "Sync Glyph Structures"},
+    {"id": 4, "name": "Engage Cosmic Bass Resonance"},
+    {"id": 5, "name": "Lock Halo Stability"},
+    {"id": 6, "name": "Expand Rings"},
+    {"id": 7, "name": "Integrate Temporal Ripples"},
+    {"id": 8, "name": "Layer Narrative Arc 1"},
+    {"id": 9, "name": "Layer Narrative Arc 2"},
+    {"id": 10, "name": "Layer Narrative Arc 3"},
+    {"id": 11, "name": "Layer Narrative Arc 4"},
+    {"id": 12, "name": "Layer Narrative Arc 5"},
+    {"id": 13, "name": "Layer Narrative Arc 6"},
+    {"id": 14, "name": "Layer Narrative Arc 7"},
+    {"id": 15, "name": "Layer Narrative Arc 8"},
+    {"id": 16, "name": "Layer Narrative Arc 9"},
+    {"id": 17, "name": "Layer Narrative Arc 10 (Temporal Mastery)"},
+    {"id": 18, "name": "Activate Core Nexus Hum"},
+    {"id": 19, "name": "Cascade Plasma Bursts"},
+    {"id": 20, "name": "Flash Infinity Icon"},
+    {"id": 21, "name": "Unify Energy Fields"},
+    {"id": 22, "name": "Prime for Decode Mode"},
+    {"id": 23, "name": "Activate Spectral Decode HUD"},
+    {"id": 24, "name": "Trigger Permanent Relic Evolution"},
+    {"id": 76, "name": "Spectral-Lock Memory Caching", "prChain": [23, 24], "features": ["evolutionCache", "eternalEchoes", "instantReplay"]}
+  ],
+  "replayTerminal": {
+    "version": "2.0 – Ascension Edition",
+    "features": ["autoSave", "indexedTimeline", "mutationPlayback", "exportFormats", "spectralCache", "eternalEchoPlayback"],
+    "exportFormats": ["mp4", "gif", "webm", "nftMetadata"],
+    "spectralCaching": {
+      "enabled": true,
+      "maxCacheSize": 1000,
+      "persistentStorage": true,
+      "integrationPoints": ["PR-23", "PR-24"]
+    }
+  },
+  "security": {
+    "authRequired": true,
+    "authMethod": "ChaosKey333Vault",
+    "walletIntegration": true,
+    "onChainCommit": true
+  }
+}

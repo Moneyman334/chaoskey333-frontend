@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Replay Terminal v2.0 – Ascension Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .replay-terminal {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff41;
+            margin: 20px;
+            max-width: 1200px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+        
+        .terminal-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 0 10px #00ff41;
+        }
+        
+        .echo-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+        }
+        
+        .echo-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .echo-item:hover {
+            background: rgba(0, 255, 65, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .echo-meta {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .replay-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .replay-btn {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .replay-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+        
+        .cache-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: rgba(0, 255, 65, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #00ff41;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff41;
+        }
+        
+        .replay-output {
+            background: #000;
+            color: #00ff41;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #00ff41;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="vault">
+    <div class="replay-terminal">
+        <div class="terminal-header">
+            <h1>🌌 Cosmic Replay Terminal v2.0 – Ascension Edition 🌌</h1>
+            <p>Spectral-Lock Memory Cache | Eternal Echo Playback System</p>
+        </div>
+
+        <div class="cache-stats" id="cacheStats">
+            <!-- Cache statistics will be populated here -->
+        </div>
+
+        <div class="replay-controls">
+            <button class="replay-btn" onclick="loadEternalEchoes()">🔄 Load Eternal Echoes</button>
+            <button class="replay-btn" onclick="clearCache()">🧹 Clear Cache</button>
+            <button class="replay-btn" onclick="exportEchoes()">📤 Export Echoes</button>
+        </div>
+
+        <div class="echo-list" id="echoList">
+            <div style="text-align: center; color: #888;">
+                No eternal echoes found. Complete a relic evolution to create your first echo.
+            </div>
+        </div>
+
+        <div class="replay-controls">
+            <button class="replay-btn" onclick="replaySelected()" id="replayBtn" disabled>▶️ Replay Selected Echo</button>
+            <button class="replay-btn" onclick="replayAll()">🔄 Replay All Echoes</button>
+        </div>
+
+        <div class="replay-output" id="replayOutput">
+            <div style="color: #888;">Replay output will appear here...</div>
+        </div>
+    </div>
+
+    <script src="lib/spectral-cache.js"></script>
+    <script>
+        let selectedEcho = null;
+
+        // Initialize terminal on load
+        window.addEventListener('load', function() {
+            updateCacheStats();
+            loadEternalEchoes();
+        });
+
+        // Update cache statistics display
+        function updateCacheStats() {
+            if (!window.spectralCache) {
+                console.warn('Spectral cache not available');
+                return;
+            }
+
+            const stats = window.spectralCache.getCacheStats();
+            const statsContainer = document.getElementById('cacheStats');
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.eternalEchoCount}</div>
+                    <div>Eternal Echoes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.activeCacheSize}</div>
+                    <div>Active Cache</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.isInitialized ? 'ONLINE' : 'OFFLINE'}</div>
+                    <div>Cache Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.newestEcho ? new Date(stats.newestEcho).toLocaleDateString() : 'N/A'}</div>
+                    <div>Latest Echo</div>
+                </div>
+            `;
+        }
+
+        // Load and display eternal echoes
+        function loadEternalEchoes() {
+            if (!window.spectralCache) {
+                console.warn('Spectral cache not available');
+                return;
+            }
+
+            const echoes = window.spectralCache.getEvolutionEvents();
+            const echoList = document.getElementById('echoList');
+            
+            if (echoes.length === 0) {
+                echoList.innerHTML = `
+                    <div style="text-align: center; color: #888;">
+                        No eternal echoes found. Complete a relic evolution to create your first echo.
+                    </div>
+                `;
+                return;
+            }
+
+            echoList.innerHTML = echoes.map(echo => `
+                <div class="echo-item" onclick="selectEcho('${echo.id}')">
+                    <div><strong>Echo ID:</strong> ${echo.id}</div>
+                    <div><strong>Relic:</strong> ${echo.relicId}</div>
+                    <div><strong>Wallet:</strong> ${echo.walletAddress ? echo.walletAddress.slice(0, 6) + '...' + echo.walletAddress.slice(-4) : 'Unknown'}</div>
+                    <div><strong>PR Chain:</strong> ${echo.prChain ? echo.prChain.join(' → ') : 'Unknown'}</div>
+                    <div class="echo-meta">
+                        <span>Signature: ${echo.spectralSignature}</span><br>
+                        <span>Timestamp: ${new Date(echo.timestamp).toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            updateCacheStats();
+        }
+
+        // Select an echo for replay
+        function selectEcho(echoId) {
+            selectedEcho = echoId;
+            
+            // Highlight selected echo
+            document.querySelectorAll('.echo-item').forEach(item => {
+                item.style.background = 'rgba(0, 255, 65, 0.1)';
+            });
+            
+            event.target.closest('.echo-item').style.background = 'rgba(0, 255, 65, 0.3)';
+            
+            // Enable replay button
+            document.getElementById('replayBtn').disabled = false;
+            
+            console.log('Selected echo for replay:', echoId);
+        }
+
+        // Replay selected echo
+        function replaySelected() {
+            if (!selectedEcho || !window.spectralCache) {
+                alert('Please select an echo to replay');
+                return;
+            }
+
+            const replayData = window.spectralCache.prepareForReplay(selectedEcho);
+            if (!replayData) {
+                alert('Failed to prepare echo for replay');
+                return;
+            }
+
+            executeReplay(replayData);
+        }
+
+        // Replay all echoes in sequence
+        function replayAll() {
+            if (!window.spectralCache) {
+                alert('Spectral cache not available');
+                return;
+            }
+
+            const echoes = window.spectralCache.getEvolutionEvents();
+            if (echoes.length === 0) {
+                alert('No echoes available for replay');
+                return;
+            }
+
+            const output = document.getElementById('replayOutput');
+            output.innerHTML = '<div class="loading">🌀 Preparing mass replay sequence...</div>';
+
+            setTimeout(() => {
+                let replayLog = '🌌 MASS REPLAY SEQUENCE INITIATED\n\n';
+                
+                echoes.forEach((echo, index) => {
+                    replayLog += `[${index + 1}/${echoes.length}] Replaying Echo: ${echo.id}\n`;
+                    replayLog += `  ⚡ Relic: ${echo.relicId}\n`;
+                    replayLog += `  🔮 PR Chain: ${echo.prChain ? echo.prChain.join(' → ') : 'Unknown'}\n`;
+                    replayLog += `  🌟 Spectral Signature: ${echo.spectralSignature}\n`;
+                    replayLog += `  ⏰ Timestamp: ${new Date(echo.timestamp).toLocaleString()}\n\n`;
+                });
+
+                replayLog += '✅ MASS REPLAY COMPLETE - All eternal echoes replayed successfully';
+                output.innerHTML = `<pre>${replayLog}</pre>`;
+            }, 2000);
+        }
+
+        // Execute replay for specific echo
+        function executeReplay(replayData) {
+            const output = document.getElementById('replayOutput');
+            output.innerHTML = '<div class="loading">🌀 Initializing spectral replay...</div>';
+
+            setTimeout(() => {
+                const replayLog = `
+🌌 COSMIC REPLAY TERMINAL v2.0 – ASCENSION EDITION
+═══════════════════════════════════════════════════
+
+🔮 ETERNAL ECHO REPLAY INITIATED
+   Echo ID: ${replayData.id}
+   Original Event: ${replayData.originalEvent.type}
+   
+⚡ PR SEQUENCE EXECUTION:
+   ${replayData.replayData.prSequence.map(pr => `   └─ ${pr}`).join('\n')}
+   
+🧬 EVOLUTION DATA:
+   Stage: ${replayData.replayData.evolutionStage}
+   Signature: ${replayData.replayData.spectralSignature}
+   Timestamp: ${new Date(replayData.replayData.timestamp).toLocaleString()}
+   
+🌟 COSMIC STATE:
+${Object.entries(replayData.replayData.cosmicState).map(([key, value]) => 
+    `   ${key}: ${typeof value === 'object' ? JSON.stringify(value, null, 6) : value}`
+).join('\n')}
+
+✅ REPLAY COMPLETE - Eternal echo successfully reconstructed
+   Terminal Version: ${replayData.terminalVersion}
+   Status: SPECTRAL_LOCK_VERIFIED
+                `;
+                
+                output.innerHTML = `<pre>${replayLog}</pre>`;
+                console.log('🌌 Echo replay completed:', replayData);
+            }, 3000);
+        }
+
+        // Clear cache
+        function clearCache() {
+            if (confirm('Are you sure you want to clear all eternal echoes? This action cannot be undone.')) {
+                if (window.spectralCache) {
+                    window.spectralCache.clearCache();
+                    loadEternalEchoes();
+                    updateCacheStats();
+                    document.getElementById('replayOutput').innerHTML = '<div style="color: #888;">Cache cleared. Replay output will appear here...</div>';
+                    selectedEcho = null;
+                    document.getElementById('replayBtn').disabled = true;
+                }
+            }
+        }
+
+        // Export echoes
+        function exportEchoes() {
+            if (!window.spectralCache) {
+                alert('Spectral cache not available');
+                return;
+            }
+
+            const echoes = window.spectralCache.getEvolutionEvents();
+            if (echoes.length === 0) {
+                alert('No echoes to export');
+                return;
+            }
+
+            const exportData = {
+                terminalVersion: '2.0 – Ascension Edition',
+                exportTimestamp: new Date().toISOString(),
+                totalEchoes: echoes.length,
+                eternalEchoes: echoes
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chaoskey333-eternal-echoes-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            console.log('📤 Eternal echoes exported:', echoes.length);
+        }
+    </script>
+</body>
+</html>
