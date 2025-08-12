@@ -9,6 +9,60 @@
 </head>
 <body class="vault">
   <div id="terminalOverlay">Initializing Vault Resurrection...</div>
+  <!-- Lore Capsules Section -->
+  <div class="lore-capsules-container">
+    <div class="lore-capsule" data-capsule-id="001" data-evolution-stage="dormant">
+      <div class="capsule-header">
+        <span class="capsule-id">Capsule-001</span>
+        <span class="evolution-stage">DORMANT</span>
+      </div>
+      <div class="capsule-core">
+        <div class="glyph-display">◊ ∇ ⧫</div>
+        <div class="evolution-trigger-btn" onclick="triggerEvolution('001')">◊ EVOLVE ◊</div>
+      </div>
+      <div class="timestamp-display">Last Activity: Never</div>
+    </div>
+
+    <div class="lore-capsule" data-capsule-id="002" data-evolution-stage="dormant">
+      <div class="capsule-header">
+        <span class="capsule-id">Capsule-002</span>
+        <span class="evolution-stage">DORMANT</span>
+      </div>
+      <div class="capsule-core">
+        <div class="glyph-display">⟐ ◈ ⬟</div>
+        <div class="evolution-trigger-btn" onclick="triggerEvolution('002')">◊ EVOLVE ◊</div>
+      </div>
+      <div class="timestamp-display">Last Activity: Never</div>
+    </div>
+  </div>
+
+  <!-- Cosmic Replay Terminal Overlay -->
+  <div id="cosmicReplayTerminal" class="cosmic-replay-overlay hidden">
+    <div class="terminal-header">
+      <span class="terminal-title">◊ COSMIC REPLAY TERMINAL ◊</span>
+      <span class="close-terminal" onclick="closeReplayTerminal()">✖</span>
+    </div>
+    <div class="terminal-content">
+      <div class="replay-info">
+        <span id="replayInfo">Initializing replay system...</span>
+      </div>
+      <div class="glyph-timeline">
+        <div class="timeline-track" id="glyphTimeline"></div>
+        <div class="timeline-scrubber" id="timelineScrubber"></div>
+      </div>
+      <div class="replay-controls">
+        <button class="replay-btn" onclick="replayEvolution()">⟲ REPLAY</button>
+        <button class="rewind-btn" onclick="rewindToMoment()">⟪ REWIND</button>
+        <button class="live-btn" onclick="returnToLive()">● LIVE</button>
+      </div>
+      <div class="evolution-viewer">
+        <div id="evolutionPlayback" class="evolution-display">
+          <div class="playback-stage">Ready for replay...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="resurrection-container">
     <h1 class="glow">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
     <p class="pulse">Bass Surge Incoming...</p>
