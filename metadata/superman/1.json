@@ -1,0 +1,29 @@
+{
+  "name": "Superman Relic #1",
+  "description": "A legendary Superman Relic NFT, embodying the power and legacy of the Man of Steel. This rare collectible grants its holder access to exclusive benefits within the ChaosKey333 ecosystem.",
+  "image": "https://chaoskey333.web.app/assets/superman-relic.png",
+  "attributes": [
+    {
+      "trait_type": "Relic Type",
+      "value": "Superman"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": "Maximum"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Steel"
+    },
+    {
+      "trait_type": "Series",
+      "value": "ChaosKey333 Relics"
+    }
+  ],
+  "external_url": "https://chaoskey333.web.app",
+  "background_color": "FF0000"
+}

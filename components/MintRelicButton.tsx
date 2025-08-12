@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-// Superman Relic Contract ABI (minimal required functions)
+// Superman Relic Contract ABI (only the functions we need)
 const SUPERMAN_RELIC_ABI = [
   {
     "inputs": [{"internalType": "address", "name": "to", "type": "address"}],
@@ -26,14 +26,14 @@ const SUPERMAN_RELIC_ABI = [
   }
 ];
 
-interface MintRelicProps {
+interface MintRelicButtonProps {
   contractAddress?: string;
   chainId?: number;
 }
 
-const MintRelic: React.FC<MintRelicProps> = ({ 
+const MintRelicButton: React.FC<MintRelicButtonProps> = ({ 
   contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '',
-  chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 11155111 
+  chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 11155111 // Sepolia by default
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [account, setAccount] = useState<string>('');
@@ -41,11 +41,6 @@ const MintRelic: React.FC<MintRelicProps> = ({
   const [mintStatus, setMintStatus] = useState<string>('');
   const [totalSupply, setTotalSupply] = useState<number>(0);
   const [maxSupply, setMaxSupply] = useState<number>(0);
-
-  // Initialize component
-  useEffect(() => {
-    checkWalletConnection();
-  }, []);
 
   // Check if wallet is connected
   const checkWalletConnection = async () => {
@@ -67,9 +62,10 @@ const MintRelic: React.FC<MintRelicProps> = ({
   const connectWallet = async () => {
     if (typeof window !== 'undefined' && window.ethereum) {
       try {
+        // Request account access
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         
-        // Switch to Sepolia if needed
+        // Check if we're on the correct network (Sepolia)
         const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
         const targetChainId = `0x${chainId.toString(16)}`;
         
@@ -80,6 +76,7 @@ const MintRelic: React.FC<MintRelicProps> = ({
               params: [{ chainId: targetChainId }],
             });
           } catch (switchError: any) {
+            // If the chain hasn't been added to MetaMask
             if (switchError.code === 4902) {
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
@@ -87,7 +84,11 @@ const MintRelic: React.FC<MintRelicProps> = ({
                   chainId: targetChainId,
                   chainName: 'Sepolia',
                   rpcUrls: ['https://sepolia.infura.io/v3/'],
-                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  nativeCurrency: {
+                    name: 'ETH',
+                    symbol: 'ETH',
+                    decimals: 18,
+                  },
                   blockExplorerUrls: ['https://sepolia.etherscan.io/'],
                 }],
               });
@@ -104,7 +105,7 @@ const MintRelic: React.FC<MintRelicProps> = ({
         setMintStatus('Failed to connect wallet');
       }
     } else {
-      setMintStatus('MetaMask is not installed');
+      setMintStatus('MetaMask is not installed. Please install MetaMask and try again.');
     }
   };
 
@@ -126,7 +127,7 @@ const MintRelic: React.FC<MintRelicProps> = ({
     }
   };
 
-  // Mint Superman Relic
+  // Mint a Superman Relic
   const mintRelic = async () => {
     if (!contractAddress) {
       setMintStatus('Contract address not configured');
@@ -146,14 +147,16 @@ const MintRelic: React.FC<MintRelicProps> = ({
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(contractAddress, SUPERMAN_RELIC_ABI, signer);
 
+      // Call the mint function
       const tx = await contract.publicMintRelic(account);
       setMintStatus('Transaction submitted. Waiting for confirmation...');
       
+      // Wait for transaction confirmation
       const receipt = await tx.wait();
       
       if (receipt.status === 1) {
         setMintStatus('🎉 Successfully minted your Superman Relic!');
-        await getSupplyInfo();
+        await getSupplyInfo(); // Update supply info
       } else {
         setMintStatus('Transaction failed. Please try again.');
       }
@@ -171,12 +174,17 @@ const MintRelic: React.FC<MintRelicProps> = ({
     }
   };
 
+  // Initialize wallet connection check
+  React.useEffect(() => {
+    checkWalletConnection();
+  }, []);
+
   return (
-    <div style={{
-      maxWidth: '400px',
-      margin: '0 auto',
-      padding: '20px',
-      border: '1px solid #ddd',
+    <div style={{ 
+      maxWidth: '400px', 
+      margin: '0 auto', 
+      padding: '20px', 
+      border: '1px solid #ddd', 
       borderRadius: '10px',
       textAlign: 'center',
       fontFamily: 'Arial, sans-serif'
@@ -192,16 +200,14 @@ const MintRelic: React.FC<MintRelicProps> = ({
             width: '100%', 
             backgroundColor: '#e5e7eb', 
             borderRadius: '10px', 
-            height: '8px',
-            marginTop: '10px'
+            height: '8px' 
           }}>
             <div 
               style={{ 
                 width: `${(totalSupply / maxSupply) * 100}%`, 
                 backgroundColor: '#3b82f6', 
                 height: '100%', 
-                borderRadius: '10px',
-                transition: 'width 0.3s ease'
+                borderRadius: '10px' 
               }}
             />
           </div>
@@ -227,14 +233,7 @@ const MintRelic: React.FC<MintRelicProps> = ({
         </button>
       ) : (
         <div>
-          <p style={{ 
-            fontSize: '14px', 
-            color: '#666', 
-            marginBottom: '15px',
-            padding: '10px',
-            backgroundColor: '#f3f4f6',
-            borderRadius: '5px'
-          }}>
+          <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
             Connected: {account.slice(0, 6)}...{account.slice(-4)}
           </p>
           <button
@@ -259,30 +258,24 @@ const MintRelic: React.FC<MintRelicProps> = ({
 
       {mintStatus && (
         <p style={{ 
-          fontSize: '14px',
-          marginTop: '10px',
-          padding: '10px',
-          borderRadius: '5px',
-          wordWrap: 'break-word',
-          backgroundColor: mintStatus.includes('Successfully') ? '#dcfce7' : 
-                           mintStatus.includes('Failed') || mintStatus.includes('Error') ? '#fef2f2' : '#eff6ff',
+          fontSize: '14px', 
           color: mintStatus.includes('Successfully') ? '#16a34a' : 
-                 mintStatus.includes('Failed') || mintStatus.includes('Error') ? '#dc2626' : '#2563eb',
-          border: `1px solid ${mintStatus.includes('Successfully') ? '#bbf7d0' : 
-                              mintStatus.includes('Failed') || mintStatus.includes('Error') ? '#fecaca' : '#dbeafe'}`
+                  mintStatus.includes('Failed') || mintStatus.includes('Error') ? '#dc2626' : '#666',
+          marginTop: '10px',
+          wordWrap: 'break-word'
         }}>
           {mintStatus}
         </p>
       )}
 
       <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '15px' }}>
-        <p style={{ margin: '5px 0' }}>Network: Sepolia Testnet</p>
+        <p>Network: Sepolia Testnet</p>
         {contractAddress && (
-          <p style={{ margin: '5px 0' }}>Contract: {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</p>
+          <p>Contract: {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</p>
         )}
       </div>
     </div>
   );
 };
 
-export default MintRelic;
+export default MintRelicButton;
