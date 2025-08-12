@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FrankensteinVault333</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="infinite-ignition-protocol.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 </head>
 <body class="vault">
@@ -31,10 +32,39 @@
     <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
       🔌 No wallet? Install: <a href="https://metamask.io" target="_blank" style="color: #ff6600;">MetaMask</a> | <a href="https://wallet.coinbase.com" target="_blank" style="color: #1652f0;">Coinbase Wallet</a>
     </div>
+    
+    <!-- Infinite Ignition Protocol UI Elements -->
+    <div id="protocolStatus" class="protocol-status">
+      <div class="status-line">
+        <span class="status-label">Protocol:</span>
+        <span class="status-value" id="protocolActive">INACTIVE</span>
+      </div>
+      <div class="status-line">
+        <span class="status-label">Mutations:</span>
+        <span class="status-value" id="mutationCount">0</span>
+      </div>
+      <div class="status-line">
+        <span class="status-label">Embers:</span>
+        <span class="status-value" id="emberCount">0</span>
+      </div>
+      <div class="status-line">
+        <span class="status-label">Echoes:</span>
+        <span class="status-value" id="echoCount">0</span>
+      </div>
+    </div>
+    
+    <div id="cosmicDayCounter" class="cosmic-day-counter">
+      <div>🌌 COSMIC DAY</div>
+      <div id="cosmicDayValue">0</div>
+      <div style="font-size: 10px;" id="daysToReset">33 days to reset</div>
+    </div>
   </div>
 
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="infinite-ignition-protocol.js"></script>
+  <script src="spectral-lore-embers.js"></script>
+  <script src="vault-wide-echo-drop.js"></script>
   <script src="script.js"></script>
 
   <script>

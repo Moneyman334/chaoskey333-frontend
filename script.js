@@ -8,6 +8,9 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Infinite Ignition Protocol
+let infiniteIgnitionProtocol = null;
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -177,11 +180,30 @@ async function mintRelic() {
     mintStatus.innerText = "🌀 Minting vault relic...";
   }
 
+  // Trigger relic mint mutation
+  if (infiniteIgnitionProtocol) {
+    infiniteIgnitionProtocol.adaptiveRelicCore.triggerMutation('relic_mint', {
+      walletAddress: userWalletAddress,
+      timestamp: Date.now(),
+      mintType: 'vault_relic',
+      paymentComplete: true
+    });
+  }
+
   // Simulate minting process
   setTimeout(() => {
     console.log("🧬 Vault Relic Minted for", userWalletAddress);
     if (mintStatus) {
       mintStatus.innerText = `🧿 Vault Relic Minted to: ${userWalletAddress.slice(0, 6)}...${userWalletAddress.slice(-4)}`;
+    }
+    
+    // Trigger post-mint mutation
+    if (infiniteIgnitionProtocol) {
+      infiniteIgnitionProtocol.adaptiveRelicCore.triggerMutation('relic_mint_complete', {
+        walletAddress: userWalletAddress,
+        timestamp: Date.now(),
+        success: true
+      });
     }
   }, 2000);
 }
@@ -346,6 +368,15 @@ function resurrect() {
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
   
+  // Initialize Infinite Ignition Protocol
+  if (typeof InfiniteIgnitionProtocol !== 'undefined') {
+    infiniteIgnitionProtocol = new InfiniteIgnitionProtocol();
+    console.log("⚡ Infinite Ignition Protocol created");
+    
+    // Start status updates
+    startProtocolStatusUpdates();
+  }
+  
   // Check for Web3 wallets with multiple attempts (extensions take time to load)
   let checkAttempts = 0;
   const maxAttempts = 5;
@@ -384,11 +415,23 @@ window.onload = async function () {
   const paymentBtn = document.getElementById("paymentBtn");
   
   if (connectWalletBtn) {
-    connectWalletBtn.onclick = connectWallet;
+    connectWalletBtn.onclick = () => {
+      connectWallet();
+      // Activate protocol on wallet connection
+      if (infiniteIgnitionProtocol && !infiniteIgnitionProtocol.isActive) {
+        infiniteIgnitionProtocol.activate();
+      }
+    };
   }
   
   if (connectCoinbaseBtn) {
-    connectCoinbaseBtn.onclick = connectCoinbaseWallet;
+    connectCoinbaseBtn.onclick = () => {
+      connectCoinbaseWallet();
+      // Activate protocol on wallet connection
+      if (infiniteIgnitionProtocol && !infiniteIgnitionProtocol.isActive) {
+        infiniteIgnitionProtocol.activate();
+      }
+    };
   }
 
   if (paymentBtn) {
@@ -417,6 +460,16 @@ window.onload = async function () {
       }
     });
   }
+  
+  // Activate protocol automatically if wallet already connected
+  setTimeout(() => {
+    if (isWalletConnected && infiniteIgnitionProtocol && !infiniteIgnitionProtocol.isActive) {
+      infiniteIgnitionProtocol.activate();
+    } else if (infiniteIgnitionProtocol && !infiniteIgnitionProtocol.isActive) {
+      // Activate protocol even without wallet for demo purposes
+      infiniteIgnitionProtocol.activate();
+    }
+  }, 5000);
 };
 
 async function mintMythic() {
@@ -449,9 +502,111 @@ async function mintMythic() {
 
     alert("✅ Mythic Relic minted successfully!");
     window.location.href = "/claim/mythic/claim_mythic_verification.html";
+    
+    // Trigger special mutation for mythic mint
+    if (infiniteIgnitionProtocol) {
+      infiniteIgnitionProtocol.adaptiveRelicCore.triggerMutation('mythic_mint', {
+        walletAddress: userWalletAddress || 'unknown',
+        contractAddress,
+        timestamp: Date.now(),
+        power: 'mythic'
+      });
+    }
   } catch (err) {
     console.error("❌ Minting error:", err);
     alert("Mint failed. Please check your wallet connection and try again.");
+  }
+}
+
+/**
+ * Start protocol status updates
+ */
+function startProtocolStatusUpdates() {
+  const updateStatus = () => {
+    if (infiniteIgnitionProtocol) {
+      const status = infiniteIgnitionProtocol.getStatus();
+      
+      // Update protocol status display
+      const protocolStatusEl = document.getElementById('protocolStatus');
+      const protocolActiveEl = document.getElementById('protocolActive');
+      const mutationCountEl = document.getElementById('mutationCount');
+      const emberCountEl = document.getElementById('emberCount');
+      const echoCountEl = document.getElementById('echoCount');
+      
+      if (protocolActiveEl) {
+        protocolActiveEl.textContent = status.isActive ? 'ACTIVE' : 'INACTIVE';
+      }
+      
+      if (mutationCountEl) {
+        mutationCountEl.textContent = status.totalMutations;
+      }
+      
+      if (emberCountEl) {
+        emberCountEl.textContent = status.activeEmbers;
+      }
+      
+      if (echoCountEl) {
+        echoCountEl.textContent = status.totalEchoes;
+      }
+      
+      if (protocolStatusEl) {
+        protocolStatusEl.className = status.isActive ? 'protocol-status active' : 'protocol-status';
+      }
+      
+      // Update cosmic day counter
+      const cosmicDayValueEl = document.getElementById('cosmicDayValue');
+      const daysToResetEl = document.getElementById('daysToReset');
+      const cosmicDayCounterEl = document.getElementById('cosmicDayCounter');
+      
+      if (cosmicDayValueEl) {
+        cosmicDayValueEl.textContent = status.cosmicDay;
+      }
+      
+      if (daysToResetEl) {
+        daysToResetEl.textContent = `${status.daysTillReset} days to reset`;
+      }
+      
+      if (cosmicDayCounterEl) {
+        // Add warning animation when close to reset
+        if (status.daysTillReset <= 3) {
+          cosmicDayCounterEl.className = 'cosmic-day-counter reset-warning';
+        } else {
+          cosmicDayCounterEl.className = 'cosmic-day-counter';
+        }
+      }
+    }
+    
+    // Update every 2 seconds
+    setTimeout(updateStatus, 2000);
+  };
+  
+  // Start updates after a delay
+  setTimeout(updateStatus, 1000);
+}
+
+/**
+ * Enhanced resurrect function with protocol integration
+ */
+function resurrect() {
+  const audio = document.getElementById("bassDrop");
+  if (audio) {
+    audio.play();
+  }
+
+  setTimeout(() => {
+    document.body.style.animation = "none";
+    document.body.style.filter = "brightness(3) contrast(2)";
+  }, 1000);
+
+  alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
+  
+  // Trigger special resurrection mutation
+  if (infiniteIgnitionProtocol) {
+    infiniteIgnitionProtocol.adaptiveRelicCore.triggerMutation('vault_resurrection', {
+      timestamp: Date.now(),
+      power: 'maximum',
+      effect: 'bass_surge'
+    });
   }
 }
 
