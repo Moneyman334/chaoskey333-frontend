@@ -8,6 +8,12 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Chained Ignition System Components
+let loreReflectionLayer = null;
+let quantumFeedbackLoop = null;
+let overdriveArmSwitch = null;
+let cinematicPremiereFlow = null;
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -346,6 +352,23 @@ function resurrect() {
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
   
+  // Initialize Chained Ignition System
+  console.log("🌌 Initializing Chained Ignition System...");
+  try {
+    loreReflectionLayer = new LoreReflectionLayer().initialize();
+    quantumFeedbackLoop = new QuantumFeedbackLoop().initialize();
+    overdriveArmSwitch = new OverdriveArmSwitch().initialize();
+    cinematicPremiereFlow = new CinematicPremiereFlow().initialize(
+      loreReflectionLayer, 
+      quantumFeedbackLoop, 
+      overdriveArmSwitch
+    );
+    
+    console.log("✅ Chained Ignition System initialized successfully");
+  } catch (error) {
+    console.error("❌ Failed to initialize Chained Ignition System:", error);
+  }
+  
   // Check for Web3 wallets with multiple attempts (extensions take time to load)
   let checkAttempts = 0;
   const maxAttempts = 5;
@@ -382,6 +405,7 @@ window.onload = async function () {
   const connectWalletBtn = document.getElementById("connectWallet");
   const connectCoinbaseBtn = document.getElementById("connectCoinbase");
   const paymentBtn = document.getElementById("paymentBtn");
+  const chainedIgnitionBtn = document.getElementById("chained-ignition-trigger");
   
   if (connectWalletBtn) {
     connectWalletBtn.onclick = connectWallet;
@@ -393,6 +417,19 @@ window.onload = async function () {
 
   if (paymentBtn) {
     paymentBtn.onclick = createStripePayment;
+  }
+
+  // Chained Ignition Trigger
+  if (chainedIgnitionBtn) {
+    chainedIgnitionBtn.onclick = () => {
+      console.log("🌌 Chained Ignition button clicked!");
+      if (cinematicPremiereFlow) {
+        cinematicPremiereFlow.show();
+      } else {
+        console.error("❌ Cinematic Premiere Flow not initialized");
+        alert("❌ Chained Ignition System not ready. Please refresh the page.");
+      }
+    };
   }
 
   checkStripeAndMint();
