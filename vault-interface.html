@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 Vault Interface</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="vault">
+  <div class="vault-container">
+    <h1 class="glow">🔥 ChaosKey333 Vault Interface 🔥</h1>
+    <p class="pulse">Advanced Relic Management System</p>
+    
+    <!-- Manual Mint Section -->
+    <div class="mint-section">
+      <h2>⚡ Manual Relic Mint</h2>
+      <button onclick="mintRelic()" class="mint-button">⚡ Manually Mint Origin Flare Relic</button>
+      <div id="mintStatus">🔒 Connect wallet to proceed</div>
+    </div>
+    
+    <!-- Stripe Payment Section -->
+    <div class="payment-section">
+      <h2>💳 Vault Payment System</h2>
+      <button onclick="createStripeCheckoutSession()" class="payment-button">Mint Origin Flare Relic</button>
+      <div id="mint-status">🔒 Awaiting connection & payment...</div>
+    </div>
+
+    <!-- Navigation to Nexus Schematic -->
+    <div class="nexus-navigation">
+      <div class="nexus-header">🌌 Vault Ecosystem Documentation</div>
+      <a href="ascension-replay-nexus.html" class="nexus-link">
+        ⚡ View Ascension Replay Nexus Circuit
+      </a>
+      <div class="nexus-desc">Explore the PR chain flow and closed-loop relic ecosystem</div>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="vault-nav">
+      <a href="index.html" class="nav-button">🏠 Main Vault</a>
+      <a href="ascension-replay-nexus.html" class="nav-button">⚡ Nexus Schematic</a>
+    </div>
+  </div>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+  <script>
+    async function mintRelic() {
+      try {
+        const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
+        const abi = [
+          {
+            "inputs": [],
+            "name": "mintRelic",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ];
+
+        if (!window.ethereum) {
+          alert("⚠️ MetaMask not detected. Please install it to mint.");
+          return;
+        }
+
+        await ethereum.request({ method: 'eth_requestAccounts' });
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        document.getElementById("mintStatus").innerText = "🌀 Minting your relic...";
+        const tx = await contract.mintRelic();
+        await tx.wait();
+
+        document.getElementById("mintStatus").innerText = "🔥 Origin Flare Relic minted successfully! You're now encoded in Syndicate history.";
+      } catch (err) {
+        console.error("❌ Minting error:", err);
+        document.getElementById("mintStatus").innerText = "❌ Mint failed. Please check your wallet connection and try again.";
+      }
+    }
+
+    async function createStripeCheckoutSession() {
+      // Placeholder for Stripe integration
+      alert("💳 Stripe integration would be implemented here");
+      document.getElementById("mint-status").innerText = "💳 Stripe payment system would process here";
+    }
+
+    window.onload = async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentSuccess = urlParams.get("payment") === "success";
+
+      if (paymentSuccess && typeof window.ethereum !== "undefined") {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            "0xYourContractAddress", // TODO: Replace with your live contract
+            ["function mint(address to, string memory tokenURI) public"],
+            signer
+          );
+
+          const walletAddress = await signer.getAddress();
+          const tokenURI = "https://gateway.pinata.cloud/ipfs/QmYourRelicMetadataHash";
+
+          const mintStatus = document.getElementById("mintStatus");
+          mintStatus.innerText = "🌀 Minting your relic...";
+
+          const tx = await contract.mint(walletAddress, tokenURI);
+          await tx.wait();
+
+          mintStatus.innerText = `✅ Relic minted to ${walletAddress}`;
+        } catch (err) {
+          console.error("Minting failed:", err);
+          document.getElementById("mintStatus").innerText = "❌ Mint failed. See console.";
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .vault-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .mint-section, .payment-section {
+      background: rgba(0,255,255,0.1);
+      border: 1px solid #00ffff50;
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .mint-button, .payment-button {
+      background: linear-gradient(135deg, #ff6600, #ff8833);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 1rem;
+    }
+
+    .mint-button:hover, .payment-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255,102,0,0.4);
+    }
+
+    .nexus-navigation {
+      margin: 3rem 0;
+      padding: 2rem;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      background: rgba(0,255,255,0.1);
+      text-align: center;
+    }
+
+    .nexus-header {
+      color: #00ffff;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .nexus-link {
+      color: #00ffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      display: inline-block;
+      background: rgba(0,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .nexus-link:hover {
+      background: rgba(0,255,255,0.3);
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    .nexus-desc {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .vault-nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .nav-button {
+      color: #00ffff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border: 1px solid #00ffff50;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .nav-button:hover {
+      background: #00ffff20;
+      box-shadow: 0 0 15px #00ffff50;
+      transform: translateY(-2px);
+    }
+
+    #mintStatus, #mint-status {
+      margin-top: 1rem;
+      padding: 10px;
+      border-radius: 5px;
+      background: rgba(0,0,0,0.3);
+      color: #00ffff;
+    }
+
+    @media (max-width: 768px) {
+      .vault-nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .vault-container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</body>
+</html>
