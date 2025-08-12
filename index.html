@@ -23,6 +23,7 @@
     <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
     <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
     <button id="mint-button">⚙️ Mint Relic</button>
+    <button onclick="window.open('cosmic-replay-terminal.html', '_blank')" style="background-color: #9932cc; color: white; margin-top: 10px;">🌌 Cosmic Replay Terminal v2.0</button>
     <div id="mint-status">🔒 Awaiting connection & payment...</div>
     <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>
     <div style="margin-top: 15px; font-size: 0.9rem; color: #ffaa00;">
@@ -31,10 +32,14 @@
     <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
       🔌 No wallet? Install: <a href="https://metamask.io" target="_blank" style="color: #ff6600;">MetaMask</a> | <a href="https://wallet.coinbase.com" target="_blank" style="color: #1652f0;">Coinbase Wallet</a>
     </div>
+    <div style="margin-top: 10px; font-size: 0.8rem; color: #9932cc;">
+      🌌 <strong>NEW:</strong> Access the <a href="cosmic-replay-terminal.html" target="_blank" style="color: #9932cc;">Cosmic Replay Terminal v2.0</a> to view eternal echoes of your relic evolutions
+    </div>
   </div>
 
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="lib/spectral-cache.js"></script>
   <script src="script.js"></script>
 
   <script>
