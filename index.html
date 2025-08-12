@@ -36,6 +36,20 @@
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="script.js"></script>
+  
+  <!-- 🌌 Vault Pulse Archives Integration -->
+  <link rel="stylesheet" href="vault-pulse-archives.css" />
+  <script src="vault-pulse-archives.js"></script>
+  
+  <!-- 🧪 Integration Tests (Development Only) -->
+  <script>
+    // Only load tests in development/demo mode
+    if (window.location.hostname === 'localhost' || window.location.search.includes('test=true')) {
+      const testScript = document.createElement('script');
+      testScript.src = 'vault-pulse-archives-tests.js';
+      document.head.appendChild(testScript);
+    }
+  </script>
 
   <script>
     async function connectWallet() {
