@@ -6,7 +6,14 @@ const path = require('path');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+// Initialize Stripe only if keys are available
+let stripe = null;
+if (STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('✅ Stripe initialized with API keys');
+} else {
+  console.log('⚠️ Stripe keys not found - Stripe functionality disabled');
+}
 
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
@@ -28,6 +35,13 @@ app.get('/', (req, res) => {
 app.get('/api/test-stripe', async (req, res) => {
   try {
     console.log('🧪 Testing Stripe connection...');
+
+    if (!stripe) {
+      return res.status(500).json({
+        success: false,
+        error: 'Stripe not initialized - missing API keys'
+      });
+    }
 
     // Test Stripe connection by retrieving account info
     const account = await stripe.accounts.retrieve();
@@ -68,12 +82,19 @@ app.get('/api/test-all', async (req, res) => {
 
   // Test Stripe
   try {
-    const account = await stripe.accounts.retrieve();
-    results.stripe = {
-      connected: true,
-      accountId: account.id,
-      currency: account.default_currency
-    };
+    if (stripe) {
+      const account = await stripe.accounts.retrieve();
+      results.stripe = {
+        connected: true,
+        accountId: account.id,
+        currency: account.default_currency
+      };
+    } else {
+      results.stripe = {
+        connected: false,
+        error: 'Stripe not initialized - missing API keys'
+      };
+    }
   } catch (error) {
     results.stripe = {
       connected: false,
@@ -88,6 +109,12 @@ app.get('/api/test-all', async (req, res) => {
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(500).json({ 
+        error: 'Stripe not initialized - missing API keys' 
+      });
+    }
+
     const { walletAddress, connectedWalletType } = req.body;
     const amount = req.body.amount || 1000; // Default to $10.00 if amount is not provided
     const currency = req.body.currency || 'usd'; // Default currency
@@ -130,6 +157,11 @@ app.post('/api/create-checkout-session', async (req, res) => {
 
 // Stripe webhook to handle successful payments
 app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  if (!stripe) {
+    console.log('❌ Stripe webhook called but Stripe not initialized');
+    return res.status(500).send('Stripe not available');
+  }
+
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -178,6 +210,11 @@ app.get('/config', (req, res) => {
 });
 
 const cors = require("cors");
+const { CosmicReplayTerminal } = require('./cosmic-replay-terminal');
+
+// Initialize Cosmic Replay Terminal v2.0
+const cosmicTerminal = new CosmicReplayTerminal();
+let terminalInitialized = false;
 
 app.use(cors());
 app.use(express.static("public"));
@@ -188,9 +225,217 @@ app.get("/health", (req, res) => {
   res.send("✅ Server is alive and kickin'");
 });
 
+// 🌌 Initialize Cosmic Replay Terminal v2.0
+app.post("/api/cosmic-terminal/initialize", async (req, res) => {
+  try {
+    if (terminalInitialized) {
+      return res.json({
+        success: true,
+        message: "Cosmic Replay Terminal v2.0 already initialized",
+        status: cosmicTerminal.getStatus()
+      });
+    }
+
+    console.log('🚀 Initializing Cosmic Replay Terminal v2.0...');
+    const initialized = await cosmicTerminal.initialize();
+    
+    if (initialized) {
+      terminalInitialized = true;
+      
+      // Add some demonstration hooks
+      cosmicTerminal.addPreGenerationHook(async (options) => {
+        console.log('🔮 Pre-generation hook triggered:', options);
+      });
+      
+      cosmicTerminal.addPostGenerationHook(async (capsule) => {
+        console.log('✨ Post-generation hook triggered for capsule:', capsule.pulseId);
+      });
+      
+      cosmicTerminal.addErrorHook(async (error) => {
+        console.error('⚠️ Error hook triggered:', error.message);
+      });
+
+      res.json({
+        success: true,
+        message: "Cosmic Replay Terminal v2.0 initialized successfully",
+        status: cosmicTerminal.getStatus()
+      });
+    } else {
+      throw new Error("Failed to initialize terminal");
+    }
+  } catch (error) {
+    console.error('❌ Failed to initialize Cosmic Replay Terminal:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// 🔮 Generate replay capsule
+app.post("/api/cosmic-terminal/generate-capsule", async (req, res) => {
+  try {
+    if (!terminalInitialized) {
+      return res.status(400).json({
+        success: false,
+        error: "Cosmic Replay Terminal v2.0 not initialized. Call /api/cosmic-terminal/initialize first."
+      });
+    }
+
+    const options = req.body || {};
+    console.log('🌌 Generating replay capsule with options:', options);
+    
+    const capsule = await cosmicTerminal.generateReplayCapsule(options);
+    
+    res.json({
+      success: true,
+      capsule: capsule,
+      message: `Replay capsule ${capsule.pulseId} generated successfully`
+    });
+
+  } catch (error) {
+    console.error('❌ Failed to generate capsule:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// 📡 Get terminal status
+app.get("/api/cosmic-terminal/status", (req, res) => {
+  res.json({
+    initialized: terminalInitialized,
+    status: terminalInitialized ? cosmicTerminal.getStatus() : null
+  });
+});
+
+// 🌊 Get recent capsules from vault feed
+app.get("/api/cosmic-terminal/recent-capsules", (req, res) => {
+  if (!terminalInitialized) {
+    return res.status(400).json({
+      success: false,
+      error: "Cosmic Replay Terminal v2.0 not initialized"
+    });
+  }
+
+  const count = parseInt(req.query.count) || 10;
+  const recentCapsules = cosmicTerminal.vaultFeed.getRecentCapsules(count);
+  
+  res.json({
+    success: true,
+    capsules: recentCapsules,
+    count: recentCapsules.length
+  });
+});
+
+// ⏰ Start/stop automatic generation
+app.post("/api/cosmic-terminal/schedule", (req, res) => {
+  try {
+    if (!terminalInitialized) {
+      return res.status(400).json({
+        success: false,
+        error: "Cosmic Replay Terminal v2.0 not initialized"
+      });
+    }
+
+    const { action, intervalMs } = req.body;
+    
+    if (action === 'start') {
+      const interval = intervalMs || 30000; // Default 30 seconds
+      cosmicTerminal.scheduleAutomaticGeneration(interval);
+      res.json({
+        success: true,
+        message: `Automatic capsule generation started with ${interval}ms interval`
+      });
+    } else if (action === 'stop') {
+      if (cosmicTerminal.schedulerInterval) {
+        clearInterval(cosmicTerminal.schedulerInterval);
+        cosmicTerminal.schedulerInterval = null;
+      }
+      res.json({
+        success: true,
+        message: "Automatic capsule generation stopped"
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: "Invalid action. Use 'start' or 'stop'"
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// 🧪 Test complete integration
+app.post("/api/cosmic-terminal/test-integration", async (req, res) => {
+  try {
+    const testResults = {
+      initialization: false,
+      capsuleGeneration: false,
+      multiFormat: false,
+      vaultFeed: false,
+      hooks: false
+    };
+
+    // Test initialization
+    if (!terminalInitialized) {
+      const initialized = await cosmicTerminal.initialize();
+      testResults.initialization = initialized;
+      terminalInitialized = initialized;
+    } else {
+      testResults.initialization = true;
+    }
+
+    if (testResults.initialization) {
+      // Test capsule generation
+      const testCapsule = await cosmicTerminal.generateReplayCapsule({ test: true });
+      testResults.capsuleGeneration = !!testCapsule;
+
+      // Test multi-format verification
+      testResults.multiFormat = testCapsule.verificationResults && 
+        Object.values(testCapsule.verificationResults).every(result => result.valid);
+
+      // Test vault feed
+      const feedCapsules = cosmicTerminal.vaultFeed.getRecentCapsules(1);
+      testResults.vaultFeed = feedCapsules.length > 0 && feedCapsules[0].pulseId === testCapsule.pulseId;
+
+      // Test hooks
+      testResults.hooks = cosmicTerminal.hooks.preGeneration.length > 0 && 
+        cosmicTerminal.hooks.postGeneration.length > 0;
+    }
+
+    const allPassed = Object.values(testResults).every(result => result === true);
+
+    res.json({
+      success: allPassed,
+      testResults,
+      message: allPassed ? 
+        "🎉 All integration tests passed! Cosmic Replay Terminal v2.0 is fully operational." :
+        "⚠️ Some tests failed. Check individual test results.",
+      status: terminalInitialized ? cosmicTerminal.getStatus() : null
+    });
+
+  } catch (error) {
+    console.error('❌ Integration test failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // 🔐 Stripe checkout endpoint (test)
 app.post("/create-checkout-session2", async (req, res) => {
   try {
+    if (!stripe) {
+      return res.status(500).send('Stripe not initialized - missing API keys');
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
