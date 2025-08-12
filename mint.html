@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChaosKey333 - Superman Relic Mint</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: #dc2626;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            text-align: left;
+            margin-bottom: 30px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .features h3 {
+            color: #374151;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .features ul {
+            list-style: none;
+            color: #6b7280;
+            line-height: 1.8;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+        }
+
+        .mint-section {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .supply-info {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background-color: #3b82f6;
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: #2563eb;
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn.mint {
+            background-color: #dc2626;
+        }
+
+        .btn.mint:hover:not(:disabled) {
+            background-color: #b91c1c;
+        }
+
+        .status-message {
+            font-size: 14px;
+            margin-top: 10px;
+            word-wrap: break-word;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .status-success {
+            background-color: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-error {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .status-info {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #dbeafe;
+        }
+
+        .contract-info {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 15px;
+        }
+
+        .contract-info p {
+            margin: 5px 0;
+        }
+
+        .account-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f3f4f6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-icon">🦸‍♂️</div>
+        <h1>Superman Relic</h1>
+        <p class="description">
+            A legendary collectible that embodies the power and legacy of the Man of Steel. 
+            This exclusive NFT grants access to special benefits within the ChaosKey333 ecosystem.
+        </p>
+
+        <div class="features">
+            <h3>Relic Features:</h3>
+            <ul>
+                <li>✨ Legendary rarity level</li>
+                <li>🔗 ERC-721 standard compliance</li>
+                <li>🌐 Hosted on IPFS for permanence</li>
+                <li>🎯 Exclusive ecosystem access</li>
+                <li>⚡ Maximum power level attributes</li>
+            </ul>
+        </div>
+
+        <div class="mint-section">
+            <h2 style="color: #1f2937; margin-bottom: 20px;">🦸‍♂️ Superman Relic Mint</h2>
+            
+            <div id="supplyInfo" class="supply-info" style="display: none;">
+                <p>Supply: <span id="currentSupply">0</span> / <span id="maxSupply">0</span></p>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="connectSection">
+                <button id="connectBtn" class="btn">Connect MetaMask</button>
+            </div>
+
+            <div id="mintSection" style="display: none;">
+                <div id="accountInfo" class="account-info"></div>
+                <button id="mintBtn" class="btn mint">Mint Superman Relic</button>
+            </div>
+
+            <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+            <div class="contract-info">
+                <p>Network: Sepolia Testnet</p>
+                <p id="contractAddress">Contract: Not configured</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <h4 style="color: #374151; margin-bottom: 10px;">📝 Important Notes:</h4>
+            <ul style="font-size: 14px; color: #6b7280; line-height: 1.6; padding-left: 20px; text-align: left;">
+                <li>This is a testnet deployment on Sepolia</li>
+                <li>Ensure you have Sepolia ETH for gas fees</li>
+                <li>MetaMask will automatically switch networks</li>
+                <li>Each wallet can mint multiple relics (if supply allows)</li>
+                <li>Transaction confirmation may take 1-2 minutes</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Update these after contract deployment
+        const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Replace with actual contract address
+        const CHAIN_ID = 11155111; // Sepolia
+
+        // Contract ABI (only the functions we need)
+        const SUPERMAN_RELIC_ABI = [
+            {
+                "inputs": [{"internalType": "address", "name": "to", "type": "address"}],
+                "name": "publicMintRelic",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "totalSupply",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "maxSupply",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        let web3;
+        let contract;
+        let userAccount;
+
+        // Initialize the application
+        async function init() {
+            updateContractDisplay();
+            await checkWalletConnection();
+        }
+
+        // Update contract address display
+        function updateContractDisplay() {
+            const contractElement = document.getElementById('contractAddress');
+            if (CONTRACT_ADDRESS && CONTRACT_ADDRESS !== '0x0000000000000000000000000000000000000000') {
+                contractElement.textContent = `Contract: ${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}`;
+            } else {
+                contractElement.textContent = 'Contract: Not configured (Update CONTRACT_ADDRESS in script)';
+            }
+        }
+
+        // Check if wallet is already connected
+        async function checkWalletConnection() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        userAccount = accounts[0];
+                        showMintSection();
+                        await initContract();
+                        await getSupplyInfo();
+                    }
+                } catch (error) {
+                    console.error('Error checking wallet connection:', error);
+                }
+            }
+        }
+
+        // Connect to MetaMask
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                showStatus('MetaMask is not installed. Please install MetaMask and try again.', 'error');
+                return;
+            }
+
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // Check if we're on the correct network
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                const targetChainId = `0x${CHAIN_ID.toString(16)}`;
+                
+                if (currentChainId !== targetChainId) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: targetChainId }],
+                        });
+                    } catch (switchError) {
+                        // If the chain hasn't been added to MetaMask
+                        if (switchError.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: targetChainId,
+                                    chainName: 'Sepolia',
+                                    rpcUrls: ['https://sepolia.infura.io/v3/'],
+                                    nativeCurrency: {
+                                        name: 'ETH',
+                                        symbol: 'ETH',
+                                        decimals: 18,
+                                    },
+                                    blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+                                }],
+                            });
+                        }
+                    }
+                }
+
+                userAccount = accounts[0];
+                showStatus('Wallet connected successfully!', 'success');
+                showMintSection();
+                await initContract();
+                await getSupplyInfo();
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showStatus('Failed to connect wallet', 'error');
+            }
+        }
+
+        // Initialize contract
+        async function initContract() {
+            if (CONTRACT_ADDRESS && CONTRACT_ADDRESS !== '0x0000000000000000000000000000000000000000') {
+                try {
+                    web3 = new ethers.providers.Web3Provider(window.ethereum);
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, SUPERMAN_RELIC_ABI, web3.getSigner());
+                } catch (error) {
+                    console.error('Error initializing contract:', error);
+                }
+            }
+        }
+
+        // Get supply information
+        async function getSupplyInfo() {
+            if (!contract) return;
+
+            try {
+                const currentSupply = await contract.totalSupply();
+                const maxSupply = await contract.maxSupply();
+                
+                document.getElementById('currentSupply').textContent = currentSupply.toString();
+                document.getElementById('maxSupply').textContent = maxSupply.toString();
+                
+                const percentage = (currentSupply.toNumber() / maxSupply.toNumber()) * 100;
+                document.getElementById('progressFill').style.width = `${percentage}%`;
+                
+                document.getElementById('supplyInfo').style.display = 'block';
+                
+                // Update mint button if sold out
+                const mintBtn = document.getElementById('mintBtn');
+                if (currentSupply.toNumber() >= maxSupply.toNumber()) {
+                    mintBtn.textContent = 'Sold Out';
+                    mintBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error('Error getting supply info:', error);
+            }
+        }
+
+        // Mint a Superman Relic
+        async function mintRelic() {
+            if (!contract || !userAccount) {
+                showStatus('Please connect your wallet first', 'error');
+                return;
+            }
+
+            if (CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
+                showStatus('Contract address not configured. Please update CONTRACT_ADDRESS in the script.', 'error');
+                return;
+            }
+
+            const mintBtn = document.getElementById('mintBtn');
+            mintBtn.disabled = true;
+            mintBtn.textContent = 'Minting...';
+            showStatus('Minting your Superman Relic...', 'info');
+
+            try {
+                const tx = await contract.publicMintRelic(userAccount);
+                showStatus('Transaction submitted. Waiting for confirmation...', 'info');
+                
+                const receipt = await tx.wait();
+                
+                if (receipt.status === 1) {
+                    showStatus('🎉 Successfully minted your Superman Relic!', 'success');
+                    await getSupplyInfo();
+                } else {
+                    showStatus('Transaction failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Error minting relic:', error);
+                if (error.code === 4001) {
+                    showStatus('Transaction cancelled by user', 'error');
+                } else if (error.message.includes('Maximum supply reached')) {
+                    showStatus('Sorry, all Superman Relics have been minted!', 'error');
+                } else {
+                    showStatus('Minting failed. Please try again.', 'error');
+                }
+            } finally {
+                mintBtn.disabled = false;
+                mintBtn.textContent = 'Mint Superman Relic';
+            }
+        }
+
+        // Show mint section and hide connect section
+        function showMintSection() {
+            document.getElementById('connectSection').style.display = 'none';
+            document.getElementById('mintSection').style.display = 'block';
+            document.getElementById('accountInfo').textContent = `Connected: ${userAccount.slice(0, 6)}...${userAccount.slice(-4)}`;
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message status-${type}`;
+            statusElement.style.display = 'block';
+        }
+
+        // Event listeners
+        document.getElementById('connectBtn').addEventListener('click', connectWallet);
+        document.getElementById('mintBtn').addEventListener('click', mintRelic);
+
+        // Load ethers.js library and initialize
+        const script = document.createElement('script');
+        script.src = 'https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js';
+        script.onload = init;
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
