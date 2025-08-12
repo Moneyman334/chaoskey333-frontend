@@ -4,20 +4,256 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Drop Page</title>
+  <title>Cosmic Replay Terminal</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 </head>
-<body>
-  <h1>Welcome to the Cosmic Drop</h1>
-  <p>Explore the cosmic wonders through our exclusive drops.</p>
-  <button onclick="startCosmicJourney()">Start Your Journey</button>
-  <div id="cosmicStatus">Prepare for launch...</div>
+<body class="cosmic-terminal">
+  <div id="terminalHeader" class="terminal-header">
+    <h1 class="glow">🌌 Cosmic Replay Terminal 🌌</h1>
+    <p class="pulse">Spectral-Lock Memory System Active</p>
+    <div class="status-bar">
+      <span id="cacheStatus">🔮 Cache Loading...</span>
+      <span id="replayCount">📼 0 Replays Cached</span>
+    </div>
+  </div>
 
+  <div class="replay-container">
+    <div class="replay-controls">
+      <button id="loadReplayBtn" onclick="loadSelectedReplay()">⚡ Load Replay</button>
+      <button id="cacheNewReplayBtn" onclick="cacheNewReplay()">💾 Cache New Replay</button>
+      <button id="clearCacheBtn" onclick="clearSpectralCache()">🧹 Clear Cache</button>
+      <button id="returnToVaultBtn" onclick="returnToVault()">🔙 Return to Vault</button>
+    </div>
+
+    <div class="replay-list" id="replayList">
+      <h3>📼 Cached Replays (Instant Loading)</h3>
+      <div id="replayEntries">Loading cached replays...</div>
+    </div>
+
+    <div class="active-replay" id="activeReplay" style="display: none;">
+      <h3>🎮 Active Replay</h3>
+      <div id="replayViewer">
+        <div class="replay-metadata">
+          <div id="replayTitle">Replay Title</div>
+          <div id="replayLore">Lore state will appear here...</div>
+        </div>
+        <div class="replay-actions">
+          <button onclick="updateLoreState()">📝 Update Lore</button>
+          <button onclick="closeReplay()">❌ Close Replay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cosmicStatus" class="cosmic-status">Spectral-Lock System Ready...</div>
+
+  <script src="script.js"></script>
   <script>
-    function startCosmicJourney() {
-      alert('Your cosmic journey has begun!');
-      document.getElementById('cosmicStatus').innerText = 'Journey in progress...';
+    let currentReplayId = null;
+
+    function initializeCosmicTerminal() {
+      console.log("🌌 Initializing Cosmic Replay Terminal...");
+      
+      // Update cache status
+      document.getElementById('cacheStatus').innerText = '🔮 Spectral-Lock Active';
+      
+      // Load cached replays
+      refreshReplayList();
+      
+      // Initialize with some demo replays if cache is empty
+      const cachedReplays = spectralCache.getAllCachedReplays();
+      if (cachedReplays.length === 0) {
+        initializeDemoReplays();
+      }
     }
+
+    function initializeDemoReplays() {
+      // Add some initial replay data for demonstration
+      const demoReplays = [
+        {
+          id: 'ascension_001',
+          title: 'First Ascension Sequence',
+          data: { 
+            frames: ['frame1', 'frame2', 'frame3'],
+            duration: 120,
+            type: 'ascension'
+          },
+          loreState: {
+            power_level: 333,
+            artifacts_collected: ['chaos_key', 'frankenstein_relic'],
+            narrative_branch: 'cosmic_awakening'
+          }
+        },
+        {
+          id: 'vault_resurrection_001',
+          title: 'Vault Resurrection Protocol',
+          data: {
+            frames: ['boot', 'initialization', 'resurrection'],
+            duration: 180,
+            type: 'resurrection'
+          },
+          loreState: {
+            power_level: 666,
+            artifacts_collected: ['bass_nectar', 'vault_key'],
+            narrative_branch: 'dark_awakening'
+          }
+        }
+      ];
+
+      demoReplays.forEach(replay => {
+        spectralCache.cacheReplay(replay.id, replay.data, replay.loreState);
+      });
+
+      console.log("🎮 Demo replays cached for instant loading");
+      refreshReplayList();
+    }
+
+    function refreshReplayList() {
+      const cachedReplays = spectralCache.getAllCachedReplays();
+      const replayEntries = document.getElementById('replayEntries');
+      const replayCount = document.getElementById('replayCount');
+      
+      replayCount.innerText = `📼 ${cachedReplays.length} Replays Cached`;
+      
+      if (cachedReplays.length === 0) {
+        replayEntries.innerHTML = '<p class="no-replays">No replays cached yet.</p>';
+        return;
+      }
+      
+      replayEntries.innerHTML = cachedReplays.map(replay => `
+        <div class="replay-entry" onclick="selectReplay('${replay.id}')">
+          <div class="replay-info">
+            <span class="replay-id">📼 ${replay.id}</span>
+            <span class="replay-timestamp">⏰ ${new Date(replay.timestamp).toLocaleString()}</span>
+          </div>
+          <div class="lore-preview">
+            🔮 Power: ${replay.loreState.power_level || 'Unknown'} | 
+            🏺 Artifacts: ${(replay.loreState.artifacts_collected || []).length}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectReplay(replayId) {
+      // Highlight selected replay
+      document.querySelectorAll('.replay-entry').forEach(entry => {
+        entry.classList.remove('selected');
+      });
+      event.target.closest('.replay-entry').classList.add('selected');
+      
+      window.selectedReplayId = replayId;
+      console.log(`🎯 Selected replay: ${replayId}`);
+    }
+
+    function loadSelectedReplay() {
+      if (!window.selectedReplayId) {
+        alert('🎯 Please select a replay first!');
+        return;
+      }
+      
+      const result = spectralCache.loadReplay(window.selectedReplayId);
+      if (result) {
+        currentReplayId = window.selectedReplayId;
+        displayReplay(window.selectedReplayId, result);
+        document.getElementById('cosmicStatus').innerText = `⚡ Replay ${window.selectedReplayId} loaded instantly via Spectral-Lock!`;
+      } else {
+        alert('❌ Failed to load replay');
+      }
+    }
+
+    function displayReplay(replayId, result) {
+      const activeReplay = document.getElementById('activeReplay');
+      const replayTitle = document.getElementById('replayTitle');
+      const replayLore = document.getElementById('replayLore');
+      
+      replayTitle.innerText = `🎮 ${replayId}`;
+      replayLore.innerHTML = `
+        <div class="lore-section">
+          <h4>🔮 Lore State:</h4>
+          <p>⚡ Power Level: ${result.loreState.power_level || 'Unknown'}</p>
+          <p>🏺 Artifacts: ${(result.loreState.artifacts_collected || []).join(', ') || 'None'}</p>
+          <p>📖 Narrative: ${result.loreState.narrative_branch || 'Undefined'}</p>
+          <p>⏰ Last Accessed: ${new Date(result.loreState.lastAccessed).toLocaleString()}</p>
+        </div>
+      `;
+      
+      activeReplay.style.display = 'block';
+      activeReplay.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cacheNewReplay() {
+      const replayId = `replay_${Date.now()}`;
+      const newReplayData = {
+        frames: ['generated_frame_1', 'generated_frame_2'],
+        duration: 60,
+        type: 'user_generated',
+        created: Date.now()
+      };
+      const newLoreState = {
+        power_level: Math.floor(Math.random() * 1000),
+        artifacts_collected: ['new_artifact'],
+        narrative_branch: 'user_path',
+        created: Date.now()
+      };
+      
+      if (spectralCache.cacheReplay(replayId, newReplayData, newLoreState)) {
+        refreshReplayList();
+        document.getElementById('cosmicStatus').innerText = `💾 New replay ${replayId} cached successfully!`;
+      } else {
+        alert('❌ Failed to cache new replay');
+      }
+    }
+
+    function updateLoreState() {
+      if (!currentReplayId) {
+        alert('🎯 No active replay to update!');
+        return;
+      }
+      
+      const newPowerLevel = prompt('Enter new power level:', '333');
+      const newArtifact = prompt('Add artifact:', 'mystical_item');
+      
+      if (newPowerLevel || newArtifact) {
+        const updates = {};
+        if (newPowerLevel) updates.power_level = parseInt(newPowerLevel);
+        if (newArtifact) {
+          const current = spectralCache.loadReplay(currentReplayId);
+          updates.artifacts_collected = [...(current.loreState.artifacts_collected || []), newArtifact];
+        }
+        
+        if (spectralCache.updateLoreState(currentReplayId, updates)) {
+          const updated = spectralCache.loadReplay(currentReplayId);
+          displayReplay(currentReplayId, updated);
+          document.getElementById('cosmicStatus').innerText = `🔮 Lore state updated for ${currentReplayId}`;
+        }
+      }
+    }
+
+    function closeReplay() {
+      document.getElementById('activeReplay').style.display = 'none';
+      currentReplayId = null;
+      document.getElementById('cosmicStatus').innerText = 'Spectral-Lock System Ready...';
+    }
+
+    function clearSpectralCache() {
+      if (confirm('🧹 Are you sure you want to clear all cached replays?')) {
+        spectralCache.clearCache();
+        refreshReplayList();
+        closeReplay();
+        document.getElementById('cosmicStatus').innerText = '🧹 Spectral-Lock Cache cleared!';
+      }
+    }
+
+    function returnToVault() {
+      window.location.href = '/index.html';
+    }
+
+    // Initialize when page loads
+    window.onload = function() {
+      console.log("🌌 Cosmic Replay Terminal Loading...");
+      setTimeout(initializeCosmicTerminal, 500);
+    };
   </script>
 </body>
 </html>

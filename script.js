@@ -8,6 +8,131 @@ let stripe = null;
 let signer = null;
 let userAddress = null;
 
+// Spectral-Lock Memory Caching System
+class SpectralLockCache {
+  constructor() {
+    this.cacheName = 'spectral_lock_replays';
+    this.loreStateKey = 'spectral_lore_states';
+    this.initializeCache();
+  }
+
+  initializeCache() {
+    // Initialize cache if not exists
+    if (!localStorage.getItem(this.cacheName)) {
+      localStorage.setItem(this.cacheName, JSON.stringify({}));
+    }
+    if (!localStorage.getItem(this.loreStateKey)) {
+      localStorage.setItem(this.loreStateKey, JSON.stringify({}));
+    }
+    console.log("🔮 Spectral-Lock Cache initialized");
+  }
+
+  // Cache a replay instantly for future instant loading
+  cacheReplay(replayId, replayData, loreState = {}) {
+    try {
+      const cache = JSON.parse(localStorage.getItem(this.cacheName));
+      const loreStates = JSON.parse(localStorage.getItem(this.loreStateKey));
+      
+      cache[replayId] = {
+        data: replayData,
+        timestamp: Date.now(),
+        cached: true
+      };
+      
+      loreStates[replayId] = {
+        ...loreState,
+        lastAccessed: Date.now()
+      };
+      
+      localStorage.setItem(this.cacheName, JSON.stringify(cache));
+      localStorage.setItem(this.loreStateKey, JSON.stringify(loreStates));
+      
+      console.log(`⚡ Replay ${replayId} cached via Spectral-Lock`);
+      return true;
+    } catch (error) {
+      console.error("❌ Cache storage failed:", error);
+      return false;
+    }
+  }
+
+  // Instantly load a cached replay
+  loadReplay(replayId) {
+    try {
+      const cache = JSON.parse(localStorage.getItem(this.cacheName));
+      const loreStates = JSON.parse(localStorage.getItem(this.loreStateKey));
+      
+      if (cache[replayId]) {
+        const replay = cache[replayId];
+        const loreState = loreStates[replayId] || {};
+        
+        // Update last accessed timestamp
+        loreStates[replayId] = {
+          ...loreState,
+          lastAccessed: Date.now()
+        };
+        localStorage.setItem(this.loreStateKey, JSON.stringify(loreStates));
+        
+        console.log(`⚡ Instant replay loaded: ${replayId}`);
+        return {
+          replay: replay.data,
+          loreState: loreState,
+          cached: true
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error("❌ Replay loading failed:", error);
+      return null;
+    }
+  }
+
+  // Update lore state for a replay
+  updateLoreState(replayId, newLoreState) {
+    try {
+      const loreStates = JSON.parse(localStorage.getItem(this.loreStateKey));
+      loreStates[replayId] = {
+        ...loreStates[replayId],
+        ...newLoreState,
+        lastModified: Date.now()
+      };
+      localStorage.setItem(this.loreStateKey, JSON.stringify(loreStates));
+      console.log(`🔮 Lore state updated for ${replayId}`);
+      return true;
+    } catch (error) {
+      console.error("❌ Lore state update failed:", error);
+      return false;
+    }
+  }
+
+  // Get all cached replays
+  getAllCachedReplays() {
+    try {
+      const cache = JSON.parse(localStorage.getItem(this.cacheName));
+      const loreStates = JSON.parse(localStorage.getItem(this.loreStateKey));
+      
+      return Object.keys(cache).map(replayId => ({
+        id: replayId,
+        ...cache[replayId],
+        loreState: loreStates[replayId] || {}
+      }));
+    } catch (error) {
+      console.error("❌ Failed to retrieve cached replays:", error);
+      return [];
+    }
+  }
+
+  // Clear cache (for maintenance)
+  clearCache() {
+    localStorage.removeItem(this.cacheName);
+    localStorage.removeItem(this.loreStateKey);
+    this.initializeCache();
+    console.log("🧹 Spectral-Lock Cache cleared");
+  }
+}
+
+// Initialize Spectral-Lock Cache
+const spectralCache = new SpectralLockCache();
+
 // Initialize Stripe
 async function initializeStripe() {
   try {
@@ -340,6 +465,33 @@ function resurrect() {
   }, 1000);
 
   alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
+}
+
+// Open Cosmic Replay Terminal
+function openCosmicReplayTerminal() {
+  console.log("🌌 Opening Cosmic Replay Terminal...");
+  
+  // Cache current vault session data if wallet is connected
+  if (isWalletConnected && userWalletAddress) {
+    const vaultSession = {
+      walletAddress: userWalletAddress,
+      connectedWalletType: connectedWalletType,
+      timestamp: Date.now(),
+      vaultState: 'resurrection_ready'
+    };
+    
+    spectralCache.cacheReplay(`vault_session_${Date.now()}`, vaultSession, {
+      power_level: 333,
+      artifacts_collected: ['vault_access'],
+      narrative_branch: 'ascension_edition',
+      wallet_connected: true
+    });
+    
+    console.log("💾 Vault session cached for replay integration");
+  }
+  
+  // Navigate to Cosmic Replay Terminal
+  window.location.href = '/cosmic_drop_page.html';
 }
 
 // Initialize on page load
