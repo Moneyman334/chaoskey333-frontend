@@ -9,6 +9,75 @@
 </head>
 <body class="vault">
   <div id="terminalOverlay">Initializing Vault Resurrection...</div>
+  
+  <!-- Cosmic Replay Terminal v2.0 - Ascension Edition -->
+  <div id="cosmicReplayTerminal">
+    <div class="cosmic-terminal-content">
+      <div class="cosmic-header">
+        ⚡ COSMIC REPLAY TERMINAL v2.0 - ASCENSION EDITION ⚡
+      </div>
+      
+      <div class="ascension-nexus-container">
+        <div class="nexus-schematic">
+          <div class="circuit-board">
+            <!-- Ascension Replay Nexus Circuit Nodes -->
+            <div class="circuit-node" style="top: 20%; left: 15%;" data-node="input"></div>
+            <div class="circuit-node" style="top: 20%; left: 50%;" data-node="decode"></div>
+            <div class="circuit-node" style="top: 20%; left: 85%;" data-node="output"></div>
+            
+            <div class="circuit-node" style="top: 50%; left: 25%;" data-node="replay"></div>
+            <div class="circuit-node" style="top: 50%; left: 75%;" data-node="evolution"></div>
+            
+            <div class="circuit-node" style="top: 80%; left: 50%;" data-node="nexus-core"></div>
+            
+            <!-- Circuit Paths -->
+            <div class="circuit-path" style="top: 20%; left: 15%; width: 35%;"></div>
+            <div class="circuit-path" style="top: 20%; left: 50%; width: 35%;"></div>
+            
+            <div class="circuit-vertical" style="top: 25%; left: 25%;"></div>
+            <div class="circuit-vertical" style="top: 25%; left: 75%;"></div>
+            
+            <div class="circuit-path" style="top: 50%; left: 25%; width: 50%;"></div>
+            
+            <div class="circuit-vertical" style="top: 55%; left: 50%;"></div>
+          </div>
+          
+          <div class="evolution-loop-indicator">
+            ∞ REPLAY→DECODE→EVOLUTION LOOP ACTIVE ∞
+          </div>
+        </div>
+        
+        <div class="replay-status-panel">
+          <div style="color: #00ffcc; font-weight: bold; margin-bottom: 10px;">NEXUS STATUS:</div>
+          <div class="status-line"><span class="pulse-indicator"></span>Input Node: READY</div>
+          <div class="status-line"><span class="pulse-indicator"></span>Decode Matrix: ACTIVE</div>
+          <div class="status-line"><span class="pulse-indicator"></span>Replay Buffer: SYNCED</div>
+          <div class="status-line"><span class="pulse-indicator"></span>Evolution Core: ONLINE</div>
+          <div class="status-line"><span class="pulse-indicator"></span>Nexus Core: ASCENDED</div>
+          
+          <div style="margin-top: 20px; color: #ff00cc;">CIRCUIT FLOW:</div>
+          <div class="status-line" style="font-size: 0.8rem;">→ Cosmic signal input</div>
+          <div class="status-line" style="font-size: 0.8rem;">→ Quantum decode process</div>
+          <div class="status-line" style="font-size: 0.8rem;">→ Replay synchronization</div>
+          <div class="status-line" style="font-size: 0.8rem;">→ Evolution amplification</div>
+          <div class="status-line" style="font-size: 0.8rem;">→ Nexus core integration</div>
+          
+          <div style="margin-top: 20px; color: #00ff88;">PRECISION METRICS:</div>
+          <div class="status-line" style="font-size: 0.8rem;">Timing: 99.97% sync</div>
+          <div class="status-line" style="font-size: 0.8rem;">Fidelity: 100% pure</div>
+          <div class="status-line" style="font-size: 0.8rem;">Loop coherence: OPTIMAL</div>
+        </div>
+      </div>
+      
+      <div class="cosmic-controls">
+        <button class="cosmic-btn" onclick="initializeReplaySequence()">INITIALIZE REPLAY</button>
+        <button class="cosmic-btn" onclick="amplifyEvolutionLoop()">AMPLIFY EVOLUTION</button>
+        <button class="cosmic-btn" onclick="engageAscensionMode()">ENGAGE ASCENSION</button>
+        <button class="cosmic-btn" onclick="closeCosmicTerminal()">CLOSE TERMINAL</button>
+      </div>
+    </div>
+  </div>
+  
   <div class="resurrection-container">
     <h1 class="glow">⚡ Frankenstein Vault Resurrection 333 ⚡</h1>
     <p class="pulse">Bass Surge Incoming...</p>
@@ -22,6 +91,7 @@
     <button id="paymentBtn" style="background-color: #6772e5; color: white; font-size: 1.2rem; padding: 15px 25px;">💳 Pay $33.33 & Mint Relic</button>
     <button onclick="testStripeConnection()" style="background-color: #28a745; color: white; margin-top: 10px;">🧪 Test Stripe Connection</button>
     <button onclick="testAllConnections()" style="background-color: #17a2b8; color: white; margin-top: 10px;">🔄 Test All Connections</button>
+    <button onclick="openCosmicReplayTerminal()" style="background-color: #ff00cc; color: white; margin-top: 10px; font-size: 1.1rem;">🌌 Open Cosmic Replay Terminal v2.0</button>
     <button id="mint-button">⚙️ Mint Relic</button>
     <div id="mint-status">🔒 Awaiting connection & payment...</div>
     <div id="mintStatus">🔒 Connect wallet, then complete Stripe payment to mint vault relic</div>

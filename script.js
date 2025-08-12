@@ -455,3 +455,205 @@ async function mintMythic() {
   }
 }
 
+// Cosmic Replay Terminal v2.0 - Ascension Edition Functions
+
+let replaySequenceActive = false;
+let evolutionLoopAmplified = false;
+let ascensionModeEngaged = false;
+let nexusPulseInterval;
+
+function openCosmicReplayTerminal() {
+  const terminal = document.getElementById("cosmicReplayTerminal");
+  if (terminal) {
+    terminal.style.display = "block";
+    initializeNexusCircuit();
+    console.log("🌌 Cosmic Replay Terminal v2.0 - Ascension Edition activated");
+  }
+}
+
+function closeCosmicTerminal() {
+  const terminal = document.getElementById("cosmicReplayTerminal");
+  if (terminal) {
+    terminal.style.display = "none";
+    clearInterval(nexusPulseInterval);
+    replaySequenceActive = false;
+    evolutionLoopAmplified = false;
+    ascensionModeEngaged = false;
+    console.log("🌌 Cosmic Replay Terminal closed");
+  }
+}
+
+function initializeNexusCircuit() {
+  // Initialize circuit node animations
+  const nodes = document.querySelectorAll('.circuit-node');
+  const paths = document.querySelectorAll('.circuit-path, .circuit-vertical');
+  
+  // Add dynamic glow effects to circuit nodes
+  nodes.forEach((node, index) => {
+    setTimeout(() => {
+      node.style.boxShadow = '0 0 15px #00ffcc, 0 0 25px #00ff88';
+      node.style.animation = 'replayPulse 2s infinite';
+    }, index * 200);
+  });
+  
+  // Enhanced energy flow in paths
+  paths.forEach((path, index) => {
+    setTimeout(() => {
+      path.style.boxShadow = '0 0 8px #00ffcc';
+    }, index * 100);
+  });
+  
+  updateStatusPanel("Nexus circuit initialized", "#00ffcc");
+}
+
+function initializeReplaySequence() {
+  if (replaySequenceActive) {
+    updateStatusPanel("Replay sequence already active", "#ff6600");
+    return;
+  }
+  
+  replaySequenceActive = true;
+  updateStatusPanel("Initializing replay sequence...", "#00ffcc");
+  
+  // Simulate replay pulse through the circuit
+  const sequence = [
+    { node: '[data-node="input"]', delay: 0, message: "Input node receiving cosmic data" },
+    { node: '[data-node="decode"]', delay: 500, message: "Decode matrix processing signal" },
+    { node: '[data-node="replay"]', delay: 1000, message: "Replay buffer synchronizing" },
+    { node: '[data-node="evolution"]', delay: 1500, message: "Evolution core amplifying" },
+    { node: '[data-node="nexus-core"]', delay: 2000, message: "Nexus core integrating" }
+  ];
+  
+  sequence.forEach(step => {
+    setTimeout(() => {
+      const node = document.querySelector(step.node);
+      if (node) {
+        node.style.background = '#00ffcc';
+        node.style.boxShadow = '0 0 20px #00ffcc, 0 0 40px #00ff88';
+        setTimeout(() => {
+          node.style.background = '#000';
+          node.style.boxShadow = '0 0 8px #00ffcc';
+        }, 400);
+      }
+      updateStatusPanel(step.message, "#00ff88");
+    }, step.delay);
+  });
+  
+  setTimeout(() => {
+    updateStatusPanel("Replay sequence initialized - Loop active", "#00ff88");
+    startContinuousReplayLoop();
+  }, 2500);
+}
+
+function startContinuousReplayLoop() {
+  nexusPulseInterval = setInterval(() => {
+    if (replaySequenceActive) {
+      // Create a visual pulse effect through the circuit
+      const nodes = document.querySelectorAll('.circuit-node');
+      nodes.forEach((node, index) => {
+        setTimeout(() => {
+          node.style.transform = 'scale(1.2)';
+          node.style.boxShadow = '0 0 25px #00ffcc';
+          setTimeout(() => {
+            node.style.transform = 'scale(1)';
+            node.style.boxShadow = '0 0 8px #00ffcc';
+          }, 200);
+        }, index * 100);
+      });
+    }
+  }, 3000);
+}
+
+function amplifyEvolutionLoop() {
+  if (!replaySequenceActive) {
+    updateStatusPanel("Initialize replay sequence first", "#ff6600");
+    return;
+  }
+  
+  evolutionLoopAmplified = true;
+  updateStatusPanel("Evolution loop amplification engaged", "#ff00cc");
+  
+  // Enhance visual effects
+  const evolutionNode = document.querySelector('[data-node="evolution"]');
+  if (evolutionNode) {
+    evolutionNode.style.background = 'radial-gradient(circle, #ff00cc, #00ffcc)';
+    evolutionNode.style.boxShadow = '0 0 30px #ff00cc, 0 0 50px #00ffcc';
+    evolutionNode.style.animation = 'replayPulse 0.5s infinite';
+  }
+  
+  // Update loop indicator
+  const loopIndicator = document.querySelector('.evolution-loop-indicator');
+  if (loopIndicator) {
+    loopIndicator.style.fontSize = '1.4rem';
+    loopIndicator.style.textShadow = '0 0 20px #ff00cc, 0 0 30px #00ffcc';
+  }
+  
+  updateStatusPanel("Technical precision: 99.99% sync achieved", "#00ff88");
+}
+
+function engageAscensionMode() {
+  if (!replaySequenceActive || !evolutionLoopAmplified) {
+    updateStatusPanel("Complete replay sequence and evolution amplification first", "#ff6600");
+    return;
+  }
+  
+  ascensionModeEngaged = true;
+  updateStatusPanel("ASCENSION MODE ENGAGED - Maximum cosmic resonance", "#ff00cc");
+  
+  // Ultimate visual transformation
+  const nexusCore = document.querySelector('[data-node="nexus-core"]');
+  if (nexusCore) {
+    nexusCore.style.background = 'radial-gradient(circle, #ff00cc 0%, #00ffcc 50%, #fff 100%)';
+    nexusCore.style.boxShadow = '0 0 50px #fff, 0 0 100px #ff00cc';
+    nexusCore.style.transform = 'scale(1.5)';
+    nexusCore.style.animation = 'replayPulse 0.2s infinite';
+  }
+  
+  // Enhance all circuit paths
+  const paths = document.querySelectorAll('.circuit-path, .circuit-vertical');
+  paths.forEach(path => {
+    path.style.background = 'linear-gradient(90deg, #ff00cc, #00ffcc, #fff, #00ffcc, #ff00cc)';
+    path.style.boxShadow = '0 0 15px #fff';
+    path.style.animation = 'energyFlow 0.5s infinite';
+  });
+  
+  // Final status updates
+  setTimeout(() => {
+    updateStatusPanel("Cosmic replay circuit: FULLY ASCENDED", "#fff");
+    updateStatusPanel("All replay pulses optimized for maximum precision", "#00ff88");
+    updateStatusPanel("Nexus integration: COMPLETE", "#ff00cc");
+  }, 1000);
+}
+
+function updateStatusPanel(message, color = "#00ff88") {
+  const statusPanel = document.querySelector('.replay-status-panel');
+  if (statusPanel) {
+    const statusLine = document.createElement('div');
+    statusLine.className = 'status-line';
+    statusLine.style.color = color;
+    statusLine.style.fontSize = '0.8rem';
+    statusLine.innerHTML = `<span class="pulse-indicator"></span>${message}`;
+    statusPanel.appendChild(statusLine);
+    
+    // Auto-scroll to bottom
+    statusPanel.scrollTop = statusPanel.scrollHeight;
+    
+    // Remove old messages if too many
+    const statusLines = statusPanel.querySelectorAll('.status-line');
+    if (statusLines.length > 20) {
+      statusLines[0].remove();
+    }
+  }
+  
+  console.log(`🌌 ${message}`);
+}
+
+// Initialize cosmic terminal when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Add cosmic terminal initialization after the main page loads
+  setTimeout(() => {
+    console.log("🌌 Cosmic Replay Terminal v2.0 - Ascension Edition ready");
+    updateStatusPanel("System ready - Ascension Replay Nexus online", "#00ffcc");
+  }, 4000);
+});
+
