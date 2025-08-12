@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cosmic Replay Terminal v2.0 - Ascension Edition</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="cosmic-replay-terminal.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body class="terminal-body">
+  <div id="terminalContainer" class="terminal-container">
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+      <div class="terminal-title">
+        <span class="glow-text">⚡ COSMIC REPLAY TERMINAL v2.0 ⚡</span>
+        <span class="ascension-badge">ASCENSION EDITION</span>
+      </div>
+      <div class="terminal-status">
+        <span id="connectionStatus" class="status-indicator">🔗 VAULT CONNECTED</span>
+        <span id="replayStatus" class="status-indicator">⏸️ STANDBY</span>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="terminal-main">
+      
+      <!-- Replay Viewport -->
+      <div class="replay-viewport">
+        <div class="viewport-header">
+          <span class="viewport-title">VAULT BROADCAST PULSE VIEWER</span>
+          <div class="perspective-selector">
+            <label>Observer Node:</label>
+            <select id="perspectiveSelect">
+              <option value="central">Central Nexus</option>
+              <option value="sector-alpha">Sector Alpha</option>
+              <option value="sector-beta">Sector Beta</option>
+              <option value="sector-gamma">Sector Gamma</option>
+              <option value="omni-singularity">Omni-Singularity Core</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="replayCanvas" class="replay-canvas">
+          <div class="relic-display" id="relicDisplay">
+            <div class="relic-state" id="relicState">
+              <div class="glyph-sequence" id="glyphSequence">∴ ◊ ∞ ◊ ∴</div>
+              <div class="energy-field rotating"></div>
+            </div>
+            <div class="cosmic-particles"></div>
+          </div>
+          <div class="overlay-info">
+            <div id="timeStamp" class="timestamp">00:00:00.000</div>
+            <div id="eventMarkers" class="event-markers"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Panel -->
+      <div class="controls-panel">
+        
+        <!-- Time-Dilation Playback Controls -->
+        <div class="control-section">
+          <h3 class="section-title">⏱️ TIME-DILATION PLAYBACK</h3>
+          <div class="playback-controls">
+            <button id="playPauseBtn" class="control-btn primary">▶️ PLAY</button>
+            <button id="stopBtn" class="control-btn">⏹️ STOP</button>
+            <button id="rewindBtn" class="control-btn">⏪ REWIND</button>
+            <button id="fastForwardBtn" class="control-btn">⏩ FAST FWD</button>
+          </div>
+          
+          <div class="speed-controls">
+            <label for="speedSlider">Playback Speed:</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" />
+            <span id="speedDisplay" class="speed-display">1.0x</span>
+            <div class="speed-presets">
+              <button class="speed-btn" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn selected" data-speed="1">1.0x</button>
+              <button class="speed-btn" data-speed="1.5">1.5x</button>
+              <button class="speed-btn" data-speed="2">2.0x</button>
+              <button class="speed-btn" data-speed="3">3.0x</button>
+            </div>
+            <div class="audio-controls">
+              <label>
+                <input type="checkbox" id="pitchCorrection" checked />
+                Audio Pitch Correction
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Tagging & Quick-Jump -->
+        <div class="control-section">
+          <h3 class="section-title">🏷️ EVENT TAGGING & QUICK-JUMP</h3>
+          <div class="tagging-controls">
+            <div class="tag-input-group">
+              <input type="text" id="tagName" placeholder="Enter event tag name..." />
+              <button id="addTagBtn" class="control-btn primary">📌 TAG MOMENT</button>
+            </div>
+            <div class="saved-tags" id="savedTags">
+              <!-- Saved tags will be populated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Relic State Snapshots -->
+        <div class="control-section">
+          <h3 class="section-title">📸 RELIC STATE SNAPSHOTS</h3>
+          <div class="snapshot-controls">
+            <button id="captureSnapshotBtn" class="control-btn primary">📸 CAPTURE STATE</button>
+            <button id="compareSnapshotsBtn" class="control-btn">🔄 COMPARE STATES</button>
+            <div class="snapshot-gallery" id="snapshotGallery">
+              <!-- Snapshots will be displayed here -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-container">
+      <div class="timeline-header">
+        <span class="timeline-title">VAULT PULSE TIMELINE MAP</span>
+        <div class="timeline-zoom">
+          <button id="zoomOutBtn">🔍-</button>
+          <button id="zoomInBtn">🔍+</button>
+        </div>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="timeline-track" id="timelineTrack">
+          <div class="playhead" id="playhead"></div>
+          <div class="timeline-events" id="timelineEvents">
+            <!-- Event markers will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Summary Panel -->
+    <div class="summary-panel" id="summaryPanel">
+      <div class="summary-header">
+        <h3>🤖 AI-GENERATED REPLAY SUMMARY</h3>
+        <button id="toggleSummaryBtn" class="toggle-btn">📋</button>
+      </div>
+      <div class="summary-content" id="summaryContent">
+        <div class="summary-section">
+          <h4>🎬 Cosmic Highlight Reel</h4>
+          <div id="highlightReel" class="highlight-reel">
+            <!-- AI-generated highlights will appear here -->
+          </div>
+        </div>
+        <div class="summary-section">
+          <h4>📝 Key Moments Summary</h4>
+          <ul id="keyMoments" class="key-moments">
+            <!-- AI-generated key moments will appear here -->
+          </ul>
+        </div>
+        <div class="summary-section">
+          <h4>🔤 Glyph Sequences Detected</h4>
+          <div id="glyphSequences" class="glyph-sequences">
+            <!-- AI-detected glyph sequences will appear here -->
+          </div>
+        </div>
+        <div class="summary-section">
+          <h4>📚 Lore Fragments</h4>
+          <div id="loreFragments" class="lore-fragments">
+            <!-- AI-extracted lore fragments will appear here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Audio Context for Pitch Correction -->
+  <audio id="replayAudio" preload="auto">
+    <source src="cosmic-ambient.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="cosmic-replay-terminal.js"></script>
+</body>
+</html>
