@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌀 Vault Pulse Archives - Replay Portals</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    .archives-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+      border-radius: 15px;
+      border: 2px solid #00ffff;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    }
+
+    .replay-portal {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #ff00ff;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .replay-portal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 0, 255, 0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .replay-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+      padding: 20px;
+      background: rgba(0, 50, 50, 0.3);
+      border-radius: 10px;
+      border: 1px solid #00ffff;
+    }
+
+    .filter-btn {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      color: #00ffff;
+      border: 2px solid #00ffff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .filter-btn:hover {
+      background: linear-gradient(135deg, #00ffff, #0080ff);
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, #ff00ff, #ff0080);
+      color: #fff;
+      border-color: #ff00ff;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+    }
+
+    .timestamp-anchors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(50, 0, 50, 0.3);
+      border-radius: 8px;
+      border: 1px solid #ff00ff;
+    }
+
+    .timestamp-anchor {
+      background: #2a1a2a;
+      color: #ff66ff;
+      border: 1px solid #ff00ff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      font-family: 'Courier New', monospace;
+    }
+
+    .timestamp-anchor:hover {
+      background: #ff00ff;
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 0, 255, 0.4);
+    }
+
+    .replay-viewer {
+      width: 100%;
+      height: 400px;
+      background: #000;
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00ff00;
+      font-size: 1.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glyph-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .soundscape-visualizer {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      height: 40px;
+      background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      border-radius: 4px;
+    }
+
+    .lore-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 380px;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      border-left: 2px solid #ffff00;
+      padding: 20px;
+      overflow-y: auto;
+      transition: right 0.4s ease;
+      z-index: 1000;
+      color: #ffff00;
+      font-family: 'Courier New', monospace;
+    }
+
+    .lore-sidebar.open {
+      right: 0;
+    }
+
+    .lore-entry {
+      background: rgba(255, 255, 0, 0.1);
+      border: 1px solid #ffff00;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff, #ff00ff);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .cosmic-timer {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #00ffff;
+      margin: 20px 0;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="archives-container">
+    <h1 class="glow" style="text-align: center; margin-bottom: 30px;">
+      🌀 Vault Pulse Archives - Replay Portals 🌀
+    </h1>
+    
+    <div class="replay-portal">
+      <h3 style="color: #ff00ff; margin-top: 0;">Multi-Layer Replay Filters</h3>
+      
+      <div class="replay-controls">
+        <button class="filter-btn active" data-filter="full" onclick="setReplayFilter('full')">
+          🌌 Full Audiovisual Event
+        </button>
+        <button class="filter-btn" data-filter="glyphs" onclick="setReplayFilter('glyphs')">
+          ⚡ Glyph Overlays Only
+        </button>
+        <button class="filter-btn" data-filter="soundscape" onclick="setReplayFilter('soundscape')">
+          🎵 Soundscape Only
+        </button>
+      </div>
+
+      <div class="cosmic-timer" id="cosmicTimer">
+        Cosmic Time: 00:00:00
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="replay-viewer" id="replayViewer">
+        <div class="glyph-overlay" id="glyphOverlay"></div>
+        <div class="soundscape-visualizer" id="soundscapeViz"></div>
+        <span id="viewerContent">🔮 Initialize Replay Portal to Begin Archive Playback 🔮</span>
+      </div>
+
+      <h3 style="color: #ff00ff;">Dynamic Timestamp Anchors</h3>
+      <div class="timestamp-anchors">
+        <div class="timestamp-anchor" onclick="jumpToMoment('pr23-decode')" data-time="0:23">
+          🧬 PR #23 Decode Completion
+        </div>
+        <div class="timestamp-anchor" onclick="jumpToMoment('pr24-evolution')" data-time="1:47">
+          🌟 PR #24 Relic Evolution
+        </div>
+        <div class="timestamp-anchor" onclick="jumpToMoment('quantum-peak')" data-time="2:34">
+          ⚡ Quantum Resonance Peak
+        </div>
+        <div class="timestamp-anchor" onclick="jumpToMoment('lore-emergence')" data-time="3:12">
+          📜 Lore Fragment Emergence
+        </div>
+        <div class="timestamp-anchor" onclick="jumpToMoment('vault-synchronization')" data-time="4:05">
+          🔄 Vault Synchronization Event
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 20px 0;">
+        <button class="filter-btn" onclick="startReplay()" id="playBtn">
+          ▶️ Start Archive Replay
+        </button>
+        <button class="filter-btn" onclick="pauseReplay()" id="pauseBtn" style="display: none;">
+          ⏸️ Pause Replay
+        </button>
+        <button class="filter-btn" onclick="stopReplay()">
+          ⏹️ Stop Replay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lore-Linked Sidebar -->
+  <div class="lore-sidebar" id="loreSidebar">
+    <h3 style="color: #ffff00; text-align: center; border-bottom: 2px solid #ffff00; padding-bottom: 10px;">
+      📚 Archive Lore Fragments
+    </h3>
+    <div id="loreContent">
+      <div class="lore-entry">
+        <h4>🔮 Initialization Phase</h4>
+        <p>The vault awakens from its digital slumber, quantum particles beginning their eternal dance...</p>
+        <small style="color: #888;">Archive Entry #001 - Genesis Protocol</small>
+      </div>
+    </div>
+    <button onclick="closeLoreSidebar()" style="position: absolute; top: 10px; right: 10px; background: none; border: 1px solid #ffff00; color: #ffff00; padding: 5px 10px; cursor: pointer;">✖</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="vault-pulse-archives.js"></script>
+</body>
+</html>
