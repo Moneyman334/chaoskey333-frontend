@@ -342,9 +342,15 @@ function resurrect() {
   alert("⚡️ Vault Ignited – Let There Be Bass! ⚡️");
 }
 
+// Global Apex Node Controller
+let apexNodeController = null;
+
 // Initialize on page load
 window.onload = async function () {
   console.log("🚀 Initializing Frankenstein Vault...");
+  
+  // Initialize Apex Node Ignition Protocol
+  await initializeApexNodeProtocol();
   
   // Check for Web3 wallets with multiple attempts (extensions take time to load)
   let checkAttempts = 0;
@@ -418,6 +424,98 @@ window.onload = async function () {
     });
   }
 };
+
+// Initialize Apex Node Ignition Protocol
+async function initializeApexNodeProtocol() {
+  try {
+    console.log("⚡ Initializing Apex Node Ignition Protocol...");
+    
+    // Create Apex Node Controller
+    apexNodeController = new ApexNodeController();
+    
+    // Initialize the controller
+    const initialized = await apexNodeController.initialize();
+    
+    if (initialized) {
+      console.log("🌟 Apex Node Ignition Protocol fully operational");
+      
+      // Add status display for Apex Node
+      const statusContainer = document.querySelector('.resurrection-container');
+      if (statusContainer) {
+        const apexStatus = document.createElement('div');
+        apexStatus.id = 'apexStatus';
+        apexStatus.className = 'apex-status';
+        apexStatus.innerHTML = '⚡ APEX NODE OPERATIONAL - Monitoring for decode events...';
+        statusContainer.appendChild(apexStatus);
+      }
+      
+      // Add keyboard shortcuts for testing
+      addApexNodeKeyboardShortcuts();
+      
+    } else {
+      console.error("❌ Failed to initialize Apex Node Ignition Protocol");
+    }
+    
+  } catch (error) {
+    console.error("❌ Apex Node initialization error:", error);
+  }
+}
+
+// Add keyboard shortcuts for testing Apex Node functionality
+function addApexNodeKeyboardShortcuts() {
+  document.addEventListener('keydown', (event) => {
+    // Ctrl+Shift+A to trigger test decode
+    if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+      event.preventDefault();
+      triggerTestDecode();
+    }
+    
+    // Ctrl+Shift+H to toggle Spectral Decode HUD
+    if (event.ctrlKey && event.shiftKey && event.key === 'H') {
+      event.preventDefault();
+      if (apexNodeController?.spectralDecodeHUD) {
+        apexNodeController.spectralDecodeHUD.toggleVisibility();
+      }
+    }
+    
+    // Ctrl+Shift+T to toggle Cosmic Replay Terminal
+    if (event.ctrlKey && event.shiftKey && event.key === 'T') {
+      event.preventDefault();
+      if (apexNodeController?.cosmicReplayTerminal) {
+        apexNodeController.cosmicReplayTerminal.showTerminal();
+      }
+    }
+  });
+  
+  console.log("⌨️ Apex Node keyboard shortcuts activated:");
+  console.log("   Ctrl+Shift+A: Trigger test decode");
+  console.log("   Ctrl+Shift+H: Toggle Spectral Decode HUD");
+  console.log("   Ctrl+Shift+T: Show Cosmic Replay Terminal");
+}
+
+// Trigger a test decode for demonstration
+async function triggerTestDecode() {
+  if (!apexNodeController?.spectralDecodeHUD) {
+    console.warn("⚠️ Spectral Decode HUD not available");
+    return;
+  }
+  
+  console.log("🧪 Triggering test decode sequence...");
+  
+  // Simulate successful decode
+  const testSignature = `ChaosKey333_TestSignature_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  // Set the test signature in the input
+  const signatureInput = document.getElementById('solverSignatureInput');
+  if (signatureInput) {
+    signatureInput.value = testSignature;
+    
+    // Trigger the decode
+    apexNodeController.spectralDecodeHUD.initiateDecodeSequence();
+  } else {
+    console.warn("⚠️ Signature input not found - HUD may not be visible");
+  }
+}
 
 async function mintMythic() {
   const contractAddress = "0x11AaC98400AB700549233C4571B679b879Ba9f3a";
