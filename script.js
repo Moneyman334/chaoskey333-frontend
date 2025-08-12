@@ -54,6 +54,17 @@ async function connectMetaMask() {
       signer = provider.getSigner();
       userAddress = accounts[0];
       
+      // Capture wallet connection in Cosmic Replay Terminal
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'wallet_connection',
+          wallet_type: 'MetaMask',
+          address: userWalletAddress,
+          timestamp: Date.now(),
+          event: 'metamask_connected'
+        });
+      }
+      
       console.log("🦊 MetaMask Connected:", userWalletAddress);
       connectWalletBtn.innerText = "🦊 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 MetaMask Connected – Ready for Stripe payment";
@@ -63,6 +74,16 @@ async function connectMetaMask() {
     } catch (err) {
       console.error("⚠️ MetaMask connection error:", err);
       mintStatus.innerText = "❌ MetaMask connection failed";
+      
+      // Capture connection error
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'wallet_connection_error',
+          wallet_type: 'MetaMask',
+          error: err.message,
+          timestamp: Date.now()
+        });
+      }
     }
   } else {
     alert("🚨 MetaMask not detected. Please install MetaMask extension.");
@@ -87,6 +108,17 @@ async function connectCoinbaseWallet() {
       signer = provider.getSigner();
       userAddress = accounts[0];
       
+      // Capture wallet connection in Cosmic Replay Terminal
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'wallet_connection',
+          wallet_type: 'Coinbase',
+          address: userWalletAddress,
+          timestamp: Date.now(),
+          event: 'coinbase_connected'
+        });
+      }
+      
       console.log("🔵 Coinbase Wallet Connected:", userWalletAddress);
       connectCoinbaseBtn.innerText = "🔵 " + userWalletAddress.slice(0, 6) + "..." + userWalletAddress.slice(-4);
       mintStatus.innerText = "🧿 Coinbase Wallet Connected – Ready for Stripe payment";
@@ -96,6 +128,16 @@ async function connectCoinbaseWallet() {
     } catch (err) {
       console.error("⚠️ Coinbase Wallet connection error:", err);
       mintStatus.innerText = "❌ Coinbase Wallet connection failed";
+      
+      // Capture connection error
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'wallet_connection_error',
+          wallet_type: 'Coinbase',
+          error: err.message,
+          timestamp: Date.now()
+        });
+      }
     }
   } else {
     alert("🚨 Coinbase Wallet not detected. Please install Coinbase Wallet extension.");
@@ -273,6 +315,18 @@ async function createStripePayment() {
   try {
     console.log("💳 Creating Stripe checkout session...");
     
+    // Capture payment initiation in Cosmic Replay Terminal
+    if (window.cosmicReplayTerminal) {
+      window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+        type: 'stripe_payment',
+        action: 'payment_initiation',
+        wallet_address: userWalletAddress,
+        wallet_type: connectedWalletType,
+        amount: 3333,
+        timestamp: Date.now()
+      });
+    }
+    
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
@@ -291,6 +345,17 @@ async function createStripePayment() {
     
     if (session.sessionId) {
       console.log("🔄 Redirecting to Stripe checkout...");
+      
+      // Capture session creation
+      if (window.cosmicReplayTerminal) {
+        window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+          type: 'stripe_payment',
+          action: 'session_created',
+          session_id: session.sessionId,
+          timestamp: Date.now()
+        });
+      }
+      
       const result = await stripe.redirectToCheckout({
         sessionId: session.sessionId,
       });
@@ -298,6 +363,15 @@ async function createStripePayment() {
       if (result.error) {
         console.error("❌ Stripe checkout error:", result.error);
         alert("Payment error: " + result.error.message);
+        
+        // Capture payment error
+        if (window.cosmicReplayTerminal) {
+          window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+            type: 'stripe_payment_error',
+            error: result.error.message,
+            timestamp: Date.now()
+          });
+        }
       }
     } else {
       throw new Error("No session ID received");
@@ -306,6 +380,15 @@ async function createStripePayment() {
   } catch (error) {
     console.error("❌ Payment creation failed:", error);
     document.getElementById("mintStatus").innerText = "❌ Payment failed: " + error.message;
+    
+    // Capture payment failure
+    if (window.cosmicReplayTerminal) {
+      window.cosmicReplayTerminal.captureEvent('vault_broadcast_pulse', {
+        type: 'stripe_payment_error',
+        error: error.message,
+        timestamp: Date.now()
+      });
+    }
     alert("Payment failed: " + error.message);
   }
 }
