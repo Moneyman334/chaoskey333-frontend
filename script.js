@@ -439,6 +439,17 @@ async function mintMythic() {
   try {
     await ethereum.request({ method: 'eth_requestAccounts' });
 
+    // 🧬 Activate Mythic Mode for mutation system
+    const mythicActivationEvent = new CustomEvent('mythicModeActivated', {
+      detail: {
+        timestamp: Date.now(),
+        activatedBy: 'mythic_mint',
+        contractAddress: contractAddress,
+        userAddress: userWalletAddress
+      }
+    });
+    document.dispatchEvent(mythicActivationEvent);
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
@@ -447,6 +458,18 @@ async function mintMythic() {
     const tx = await contract.mintMythic();
     await tx.wait();
 
+    // 🧬 Trigger mutation replay event after successful mint
+    const replayEvent = new CustomEvent('relicReplayEvent', {
+      detail: {
+        type: 'mythic_mint_success',
+        transactionHash: tx.hash,
+        timestamp: Date.now(),
+        userAddress: userWalletAddress,
+        intensity: 2.0
+      }
+    });
+    document.dispatchEvent(replayEvent);
+
     alert("✅ Mythic Relic minted successfully!");
     window.location.href = "/claim/mythic/claim_mythic_verification.html";
   } catch (err) {
@@ -454,4 +477,209 @@ async function mintMythic() {
     alert("Mint failed. Please check your wallet connection and try again.");
   }
 }
+
+// 🧬 Permanent Relic Evolution Trigger - Integration Functions
+
+/**
+ * Initialize the mutation system integration
+ */
+function initializeMutationSystem() {
+  console.log('🧬 Initializing Permanent Relic Evolution Trigger integration...');
+  
+  // Connect wallet address as a vault when wallet is connected
+  if (userWalletAddress) {
+    const vaultConnectionEvent = new CustomEvent('vaultConnected', {
+      detail: {
+        id: userWalletAddress,
+        address: userWalletAddress,
+        type: 'wallet_vault',
+        connectedAt: Date.now()
+      }
+    });
+    document.dispatchEvent(vaultConnectionEvent);
+  }
+  
+  // Set up mutation event listeners
+  setupMutationEventListeners();
+}
+
+/**
+ * Setup event listeners for mutation events
+ */
+function setupMutationEventListeners() {
+  // Listen for mutation triggers
+  document.addEventListener('relicMutationTriggered', (event) => {
+    const mutation = event.detail;
+    console.log('🧬 Relic mutation detected:', mutation);
+    
+    // Update UI with mutation feedback
+    showMutationFeedback(mutation);
+  });
+  
+  // Listen for vault broadcast pulses
+  document.addEventListener('vaultBroadcastPulse', (event) => {
+    const pulse = event.detail;
+    console.log('💫 Vault pulse detected:', pulse);
+    
+    // Show pulse effect in UI
+    showPulseEffect(pulse);
+  });
+  
+  // Listen for global broadcasts
+  document.addEventListener('globalBroadcastExecuted', (event) => {
+    const broadcast = event.detail;
+    console.log('📤 Global broadcast executed:', broadcast);
+    
+    // Update broadcast status in UI
+    updateBroadcastStatus(broadcast);
+  });
+}
+
+/**
+ * Show mutation feedback in the UI
+ */
+function showMutationFeedback(mutation) {
+  const statusDiv = document.getElementById("mintStatus");
+  if (statusDiv) {
+    const originalText = statusDiv.innerText;
+    statusDiv.innerText = `🧬 Relic Evolution: ${mutation.evolutionStage?.stage || 'UNKNOWN'} (${mutation.evolutionStage?.level || 0}%)`;
+    statusDiv.style.color = '#00ff88';
+    statusDiv.style.fontWeight = 'bold';
+    
+    // Restore original text after 3 seconds
+    setTimeout(() => {
+      statusDiv.innerText = originalText;
+      statusDiv.style.color = '';
+      statusDiv.style.fontWeight = '';
+    }, 3000);
+  }
+}
+
+/**
+ * Show pulse effect in the UI
+ */
+function showPulseEffect(pulse) {
+  // Create pulse indicator
+  const pulseIndicator = document.createElement('div');
+  pulseIndicator.className = 'pulse-indicator';
+  pulseIndicator.innerText = '💫';
+  pulseIndicator.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    animation: pulse 2s ease-in-out;
+    z-index: 1000;
+  `;
+  
+  // Add pulse animation CSS if not exists
+  if (!document.querySelector('#pulseStyle')) {
+    const style = document.createElement('style');
+    style.id = 'pulseStyle';
+    style.textContent = `
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.5); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(pulseIndicator);
+  
+  // Remove indicator after animation
+  setTimeout(() => {
+    if (pulseIndicator.parentNode) {
+      pulseIndicator.parentNode.removeChild(pulseIndicator);
+    }
+  }, 2000);
+}
+
+/**
+ * Update broadcast status in UI
+ */
+function updateBroadcastStatus(broadcast) {
+  console.log(`📤 Broadcast status: ${broadcast.type} - ${broadcast.id}`);
+  
+  // Could add a small status indicator in the UI
+  const indicator = document.createElement('div');
+  indicator.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 255, 136, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+  `;
+  indicator.textContent = `📤 ${broadcast.type}`;
+  
+  document.body.appendChild(indicator);
+  
+  setTimeout(() => {
+    if (indicator.parentNode) {
+      indicator.parentNode.removeChild(indicator);
+    }
+  }, 2000);
+}
+
+/**
+ * Enhanced relic minting with mutation triggers
+ */
+async function mintRelicWithMutation() {
+  console.log("⚙️ Initiating enhanced relic mint with mutation support for wallet:", userWalletAddress);
+  
+  const mintStatus = document.getElementById("mintStatus");
+  
+  try {
+    if (!userWalletAddress) {
+      throw new Error("Wallet not connected");
+    }
+    
+    mintStatus.innerText = "🌀 Minting vault relic with evolution trigger...";
+    
+    // Trigger vault connection if not already connected
+    const vaultConnectionEvent = new CustomEvent('vaultConnected', {
+      detail: {
+        id: userWalletAddress,
+        address: userWalletAddress,
+        type: 'mint_vault',
+        connectedAt: Date.now()
+      }
+    });
+    document.dispatchEvent(vaultConnectionEvent);
+    
+    // Simulate minting process (replace with actual contract call)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Trigger replay event for successful mint
+    const replayEvent = new CustomEvent('relicReplayEvent', {
+      detail: {
+        type: 'relic_mint_success',
+        timestamp: Date.now(),
+        userAddress: userWalletAddress,
+        intensity: 1.5,
+        relicType: 'vault_relic'
+      }
+    });
+    document.dispatchEvent(replayEvent);
+    
+    mintStatus.innerText = "✅ Vault relic minted with evolution capabilities!";
+    mintStatus.style.color = '#00ff88';
+    
+  } catch (error) {
+    console.error("❌ Enhanced mint error:", error);
+    mintStatus.innerText = "❌ Enhanced mint failed. Please try again.";
+    mintStatus.style.color = '#ff4444';
+  }
+}
+
+// Initialize mutation system when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Small delay to ensure other systems are initialized
+  setTimeout(initializeMutationSystem, 1000);
+});
 

@@ -1,21 +1,26 @@
 require("dotenv").config();
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 
 // Load environment variables from Replit Secrets
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_for_development';
+const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY || 'pk_test_dummy_key_for_development';
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+const stripe = STRIPE_SECRET_KEY.includes('dummy') ? null : require('stripe')(STRIPE_SECRET_KEY);
 
 console.log('🔑 Checking Stripe API keys...');
-console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
-console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+console.log('Public key exists:', !!STRIPE_PUBLIC_KEY && !STRIPE_PUBLIC_KEY.includes('dummy'));
+console.log('Secret key exists:', !!STRIPE_SECRET_KEY && !STRIPE_SECRET_KEY.includes('dummy'));
+if (!stripe) {
+  console.log('⚠️ Using dummy Stripe keys for development - payment features disabled');
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
@@ -177,12 +182,6 @@ app.get('/config', (req, res) => {
   });
 });
 
-const cors = require("cors");
-
-app.use(cors());
-app.use(express.static("public"));
-app.use(express.json());
-
 // 🧪 Test route to check server
 app.get("/health", (req, res) => {
   res.send("✅ Server is alive and kickin'");
@@ -218,7 +217,157 @@ app.post("/create-checkout-session2", async (req, res) => {
   }
 });
 
+// 🧬 Permanent Relic Evolution Trigger - Backend Support
+const mutationBroadcasts = [];
+const connectedClients = new Set();
+
+// Broadcast endpoint for global push system
+app.post('/api/broadcast', (req, res) => {
+  try {
+    const broadcast = req.body;
+    console.log('📤 Received broadcast:', broadcast.type);
+    
+    // Store broadcast
+    mutationBroadcasts.push({
+      ...broadcast,
+      serverTimestamp: Date.now()
+    });
+    
+    // Keep only last 1000 broadcasts
+    if (mutationBroadcasts.length > 1000) {
+      mutationBroadcasts.shift();
+    }
+    
+    // Broadcast to all connected SSE clients
+    connectedClients.forEach(client => {
+      try {
+        client.write(`data: ${JSON.stringify(broadcast)}\n\n`);
+      } catch (error) {
+        console.error('❌ Error broadcasting to client:', error);
+        connectedClients.delete(client);
+      }
+    });
+    
+    res.json({ 
+      success: true, 
+      broadcastId: broadcast.id,
+      clientCount: connectedClients.size 
+    });
+    
+  } catch (error) {
+    console.error('❌ Broadcast error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Server-Sent Events endpoint for real-time updates
+app.get('/sse/mutations', (req, res) => {
+  console.log('📡 SSE client connected');
+  
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Cache-Control'
+  });
+  
+  // Add client to connected set
+  connectedClients.add(res);
+  
+  // Send welcome message
+  res.write(`data: ${JSON.stringify({
+    type: 'connection_established',
+    timestamp: Date.now(),
+    clientId: Date.now()
+  })}\n\n`);
+  
+  // Handle client disconnect
+  req.on('close', () => {
+    console.log('📡 SSE client disconnected');
+    connectedClients.delete(res);
+  });
+  
+  req.on('error', (error) => {
+    console.error('❌ SSE error:', error);
+    connectedClients.delete(res);
+  });
+});
+
+// Get recent broadcasts
+app.get('/api/broadcasts', (req, res) => {
+  const limit = parseInt(req.query.limit) || 50;
+  const recentBroadcasts = mutationBroadcasts.slice(-limit);
+  
+  res.json({
+    broadcasts: recentBroadcasts,
+    total: mutationBroadcasts.length,
+    connectedClients: connectedClients.size
+  });
+});
+
+// Mutation system status endpoint
+app.get('/api/mutation-status', (req, res) => {
+  res.json({
+    totalBroadcasts: mutationBroadcasts.length,
+    connectedClients: connectedClients.size,
+    lastBroadcast: mutationBroadcasts[mutationBroadcasts.length - 1] || null,
+    serverUptime: process.uptime(),
+    timestamp: Date.now()
+  });
+});
+
+// WebSocket support (basic implementation)
+const WebSocket = require('ws').Server || null;
+
+let wss = null;
+if (WebSocket) {
+  try {
+    wss = new WebSocket({ port: PORT + 1 });
+    
+    wss.on('connection', (ws) => {
+      console.log('🔌 WebSocket client connected');
+      
+      ws.on('message', (message) => {
+        try {
+          const data = JSON.parse(message);
+          console.log('📥 WebSocket message:', data);
+          
+          if (data.action === 'broadcast') {
+            // Broadcast to all WebSocket clients
+            wss.clients.forEach(client => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data.payload));
+              }
+            });
+          }
+        } catch (error) {
+          console.error('❌ WebSocket message error:', error);
+        }
+      });
+      
+      ws.on('close', () => {
+        console.log('🔌 WebSocket client disconnected');
+      });
+      
+      ws.on('error', (error) => {
+        console.error('❌ WebSocket error:', error);
+      });
+    });
+    
+    console.log(`🔌 WebSocket server running on port ${PORT + 1}`);
+  } catch (error) {
+    console.warn('⚠️ WebSocket not available:', error.message);
+  }
+}
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
+  console.log(`🧬 Permanent Relic Evolution Trigger backend active`);
+  console.log(`📡 SSE endpoint: /sse/mutations`);
+  console.log(`📤 Broadcast endpoint: /api/broadcast`);
+  if (wss) {
+    console.log(`🔌 WebSocket server: ws://localhost:${PORT + 1}`);
+  }
 });

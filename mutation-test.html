@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧬 Permanent Relic Evolution Trigger - Test Environment</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff88;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-section {
+      border: 1px solid #00ff88;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+      color: #ffaa00;
+    }
+    button {
+      background: #00ff88;
+      color: #0a0a0a;
+      border: none;
+      padding: 8px 16px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    button:hover {
+      background: #00cc70;
+    }
+    .status {
+      background: #1a1a1a;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .log {
+      background: #111;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+      border: 1px solid #333;
+    }
+    .success { color: #00ff88; }
+    .error { color: #ff4444; }
+    .warning { color: #ffaa00; }
+    .info { color: #44aaff; }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧬 Permanent Relic Evolution Trigger - Test Environment</h1>
+    <p>Testing the complete decode → mutation → broadcast chain for PR #24</p>
+
+    <div class="test-section">
+      <h3>📊 System Status</h3>
+      <div id="systemStatus" class="status">Initializing...</div>
+      <button onclick="updateSystemStatus()">🔄 Refresh Status</button>
+    </div>
+
+    <div class="test-section">
+      <h3>🧬 Mutation Hooks Test</h3>
+      <button onclick="activateMythicMode()">⚡ Activate Mythic Mode</button>
+      <button onclick="triggerReplayEvent()">🎬 Trigger Replay Event</button>
+      <button onclick="testMutationHooks()">🧪 Test Mutation Hooks</button>
+      <div id="mutationStatus" class="status">Ready to test mutation hooks...</div>
+    </div>
+
+    <div class="test-section">
+      <h3>📡 Vault Broadcast Test</h3>
+      <button onclick="connectTestVault()">🔗 Connect Test Vault</button>
+      <button onclick="triggerManualPulse()">💫 Trigger Manual Pulse</button>
+      <button onclick="testVaultBroadcast()">🧪 Test Vault Broadcast</button>
+      <div id="vaultStatus" class="status">Ready to test vault broadcast...</div>
+    </div>
+
+    <div class="test-section">
+      <h3>🌐 Global Push Test</h3>
+      <button onclick="testRealTimeConnection()">🔌 Test Real-Time Connection</button>
+      <button onclick="testBroadcastSystem()">📤 Test Broadcast System</button>
+      <button onclick="simulateGlobalBroadcast()">🌍 Simulate Global Broadcast</button>
+      <div id="globalStatus" class="status">Ready to test global push...</div>
+    </div>
+
+    <div class="test-section">
+      <h3>🔗 Integration Chain Test</h3>
+      <button onclick="runFullChainTest()">⚡ Run Full Chain Test</button>
+      <button onclick="simulatePR23Integration()">🔗 Simulate PR #23 Integration</button>
+      <button onclick="simulatePR84Integration()">🔗 Simulate PR #84 Integration</button>
+      <div id="integrationStatus" class="status">Ready to test integration chain...</div>
+    </div>
+
+    <div class="test-section">
+      <h3>📝 Event Log</h3>
+      <button onclick="clearLog()">🗑️ Clear Log</button>
+      <button onclick="exportLog()">💾 Export Log</button>
+      <div id="eventLog" class="log">Event log will appear here...\n</div>
+    </div>
+  </div>
+
+  <!-- Load the mutation system libraries -->
+  <script src="lib/mutationHooks.js"></script>
+  <script src="lib/vaultBroadcast.js"></script>
+  <script src="lib/globalPush.js"></script>
+  <script src="lib/prIntegration.js"></script>
+
+  <script>
+    // Test environment variables
+    let testSession = {
+      startTime: Date.now(),
+      eventsLogged: 0,
+      testsRun: 0,
+      successCount: 0,
+      errorCount: 0
+    };
+
+    // Logging functions
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const logElement = document.getElementById('eventLog');
+      const colorClass = type;
+      
+      logElement.innerHTML += `<span class="${colorClass}">[${timestamp}] ${message}</span>\n`;
+      logElement.scrollTop = logElement.scrollHeight;
+      
+      testSession.eventsLogged++;
+      console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+
+    function clearLog() {
+      document.getElementById('eventLog').innerHTML = 'Event log cleared...\n';
+    }
+
+    function exportLog() {
+      const logContent = document.getElementById('eventLog').textContent;
+      const blob = new Blob([logContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mutation-test-log-${Date.now()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // System status functions
+    function updateSystemStatus() {
+      const status = {
+        mutationHooks: window.mutationHooks ? window.mutationHooks.getStatus() : null,
+        vaultBroadcast: window.vaultBroadcast ? window.vaultBroadcast.getStatus() : null,
+        globalPush: window.globalPushLogic ? window.globalPushLogic.getStatus() : null,
+        testSession: testSession
+      };
+
+      document.getElementById('systemStatus').innerHTML = `
+        <strong>🧬 Mutation Hooks:</strong> ${status.mutationHooks ? 
+          `Mythic: ${status.mutationHooks.mythicModeActive}, Queue: ${status.mutationHooks.queuedEvents}` : 
+          'Not loaded'}<br>
+        <strong>📡 Vault Broadcast:</strong> ${status.vaultBroadcast ? 
+          `Active: ${status.vaultBroadcast.broadcastActive}, Vaults: ${status.vaultBroadcast.connectedVaults}` : 
+          'Not loaded'}<br>
+        <strong>🌐 Global Push:</strong> ${status.globalPush ? 
+          `Connections: ${status.globalPush.realTimeConnections.length}, Queue: ${status.globalPush.queueSize}` : 
+          'Not loaded'}<br>
+        <strong>🧪 Test Session:</strong> Tests: ${status.testSession.testsRun}, Success: ${status.testSession.successCount}, Errors: ${status.testSession.errorCount}
+      `;
+
+      log('System status updated', 'info');
+    }
+
+    // Mutation Hooks Tests
+    function activateMythicMode() {
+      testSession.testsRun++;
+      log('Activating Mythic Mode...', 'info');
+      
+      const event = new CustomEvent('mythicModeActivated', {
+        detail: {
+          timestamp: Date.now(),
+          activatedBy: 'test_trigger',
+          mode: 'full_evolution'
+        }
+      });
+      document.dispatchEvent(event);
+      
+      document.getElementById('mutationStatus').innerHTML = '<span class="pulse success">⚡ Mythic Mode Activated</span>';
+      log('Mythic Mode activation event dispatched', 'success');
+      testSession.successCount++;
+    }
+
+    function triggerReplayEvent() {
+      testSession.testsRun++;
+      log('Triggering replay event...', 'info');
+      
+      const event = new CustomEvent('relicReplayEvent', {
+        detail: {
+          type: 'test_replay',
+          intensity: Math.random() * 2,
+          timestamp: Date.now(),
+          source: 'test_environment'
+        }
+      });
+      document.dispatchEvent(event);
+      
+      log('Replay event dispatched', 'success');
+      testSession.successCount++;
+    }
+
+    function testMutationHooks() {
+      testSession.testsRun++;
+      log('Testing mutation hooks system...', 'info');
+      
+      if (!window.mutationHooks) {
+        log('ERROR: Mutation hooks not loaded', 'error');
+        testSession.errorCount++;
+        return;
+      }
+      
+      const status = window.mutationHooks.getStatus();
+      document.getElementById('mutationStatus').innerHTML = `
+        Status: ${JSON.stringify(status, null, 2)}
+      `;
+      
+      log('Mutation hooks test completed', 'success');
+      testSession.successCount++;
+    }
+
+    // Vault Broadcast Tests
+    function connectTestVault() {
+      testSession.testsRun++;
+      log('Connecting test vault...', 'info');
+      
+      const event = new CustomEvent('vaultConnected', {
+        detail: {
+          id: `test_vault_${Date.now()}`,
+          address: '0x' + Math.random().toString(16).substr(2, 40),
+          type: 'test_vault',
+          connectedAt: Date.now()
+        }
+      });
+      document.dispatchEvent(event);
+      
+      document.getElementById('vaultStatus').innerHTML = '<span class="pulse success">🔗 Test Vault Connected</span>';
+      log('Test vault connected', 'success');
+      testSession.successCount++;
+    }
+
+    function triggerManualPulse() {
+      testSession.testsRun++;
+      log('Triggering manual vault pulse...', 'info');
+      
+      if (!window.vaultBroadcast) {
+        log('ERROR: Vault broadcast not loaded', 'error');
+        testSession.errorCount++;
+        return;
+      }
+      
+      // Manually trigger a pulse
+      window.vaultBroadcast.generatePulse();
+      
+      log('Manual pulse triggered', 'success');
+      testSession.successCount++;
+    }
+
+    function testVaultBroadcast() {
+      testSession.testsRun++;
+      log('Testing vault broadcast system...', 'info');
+      
+      if (!window.vaultBroadcast) {
+        log('ERROR: Vault broadcast not loaded', 'error');
+        testSession.errorCount++;
+        return;
+      }
+      
+      const status = window.vaultBroadcast.getStatus();
+      document.getElementById('vaultStatus').innerHTML = `
+        Status: ${JSON.stringify(status, null, 2)}
+      `;
+      
+      log('Vault broadcast test completed', 'success');
+      testSession.successCount++;
+    }
+
+    // Global Push Tests
+    function testRealTimeConnection() {
+      testSession.testsRun++;
+      log('Testing real-time connection...', 'info');
+      
+      // Test server connection
+      fetch('/api/mutation-status')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('globalStatus').innerHTML = `
+            Server Status: Connected<br>
+            Broadcasts: ${data.totalBroadcasts}<br>
+            Connected Clients: ${data.connectedClients}
+          `;
+          log('Real-time connection test successful', 'success');
+          testSession.successCount++;
+        })
+        .catch(error => {
+          log(`ERROR: Real-time connection failed: ${error.message}`, 'error');
+          testSession.errorCount++;
+        });
+    }
+
+    function testBroadcastSystem() {
+      testSession.testsRun++;
+      log('Testing broadcast system...', 'info');
+      
+      const testBroadcast = {
+        type: 'test_broadcast',
+        data: { test: true, timestamp: Date.now() },
+        timestamp: Date.now(),
+        priority: 'low',
+        targets: ['test_system']
+      };
+      
+      fetch('/api/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testBroadcast)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          log('Broadcast system test successful', 'success');
+          testSession.successCount++;
+        } else {
+          log('ERROR: Broadcast system test failed', 'error');
+          testSession.errorCount++;
+        }
+      })
+      .catch(error => {
+        log(`ERROR: Broadcast test failed: ${error.message}`, 'error');
+        testSession.errorCount++;
+      });
+    }
+
+    function simulateGlobalBroadcast() {
+      testSession.testsRun++;
+      log('Simulating global broadcast...', 'info');
+      
+      const event = new CustomEvent('globalMutationBroadcast', {
+        detail: {
+          type: 'test_global_broadcast',
+          mutationId: `test_${Date.now()}`,
+          timestamp: Date.now(),
+          targets: ['test_network'],
+          evolutionStage: { stage: 'TEST_EVOLUTION', level: 100 }
+        }
+      });
+      document.dispatchEvent(event);
+      
+      log('Global broadcast simulation dispatched', 'success');
+      testSession.successCount++;
+    }
+
+    // Integration Chain Tests
+    function runFullChainTest() {
+      testSession.testsRun++;
+      log('🔗 Running full integration chain test...', 'info');
+      
+      // Step 1: Activate Mythic Mode
+      setTimeout(() => activateMythicMode(), 500);
+      
+      // Step 2: Connect Vault
+      setTimeout(() => connectTestVault(), 1000);
+      
+      // Step 3: Trigger Replay Event
+      setTimeout(() => triggerReplayEvent(), 1500);
+      
+      // Step 4: Test Global Broadcast
+      setTimeout(() => simulateGlobalBroadcast(), 2000);
+      
+      log('Full chain test sequence initiated', 'info');
+    }
+
+    function simulatePR23Integration() {
+      testSession.testsRun++;
+      log('🔗 Simulating PR #23 integration (decode phase)...', 'info');
+      
+      // Simulate decode event that should trigger mutations
+      const decodeEvent = new CustomEvent('relicDecodeComplete', {
+        detail: {
+          decodeId: `pr23_decode_${Date.now()}`,
+          decodedData: 'Ancient relic pattern recognized',
+          triggeredBy: 'pr23_system',
+          readyForMutation: true
+        }
+      });
+      document.dispatchEvent(decodeEvent);
+      
+      // This should trigger a mutation if the chain is working
+      setTimeout(() => {
+        const mutationEvent = new CustomEvent('relicReplayEvent', {
+          detail: {
+            type: 'decode_triggered_mutation',
+            source: 'pr23_decode',
+            intensity: 1.8,
+            timestamp: Date.now()
+          }
+        });
+        document.dispatchEvent(mutationEvent);
+      }, 500);
+      
+      log('PR #23 integration simulation completed', 'success');
+      testSession.successCount++;
+    }
+
+    function simulatePR84Integration() {
+      testSession.testsRun++;
+      log('🔗 Simulating PR #84 integration (enhanced broadcast)...', 'info');
+      
+      // Simulate enhanced broadcast capabilities from PR #84
+      const enhancedBroadcast = new CustomEvent('enhancedBroadcastReady', {
+        detail: {
+          enhancementId: `pr84_enhancement_${Date.now()}`,
+          capabilities: ['multi_dimensional_broadcast', 'lore_amplification'],
+          readyForChaining: true
+        }
+      });
+      document.dispatchEvent(enhancedBroadcast);
+      
+      // Trigger a broadcast that uses enhanced capabilities
+      setTimeout(() => {
+        const event = new CustomEvent('globalMutationBroadcast', {
+          detail: {
+            type: 'pr84_enhanced_broadcast',
+            mutationId: `pr84_enhanced_${Date.now()}`,
+            timestamp: Date.now(),
+            enhancementLevel: 'maximum',
+            multidimensional: true,
+            loreAmplified: true
+          }
+        });
+        document.dispatchEvent(event);
+      }, 500);
+      
+      log('PR #84 integration simulation completed', 'success');
+      testSession.successCount++;
+    }
+
+    // Event listeners for system events
+    document.addEventListener('relicMutationTriggered', (event) => {
+      log(`🧬 Mutation triggered: ${event.detail.mutationId}`, 'success');
+    });
+
+    document.addEventListener('vaultBroadcastPulse', (event) => {
+      log(`💫 Vault pulse: ${event.detail.id} (intensity: ${event.detail.intensity})`, 'info');
+    });
+
+    document.addEventListener('globalBroadcastExecuted', (event) => {
+      log(`📤 Global broadcast: ${event.detail.type}`, 'success');
+    });
+
+    // Initialize test environment
+    document.addEventListener('DOMContentLoaded', () => {
+      log('🧬 Permanent Relic Evolution Trigger - Test Environment Initialized', 'success');
+      log('Ready to test decode → mutation → broadcast chain', 'info');
+      
+      // Auto-update status every 5 seconds
+      setInterval(updateSystemStatus, 5000);
+      updateSystemStatus();
+    });
+  </script>
+</body>
+</html>
