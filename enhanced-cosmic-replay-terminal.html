@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enhanced Cosmic Replay Terminal v3.0 - Real-Time Buffer Edition</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for enhanced terminal - main styles are loaded by JS */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0b2e 50%, #0a0a0a 100%);
+      color: #00ff88;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    
+    .loading-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      text-shadow: 0 0 20px #00ff88;
+      margin-bottom: 20px;
+      animation: pulse-glow 2s ease-in-out infinite alternate;
+    }
+    
+    .loading-progress {
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00ff88;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    
+    .loading-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #ffaa00);
+      width: 0%;
+      animation: loading 3s ease-in-out;
+    }
+    
+    .loading-status {
+      font-size: 1rem;
+      color: #888;
+    }
+    
+    @keyframes loading {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    
+    @keyframes pulse-glow {
+      0% { text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88; }
+      100% { text-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88, 0 0 40px #00ff88; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-title">⚡ ENHANCED COSMIC REPLAY TERMINAL v3.0 ⚡</div>
+    <div class="loading-progress">
+      <div class="loading-bar"></div>
+    </div>
+    <div class="loading-status" id="loadingStatus">Initializing real-time buffer...</div>
+  </div>
+
+  <!-- Terminal content will be injected here by JavaScript -->
+
+  <!-- Scripts -->
+  <script src="replay-buffer.js"></script>
+  <script src="enhanced-cosmic-replay-terminal.js"></script>
+  
+  <script>
+    // Loading screen management
+    let loadingMessages = [
+      "Initializing real-time buffer...",
+      "Establishing cosmic connections...",
+      "Configuring spectral scrub mode...",
+      "Loading hotspot detection algorithms...",
+      "Preparing replay relic vault...",
+      "System ready!"
+    ];
+    
+    let currentMessage = 0;
+    
+    function updateLoadingStatus() {
+      const statusElement = document.getElementById('loadingStatus');
+      if (statusElement && currentMessage < loadingMessages.length) {
+        statusElement.textContent = loadingMessages[currentMessage];
+        currentMessage++;
+        
+        if (currentMessage < loadingMessages.length) {
+          setTimeout(updateLoadingStatus, 500);
+        } else {
+          // Hide loading screen after terminal is ready
+          setTimeout(() => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen) {
+              loadingScreen.style.animation = 'fadeOut 1s ease';
+              setTimeout(() => {
+                loadingScreen.style.display = 'none';
+              }, 1000);
+            }
+          }, 1000);
+        }
+      }
+    }
+    
+    // Start loading sequence
+    setTimeout(updateLoadingStatus, 500);
+    
+    // Add fade out animation
+    const fadeOutStyle = document.createElement('style');
+    fadeOutStyle.textContent = `
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+    `;
+    document.head.appendChild(fadeOutStyle);
+    
+    // Error handling
+    window.addEventListener('error', (e) => {
+      console.error('Enhanced Cosmic Replay Terminal Error:', e.error);
+      const loadingScreen = document.getElementById('loadingScreen');
+      const statusElement = document.getElementById('loadingStatus');
+      
+      if (loadingScreen && statusElement) {
+        statusElement.textContent = 'System initialization failed. Please check console.';
+        statusElement.style.color = '#ff6b00';
+      }
+    });
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (window.enhancedTerminal && window.enhancedTerminal.isInitialized) {
+        switch(e.key) {
+          case ' ':
+            if (e.ctrlKey) {
+              e.preventDefault();
+              window.enhancedTerminal.toggleSpectralScrubMode();
+            }
+            break;
+          case 'l':
+            if (e.ctrlKey) {
+              e.preventDefault();
+              window.enhancedTerminal.goLive();
+            }
+            break;
+          case 'r':
+            if (e.ctrlKey) {
+              e.preventDefault();
+              window.enhancedTerminal.createReplayRelic();
+            }
+            break;
+        }
+      }
+    });
+    
+    // Show keyboard shortcuts on load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.enhancedTerminal && window.enhancedTerminal.showNotification) {
+          window.enhancedTerminal.showNotification('Keyboard shortcuts: Ctrl+Space (Scrub), Ctrl+L (Live), Ctrl+R (Create Relic)', 'info', 5000);
+        }
+      }, 3000);
+    });
+  </script>
+</body>
+</html>

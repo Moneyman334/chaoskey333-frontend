@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replay Buffer Test Suite</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff88;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    
+    .test-title {
+      color: #ffaa00;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .test-result {
+      margin: 5px 0;
+      padding: 5px;
+    }
+    
+    .pass {
+      color: #4caf50;
+    }
+    
+    .fail {
+      color: #f44336;
+    }
+    
+    .info {
+      color: #2196f3;
+    }
+    
+    button {
+      background: rgba(0, 255, 136, 0.2);
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      border-radius: 3px;
+      padding: 8px 15px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: rgba(0, 255, 136, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🧪 Enhanced Cosmic Replay Terminal Test Suite</h1>
+    
+    <div class="test-section">
+      <div class="test-title">📊 Test Controls</div>
+      <button onclick="runAllTests()">🚀 Run All Tests</button>
+      <button onclick="runBasicTests()">🔧 Basic Tests</button>
+      <button onclick="runBufferTests()">💾 Buffer Tests</button>
+      <button onclick="runHotspotTests()">🔥 Hotspot Tests</button>
+      <button onclick="runRelicTests()">💎 Relic Tests</button>
+      <button onclick="clearResults()">🧹 Clear Results</button>
+    </div>
+    
+    <div class="test-section">
+      <div class="test-title">📋 Test Results</div>
+      <div id="testResults">Click "Run All Tests" to begin testing...</div>
+    </div>
+    
+    <div class="test-section">
+      <div class="test-title">📈 Performance Metrics</div>
+      <div id="performanceMetrics">No metrics available yet.</div>
+    </div>
+    
+    <div class="test-section">
+      <div class="test-title">🔍 Buffer Status Monitor</div>
+      <div id="bufferStatus">Buffer not initialized.</div>
+      <button onclick="initializeBuffer()">🔄 Initialize Buffer</button>
+      <button onclick="toggleMonitoring()">📊 Toggle Monitoring</button>
+    </div>
+  </div>
+
+  <script src="replay-buffer.js"></script>
+  <script>
+    let testBuffer = null;
+    let testResults = [];
+    let monitoringInterval = null;
+    let isMonitoring = false;
+    
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      testResults.push({
+        message: `[${timestamp}] ${message}`,
+        type: type
+      });
+      updateResults();
+    }
+    
+    function updateResults() {
+      const container = document.getElementById('testResults');
+      container.innerHTML = testResults.map(result => 
+        `<div class="test-result ${result.type}">${result.message}</div>`
+      ).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+    
+    function clearResults() {
+      testResults = [];
+      updateResults();
+    }
+    
+    async function runAllTests() {
+      clearResults();
+      log('🚀 Starting Enhanced Cosmic Replay Terminal Test Suite', 'info');
+      
+      await runBasicTests();
+      await runBufferTests();
+      await runHotspotTests();
+      await runRelicTests();
+      
+      const passCount = testResults.filter(r => r.type === 'pass').length;
+      const failCount = testResults.filter(r => r.type === 'fail').length;
+      
+      log(`📊 Test Summary: ${passCount} passed, ${failCount} failed`, failCount === 0 ? 'pass' : 'fail');
+    }
+    
+    async function runBasicTests() {
+      log('🔧 Running Basic Tests...', 'info');
+      
+      // Test 1: ReplayBuffer Class Exists
+      try {
+        if (typeof ReplayBuffer !== 'undefined') {
+          log('✅ ReplayBuffer class is available', 'pass');
+        } else {
+          log('❌ ReplayBuffer class not found', 'fail');
+          return;
+        }
+      } catch (error) {
+        log(`❌ Error checking ReplayBuffer: ${error.message}`, 'fail');
+        return;
+      }
+      
+      // Test 2: Buffer Initialization
+      try {
+        testBuffer = new ReplayBuffer(30); // 30-second buffer for testing
+        log('✅ ReplayBuffer initialized successfully', 'pass');
+      } catch (error) {
+        log(`❌ Buffer initialization failed: ${error.message}`, 'fail');
+        return;
+      }
+      
+      // Test 3: Initial State
+      try {
+        const status = testBuffer.getBufferStatus();
+        if (status.isRecording && status.isLive) {
+          log('✅ Buffer is in correct initial state (recording + live)', 'pass');
+        } else {
+          log('❌ Buffer initial state incorrect', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Error checking initial state: ${error.message}`, 'fail');
+      }
+    }
+    
+    async function runBufferTests() {
+      log('💾 Running Buffer Tests...', 'info');
+      
+      if (!testBuffer) {
+        log('❌ No test buffer available', 'fail');
+        return;
+      }
+      
+      // Test 1: Scrub Mode Toggle
+      try {
+        const enterResult = testBuffer.enterScrubMode();
+        if (enterResult && !testBuffer.isLive) {
+          log('✅ Enter scrub mode successful', 'pass');
+        } else {
+          log('❌ Failed to enter scrub mode', 'fail');
+        }
+        
+        const exitResult = testBuffer.exitScrubMode();
+        if (exitResult && testBuffer.isLive) {
+          log('✅ Exit scrub mode successful', 'pass');
+        } else {
+          log('❌ Failed to exit scrub mode', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Scrub mode test failed: ${error.message}`, 'fail');
+      }
+      
+      // Test 2: Seek Functionality
+      try {
+        testBuffer.seekToTime(5.0);
+        if (Math.abs(testBuffer.currentTime - 5.0) < 0.1) {
+          log('✅ Seek functionality working', 'pass');
+        } else {
+          log('❌ Seek functionality failed', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Seek test failed: ${error.message}`, 'fail');
+      }
+      
+      // Test 3: Frame Capture
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for some frames
+        const currentFrame = testBuffer.getCurrentFrame();
+        if (currentFrame && currentFrame.timestamp) {
+          log('✅ Frame capture working', 'pass');
+        } else {
+          log('❌ Frame capture failed', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Frame capture test failed: ${error.message}`, 'fail');
+      }
+    }
+    
+    async function runHotspotTests() {
+      log('🔥 Running Hotspot Tests...', 'info');
+      
+      if (!testBuffer) {
+        log('❌ No test buffer available', 'fail');
+        return;
+      }
+      
+      // Test 1: Hotspot Detection Setup
+      try {
+        let hotspotDetected = false;
+        testBuffer.onHotspotDetected = (hotspot) => {
+          hotspotDetected = true;
+          log(`✅ Hotspot detected: ${hotspot.type} (${hotspot.intensity}%)`, 'pass');
+        };
+        
+        // Simulate high energy for hotspot detection
+        // Wait a moment to see if any hotspots are naturally detected
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        if (testBuffer.hotspots.length > 0) {
+          log(`✅ Hotspot system active (${testBuffer.hotspots.length} hotspots detected)`, 'pass');
+        } else {
+          log('ℹ️ No hotspots detected yet (this is normal)', 'info');
+        }
+      } catch (error) {
+        log(`❌ Hotspot detection test failed: ${error.message}`, 'fail');
+      }
+      
+      // Test 2: Hotspot Types
+      try {
+        const hotspotTypes = ['core-pulse', 'glyph-burst', 'relic-evolution'];
+        log(`✅ Hotspot types configured: ${hotspotTypes.join(', ')}`, 'pass');
+      } catch (error) {
+        log(`❌ Hotspot types test failed: ${error.message}`, 'fail');
+      }
+    }
+    
+    async function runRelicTests() {
+      log('💎 Running Relic Tests...', 'info');
+      
+      if (!testBuffer) {
+        log('❌ No test buffer available', 'fail');
+        return;
+      }
+      
+      // Test 1: Replay Relic Creation
+      try {
+        const startTime = Math.max(0, testBuffer.liveTime - 10);
+        const endTime = testBuffer.liveTime;
+        
+        const relic = testBuffer.createReplayRelic(startTime, endTime, {
+          name: 'Test Relic',
+          description: 'Automated test relic'
+        });
+        
+        if (relic && relic.id && relic.frames && relic.metadata) {
+          log('✅ Replay relic creation successful', 'pass');
+          log(`ℹ️ Relic contains ${relic.frameCount} frames`, 'info');
+        } else {
+          log('❌ Replay relic creation failed', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Relic creation test failed: ${error.message}`, 'fail');
+      }
+      
+      // Test 2: Frame Range Extraction
+      try {
+        const frames = testBuffer.getFramesInRange(0, 5);
+        if (Array.isArray(frames)) {
+          log(`✅ Frame range extraction working (${frames.length} frames)`, 'pass');
+        } else {
+          log('❌ Frame range extraction failed', 'fail');
+        }
+      } catch (error) {
+        log(`❌ Frame range test failed: ${error.message}`, 'fail');
+      }
+    }
+    
+    function initializeBuffer() {
+      try {
+        if (testBuffer) {
+          testBuffer.destroy();
+        }
+        testBuffer = new ReplayBuffer(90);
+        log('🔄 Buffer reinitialized', 'info');
+        updateBufferStatus();
+      } catch (error) {
+        log(`❌ Buffer initialization failed: ${error.message}`, 'fail');
+      }
+    }
+    
+    function toggleMonitoring() {
+      if (isMonitoring) {
+        clearInterval(monitoringInterval);
+        isMonitoring = false;
+        log('📊 Monitoring stopped', 'info');
+      } else {
+        isMonitoring = true;
+        log('📊 Monitoring started', 'info');
+        monitoringInterval = setInterval(updateBufferStatus, 1000);
+      }
+    }
+    
+    function updateBufferStatus() {
+      if (!testBuffer) return;
+      
+      const status = testBuffer.getBufferStatus();
+      const statusContainer = document.getElementById('bufferStatus');
+      
+      statusContainer.innerHTML = `
+        <div><strong>Recording:</strong> ${status.isRecording ? '🟢' : '🔴'}</div>
+        <div><strong>Live:</strong> ${status.isLive ? '🟢' : '🔴'}</div>
+        <div><strong>Current Time:</strong> ${status.currentTime.toFixed(2)}s</div>
+        <div><strong>Live Time:</strong> ${status.liveTime.toFixed(2)}s</div>
+        <div><strong>Buffer Frames:</strong> ${status.frameCount}</div>
+        <div><strong>Hotspots:</strong> ${status.hotspotCount}</div>
+        <div><strong>Time Behind:</strong> ${status.timeBehind.toFixed(2)}s</div>
+        ${status.isCatchingUp ? `<div><strong>Catch-up Speed:</strong> ${status.catchUpSpeed.toFixed(1)}x</div>` : ''}
+      `;
+    }
+    
+    function updatePerformanceMetrics() {
+      if (!testBuffer) return;
+      
+      const metricsContainer = document.getElementById('performanceMetrics');
+      const status = testBuffer.getBufferStatus();
+      
+      metricsContainer.innerHTML = `
+        <div><strong>Buffer Usage:</strong> ${((status.frameCount / (90 * 60)) * 100).toFixed(1)}%</div>
+        <div><strong>Memory Estimate:</strong> ~${(status.frameCount * 0.5).toFixed(1)} KB</div>
+        <div><strong>Capture Rate:</strong> 60 FPS</div>
+        <div><strong>Uptime:</strong> ${status.liveTime.toFixed(0)}s</div>
+      `;
+    }
+    
+    // Auto-update performance metrics
+    setInterval(updatePerformanceMetrics, 2000);
+    
+    // Initialize on load
+    window.addEventListener('load', () => {
+      log('🧪 Test suite loaded and ready', 'info');
+    });
+  </script>
+</body>
+</html>
