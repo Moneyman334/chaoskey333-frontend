@@ -6,11 +6,18 @@ const path = require('path');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+// Initialize Stripe only if we have valid keys
+let stripe = null;
+if (STRIPE_SECRET_KEY && !STRIPE_SECRET_KEY.includes('demo')) {
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+} else {
+  console.log('⚠️ Using demo Stripe keys - payment functionality disabled');
+}
 
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
 console.log('Secret key exists:', !!STRIPE_SECRET_KEY);
+console.log('Stripe initialized:', !!stripe);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +35,14 @@ app.get('/', (req, res) => {
 app.get('/api/test-stripe', async (req, res) => {
   try {
     console.log('🧪 Testing Stripe connection...');
+
+    if (!stripe) {
+      return res.json({
+        success: true,
+        demo: true,
+        message: 'Demo mode - Stripe functionality disabled'
+      });
+    }
 
     // Test Stripe connection by retrieving account info
     const account = await stripe.accounts.retrieve();
