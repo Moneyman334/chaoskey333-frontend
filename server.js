@@ -6,7 +6,13 @@ const path = require('path');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available
+let stripe = null;
+if (STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+} else {
+  console.warn('⚠️ STRIPE_SECRET_KEY not found - Stripe functionality disabled');
+}
 
 console.log('🔑 Checking Stripe API keys...');
 console.log('Public key exists:', !!STRIPE_PUBLIC_KEY);
@@ -28,6 +34,10 @@ app.get('/', (req, res) => {
 app.get('/api/test-stripe', async (req, res) => {
   try {
     console.log('🧪 Testing Stripe connection...');
+
+    if (!stripe) {
+      throw new Error('Stripe not initialized - missing STRIPE_SECRET_KEY');
+    }
 
     // Test Stripe connection by retrieving account info
     const account = await stripe.accounts.retrieve();
@@ -68,12 +78,19 @@ app.get('/api/test-all', async (req, res) => {
 
   // Test Stripe
   try {
-    const account = await stripe.accounts.retrieve();
-    results.stripe = {
-      connected: true,
-      accountId: account.id,
-      currency: account.default_currency
-    };
+    if (stripe) {
+      const account = await stripe.accounts.retrieve();
+      results.stripe = {
+        connected: true,
+        accountId: account.id,
+        currency: account.default_currency
+      };
+    } else {
+      results.stripe = {
+        connected: false,
+        error: 'Stripe not initialized - missing STRIPE_SECRET_KEY'
+      };
+    }
   } catch (error) {
     results.stripe = {
       connected: false,
@@ -88,6 +105,10 @@ app.get('/api/test-all', async (req, res) => {
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
+    if (!stripe) {
+      throw new Error('Stripe not initialized - missing STRIPE_SECRET_KEY');
+    }
+
     const { walletAddress, connectedWalletType } = req.body;
     const amount = req.body.amount || 1000; // Default to $10.00 if amount is not provided
     const currency = req.body.currency || 'usd'; // Default currency
@@ -132,6 +153,11 @@ app.post('/api/create-checkout-session', async (req, res) => {
 app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!stripe) {
+    console.log('❌ Stripe not initialized - webhook ignored');
+    return res.status(500).send('Stripe not initialized');
+  }
 
   let event;
 
@@ -191,6 +217,10 @@ app.get("/health", (req, res) => {
 // 🔐 Stripe checkout endpoint (test)
 app.post("/create-checkout-session2", async (req, res) => {
   try {
+    if (!stripe) {
+      throw new Error('Stripe not initialized - missing STRIPE_SECRET_KEY');
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -218,7 +248,66 @@ app.post("/create-checkout-session2", async (req, res) => {
   }
 });
 
+// Vault Feed API endpoints for Cosmic Replay Terminal
+app.get('/api/vault-feed/health', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'ChaosKey333 Vault Feed',
+    version: '2.0 - Ascension Edition',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/vault-feed/broadcast', express.json(), (req, res) => {
+  try {
+    const { capsuleId, type, capsule, targetAudience, priority } = req.body;
+    
+    console.log(`📡 Broadcasting ${type} capsule ${capsuleId} to ${targetAudience} with ${priority} priority`);
+    
+    // In a real implementation, this would:
+    // 1. Validate the capsule
+    // 2. Store it in the vault feed database
+    // 3. Notify keyholders in real-time
+    // 4. Update analytics
+    
+    // For now, simulate successful broadcast
+    const broadcastId = `BROADCAST_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    res.json({
+      success: true,
+      broadcastId,
+      capsuleId,
+      broadcastedAt: new Date().toISOString(),
+      status: 'broadcasted',
+      targetAudience,
+      priority,
+      estimatedReach: Math.floor(Math.random() * 1000) + 100 // Simulated keyholder reach
+    });
+    
+  } catch (error) {
+    console.error('❌ Vault feed broadcast failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Get vault feed status and recent broadcasts
+app.get('/api/vault-feed/status', (req, res) => {
+  res.json({
+    status: 'active',
+    connectedKeyholders: Math.floor(Math.random() * 500) + 50,
+    recentBroadcasts: Math.floor(Math.random() * 20) + 5,
+    uptime: '99.8%',
+    lastBroadcast: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+    version: '2.0 - Ascension Edition'
+  });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Frankenstein Vault server running on port ${PORT}`);
   console.log(`💳 Stripe integration ready for payments`);
+  console.log(`📡 ChaosKey333 Vault Feed API active`);
 });

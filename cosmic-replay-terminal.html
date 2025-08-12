@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Cosmic Replay Terminal v2.0 - Ascension Edition</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a0a1a 100%); 
+            color: #00ff88; 
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border: 2px solid #00ff88; 
+            padding: 20px; 
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 20px #00ff88;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .section { 
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            padding: 20px; 
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .section h3 { 
+            color: #00ff88; 
+            margin-top: 0; 
+            border-bottom: 1px solid #444; 
+            padding-bottom: 10px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status { 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 5px; 
+            border-left: 4px solid;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+        .success { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; color: #00ff88; }
+        .error { background: rgba(255, 68, 68, 0.1); border-color: #ff4444; color: #ff6666; }
+        .warning { background: rgba(255, 204, 0, 0.1); border-color: #ffcc00; color: #ffdd44; }
+        .info { background: rgba(68, 136, 255, 0.1); border-color: #4488ff; color: #6699ff; }
+        .loading { background: rgba(255, 0, 255, 0.1); border-color: #ff00ff; color: #ff66ff; }
+        
+        button { 
+            padding: 12px 20px; 
+            margin: 8px; 
+            background: linear-gradient(45deg, #006644 0%, #008855 100%); 
+            color: #00ff88; 
+            border: 1px solid #00ff88; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        button:hover { 
+            background: linear-gradient(45deg, #00ff88 0%, #00dd77 100%); 
+            color: #000; 
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        button:disabled { 
+            background: #333; 
+            color: #666; 
+            cursor: not-allowed; 
+            box-shadow: none;
+        }
+        
+        .capsule-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .capsule-item {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+        .capsule-item.live {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        .capsule-item .header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .capsule-item .details {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 10px;
+            border: 1px solid #00ff88;
+        }
+        .flow-step {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            min-width: 120px;
+            border: 1px solid #444;
+        }
+        .flow-step.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            animation: pulse 2s infinite;
+        }
+        .flow-arrow {
+            font-size: 2em;
+            color: #00ff88;
+            margin: 0 10px;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: rgba(0, 255, 136, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #00ff88;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌌 COSMIC REPLAY TERMINAL v2.0</h1>
+            <p>Ascension Edition - Test Replay Capsule → Live Lore Capsule Evolution</p>
+            <div id="terminalStatus" class="status info">Initializing Cosmic Replay Terminal...</div>
+        </div>
+
+        <!-- Evolution Flow Diagram -->
+        <div class="flow-diagram">
+            <div class="flow-step" id="step-generate">
+                <div>🧪</div>
+                <div>Generate Test<br>Replay Capsule</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" id="step-test">
+                <div>🔬</div>
+                <div>Run Tests &<br>Validate</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" id="step-evolve">
+                <div>🧬</div>
+                <div>Evolve to<br>Live Lore</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" id="step-broadcast">
+                <div>📡</div>
+                <div>Broadcast to<br>Vault Feed</div>
+            </div>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="stat-test-capsules">0</div>
+                <div class="stat-label">Test Capsules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-live-capsules">0</div>
+                <div class="stat-label">Live Capsules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-broadcasts">0</div>
+                <div class="stat-label">Broadcasts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-stability">0%</div>
+                <div class="stat-label">Avg Stability</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Control Panel -->
+            <div class="section">
+                <h3>🎮 Control Panel</h3>
+                
+                <div class="controls">
+                    <button onclick="initializeTerminal()">🌌 Initialize Terminal</button>
+                    <button onclick="runFullTests()">🧪 Run Full Test Suite</button>
+                    <button onclick="generateTestCapsule()">⚡ Generate Test Capsule</button>
+                    <button onclick="simulateCompleteFlow()">🚀 Simulate Complete Flow</button>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="exportAllFormats()">📦 Export All Formats</button>
+                    <button onclick="checkVaultFeedStatus()">📡 Check Vault Feed</button>
+                    <button onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+
+                <div id="controlStatus" class="status info">Ready for commands...</div>
+            </div>
+
+            <!-- Terminal Output -->
+            <div class="section">
+                <h3>💻 Terminal Output</h3>
+                <div id="terminalOutput" class="status info" style="height: 300px; overflow-y: auto; background: #000; border: 1px solid #00ff88;">
+Starting Cosmic Replay Terminal v2.0...
+Ascension Edition initialized.
+Ready for capsule generation and evolution.
+                </div>
+                <div class="controls">
+                    <button onclick="clearTerminalOutput()">Clear Output</button>
+                    <button onclick="downloadLogs()">Download Logs</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capsule Management -->
+        <div class="section full-width">
+            <h3>🧬 Capsule Management & Evolution Pipeline</h3>
+            
+            <div class="grid">
+                <div>
+                    <h4>🧪 Test Replay Capsules</h4>
+                    <div id="testCapsulesList" class="capsule-list">
+                        <div class="status info">No test capsules generated yet...</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4>🌟 Live Lore Capsules</h4>
+                    <div id="liveCapsulesList" class="capsule-list">
+                        <div class="status info">No live capsules evolved yet...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vault Feed Integration -->
+        <div class="section full-width">
+            <h3>📡 ChaosKey333 Vault Feed Integration</h3>
+            <div id="vaultFeedStatus" class="status info">Checking vault feed connection...</div>
+            
+            <div class="controls">
+                <button onclick="connectVaultFeed()">🔗 Connect to Vault Feed</button>
+                <button onclick="broadcastAllLive()">📡 Broadcast All Live Capsules</button>
+                <button onclick="getVaultFeedStats()">📊 Get Feed Statistics</button>
+            </div>
+            
+            <div id="broadcastLog" class="status info" style="height: 150px; overflow-y: auto;">
+Vault feed integration ready...
+Waiting for live lore capsules to broadcast...
+            </div>
+        </div>
+    </div>
+
+    <!-- Load required scripts -->
+    <script src="/lib/cosmic-replay-terminal.js"></script>
+    <script src="/lib/cosmic-replay-tests.js"></script>
+    
+    <script>
+        // Global state
+        let cosmicTerminal = null;
+        let testSuite = null;
+        let generatedCapsules = 0;
+        let broadcastCount = 0;
+        let totalStability = 0;
+        let stabilityCount = 0;
+
+        // Terminal output management
+        function logToTerminal(message, type = 'info') {
+            const terminal = document.getElementById('terminalOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const typeIcon = {
+                'info': 'ℹ️',
+                'success': '✅',
+                'error': '❌',
+                'warning': '⚠️'
+            }[type] || 'ℹ️';
+            
+            const logLine = `[${timestamp}] ${typeIcon} ${message}\n`;
+            terminal.textContent += logLine;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearTerminalOutput() {
+            document.getElementById('terminalOutput').textContent = 'Terminal cleared.\n';
+        }
+
+        function downloadLogs() {
+            const logs = document.getElementById('terminalOutput').textContent;
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cosmic-terminal-logs-${new Date().toISOString()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Update statistics
+        function updateStats() {
+            if (!cosmicTerminal) return;
+
+            const status = cosmicTerminal.getStatus();
+            document.getElementById('stat-test-capsules').textContent = status.testCapsules || 0;
+            document.getElementById('stat-live-capsules').textContent = status.liveCapsules || 0;
+            document.getElementById('stat-broadcasts').textContent = broadcastCount;
+            
+            const avgStability = stabilityCount > 0 ? Math.round((totalStability / stabilityCount) * 100) : 0;
+            document.getElementById('stat-stability').textContent = `${avgStability}%`;
+        }
+
+        // Flow step highlighting
+        function activateFlowStep(stepId) {
+            // Clear all active states
+            document.querySelectorAll('.flow-step').forEach(step => step.classList.remove('active'));
+            // Activate current step
+            document.getElementById(stepId)?.classList.add('active');
+        }
+
+        // Initialize the Cosmic Replay Terminal
+        async function initializeTerminal() {
+            logToTerminal('Initializing Cosmic Replay Terminal v2.0...', 'info');
+            activateFlowStep('step-generate');
+            
+            try {
+                cosmicTerminal = new CosmicReplayTerminal({
+                    autoSave: true,
+                    exportFormats: ['mp4', 'webm', 'gif', 'nftMetadata']
+                });
+
+                // Wait for initialization
+                let attempts = 0;
+                while (!cosmicTerminal.isInitialized && attempts < 20) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+
+                if (cosmicTerminal.isInitialized) {
+                    const status = cosmicTerminal.getStatus();
+                    logToTerminal(`Terminal initialized successfully!`, 'success');
+                    logToTerminal(`Version: ${status.version}`, 'info');
+                    logToTerminal(`Vault Feed Connected: ${status.vaultFeedConnected}`, 'info');
+                    
+                    document.getElementById('terminalStatus').innerHTML = `✅ Cosmic Replay Terminal v${status.version} - ONLINE`;
+                    document.getElementById('terminalStatus').className = 'status success';
+                    
+                    updateStats();
+                } else {
+                    throw new Error('Terminal failed to initialize within timeout');
+                }
+
+            } catch (error) {
+                logToTerminal(`Failed to initialize terminal: ${error.message}`, 'error');
+                document.getElementById('terminalStatus').innerHTML = `❌ Terminal initialization failed: ${error.message}`;
+                document.getElementById('terminalStatus').className = 'status error';
+            }
+        }
+
+        // Run the full test suite
+        async function runFullTests() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            logToTerminal('Starting comprehensive test suite...', 'info');
+            activateFlowStep('step-test');
+
+            try {
+                testSuite = new CosmicReplayTerminalTestSuite();
+                testSuite.terminal = cosmicTerminal; // Use existing terminal
+                
+                const results = await testSuite.runAllTests();
+                
+                logToTerminal(`Test suite completed: ${results.passedTests}/${results.totalTests} passed`, 
+                             results.success ? 'success' : 'error');
+                logToTerminal(`Success rate: ${results.successRate.toFixed(1)}%`, 'info');
+                
+                if (results.success) {
+                    document.getElementById('controlStatus').innerHTML = `✅ All tests passed! System ready for production.`;
+                    document.getElementById('controlStatus').className = 'status success';
+                } else {
+                    document.getElementById('controlStatus').innerHTML = `⚠️ ${results.failedTests} tests failed. Check terminal output.`;
+                    document.getElementById('controlStatus').className = 'status warning';
+                }
+
+            } catch (error) {
+                logToTerminal(`Test suite failed: ${error.message}`, 'error');
+                document.getElementById('controlStatus').innerHTML = `❌ Test suite error: ${error.message}`;
+                document.getElementById('controlStatus').className = 'status error';
+            }
+        }
+
+        // Generate a test replay capsule
+        async function generateTestCapsule() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            logToTerminal('Generating test replay capsule...', 'info');
+            activateFlowStep('step-generate');
+
+            try {
+                const vaultState = {
+                    connectedWallets: Math.floor(Math.random() * 20) + 5,
+                    activeTransactions: Math.floor(Math.random() * 10) + 1,
+                    mintedRelics: Math.floor(Math.random() * 100) + 10,
+                    vaultEnergy: Math.random() * 100,
+                    cosmicResonance: Math.random() * 10
+                };
+
+                const capsule = await cosmicTerminal.generateReplayCapsule(
+                    `manual-test-${generatedCapsules + 1}`, 
+                    vaultState
+                );
+
+                generatedCapsules++;
+                logToTerminal(`Generated test capsule: ${capsule.id}`, 'success');
+                logToTerminal(`Vault Energy: ${capsule.vaultState.vaultEnergy.toFixed(2)}`, 'info');
+                
+                updateCapsulesList();
+                updateStats();
+
+            } catch (error) {
+                logToTerminal(`Failed to generate capsule: ${error.message}`, 'error');
+            }
+        }
+
+        // Simulate complete flow from test to live
+        async function simulateCompleteFlow() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            logToTerminal('Starting complete evolution flow simulation...', 'info');
+
+            try {
+                // Step 1: Generate test capsule
+                activateFlowStep('step-generate');
+                logToTerminal('Step 1: Generating test replay capsule...', 'info');
+                
+                const vaultState = {
+                    connectedWallets: 15,
+                    activeTransactions: 5,
+                    mintedRelics: 42,
+                    vaultEnergy: 95.5,
+                    cosmicResonance: 8.8
+                };
+
+                const capsule = await cosmicTerminal.generateReplayCapsule('complete-flow-test', vaultState);
+                generatedCapsules++;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Step 2: Run tests and validate
+                activateFlowStep('step-test');
+                logToTerminal('Step 2: Running validation tests...', 'info');
+                await cosmicTerminal.exportCapsuleFormats(capsule);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Step 3: Mark as passed and evolve
+                activateFlowStep('step-evolve');
+                logToTerminal('Step 3: Tests passed, evolving to live lore capsule...', 'info');
+                
+                const testResults = {
+                    passRate: 1.0,
+                    performance: 0.95,
+                    consistency: 0.92,
+                    errorRate: 0.03
+                };
+
+                await cosmicTerminal.markTestPassed(capsule.pulseId, testResults);
+                
+                const stability = cosmicTerminal.calculateStability(testResults);
+                totalStability += stability;
+                stabilityCount++;
+                
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Step 4: Broadcast to vault feed
+                activateFlowStep('step-broadcast');
+                logToTerminal('Step 4: Broadcasting to ChaosKey333 vault feed...', 'info');
+                
+                const evolvedCapsule = cosmicTerminal.testCapsules.get(capsule.pulseId);
+                if (evolvedCapsule.liveCapsuleId) {
+                    const liveCapsule = cosmicTerminal.liveCapsules.get(evolvedCapsule.liveCapsuleId);
+                    if (liveCapsule) {
+                        await cosmicTerminal.broadcastToVaultFeed(liveCapsule);
+                        broadcastCount++;
+                    }
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                logToTerminal('Complete flow simulation successful! ✨', 'success');
+                logToTerminal(`Capsule evolved from ${capsule.id} to live lore capsule`, 'success');
+                
+                updateCapsulesList();
+                updateStats();
+                
+                // Clear flow highlighting after a delay
+                setTimeout(() => {
+                    document.querySelectorAll('.flow-step').forEach(step => step.classList.remove('active'));
+                }, 3000);
+
+            } catch (error) {
+                logToTerminal(`Complete flow simulation failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Update capsule lists
+        function updateCapsulesList() {
+            if (!cosmicTerminal) return;
+
+            // Update test capsules list
+            const testList = document.getElementById('testCapsulesList');
+            const testCapsules = Array.from(cosmicTerminal.testCapsules.values());
+            
+            if (testCapsules.length === 0) {
+                testList.innerHTML = '<div class="status info">No test capsules generated yet...</div>';
+            } else {
+                testList.innerHTML = testCapsules.map(capsule => `
+                    <div class="capsule-item">
+                        <div class="header">${capsule.testName} (${capsule.id.substr(-8)})</div>
+                        <div class="details">
+                            Status: ${capsule.status} | 
+                            Energy: ${capsule.vaultState.vaultEnergy.toFixed(1)} | 
+                            Generated: ${new Date(capsule.timestamp).toLocaleTimeString()}
+                            ${capsule.testResults ? `\nStability: ${(capsule.testResults.stability * 100).toFixed(1)}%` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update live capsules list
+            const liveList = document.getElementById('liveCapsulesList');
+            const liveCapsules = Array.from(cosmicTerminal.liveCapsules.values());
+            
+            if (liveCapsules.length === 0) {
+                liveList.innerHTML = '<div class="status info">No live capsules evolved yet...</div>';
+            } else {
+                liveList.innerHTML = liveCapsules.map(capsule => `
+                    <div class="capsule-item live">
+                        <div class="header">🌟 Live Lore Capsule (${capsule.id.substr(-8)})</div>
+                        <div class="details">
+                            Parent: ${capsule.parentTestId.substr(-8)} | 
+                            Energy: ${capsule.vaultState.vaultEnergy.toFixed(1)} | 
+                            Evolved: ${new Date(capsule.evolvedAt).toLocaleTimeString()}
+                            ${capsule.broadcastedAt ? `\nBroadcasted: ${new Date(capsule.broadcastedAt).toLocaleTimeString()}` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Export all formats for current capsules
+        async function exportAllFormats() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            const liveCapsules = Array.from(cosmicTerminal.liveCapsules.values());
+            if (liveCapsules.length === 0) {
+                logToTerminal('No live capsules available for export', 'warning');
+                return;
+            }
+
+            logToTerminal('Exporting all live capsules in multiple formats...', 'info');
+
+            for (const capsule of liveCapsules) {
+                try {
+                    await cosmicTerminal.exportCapsuleFormats(capsule);
+                    logToTerminal(`Exported ${capsule.id} in all formats`, 'success');
+                } catch (error) {
+                    logToTerminal(`Failed to export ${capsule.id}: ${error.message}`, 'error');
+                }
+            }
+
+            logToTerminal('Export process completed', 'success');
+        }
+
+        // Check vault feed status
+        async function checkVaultFeedStatus() {
+            logToTerminal('Checking ChaosKey333 vault feed status...', 'info');
+
+            try {
+                const response = await fetch('/api/vault-feed/status');
+                const status = await response.json();
+                
+                logToTerminal(`Vault Feed Status: ${status.status}`, 'success');
+                logToTerminal(`Connected Keyholders: ${status.connectedKeyholders}`, 'info');
+                logToTerminal(`Recent Broadcasts: ${status.recentBroadcasts}`, 'info');
+                logToTerminal(`Uptime: ${status.uptime}`, 'info');
+                
+                document.getElementById('vaultFeedStatus').innerHTML = `
+✅ Vault Feed Online
+Connected Keyholders: ${status.connectedKeyholders}
+Recent Broadcasts: ${status.recentBroadcasts}
+Uptime: ${status.uptime}
+Last Broadcast: ${new Date(status.lastBroadcast).toLocaleString()}`;
+                document.getElementById('vaultFeedStatus').className = 'status success';
+
+            } catch (error) {
+                logToTerminal(`Failed to check vault feed: ${error.message}`, 'error');
+                document.getElementById('vaultFeedStatus').innerHTML = `❌ Vault feed connection failed: ${error.message}`;
+                document.getElementById('vaultFeedStatus').className = 'status error';
+            }
+        }
+
+        // Connect to vault feed
+        async function connectVaultFeed() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            logToTerminal('Connecting to ChaosKey333 vault feed...', 'info');
+            await cosmicTerminal.connectToVaultFeed();
+            
+            const status = cosmicTerminal.getStatus();
+            if (status.vaultFeedConnected) {
+                logToTerminal('Successfully connected to vault feed', 'success');
+            } else {
+                logToTerminal('Vault feed connection failed or offline', 'warning');
+            }
+        }
+
+        // Broadcast all live capsules
+        async function broadcastAllLive() {
+            if (!cosmicTerminal) {
+                logToTerminal('Please initialize terminal first', 'warning');
+                return;
+            }
+
+            const liveCapsules = Array.from(cosmicTerminal.liveCapsules.values());
+            if (liveCapsules.length === 0) {
+                logToTerminal('No live capsules available to broadcast', 'warning');
+                return;
+            }
+
+            logToTerminal(`Broadcasting ${liveCapsules.length} live capsules to vault feed...`, 'info');
+
+            for (const capsule of liveCapsules) {
+                try {
+                    await cosmicTerminal.broadcastToVaultFeed(capsule);
+                    broadcastCount++;
+                    
+                    const broadcastLog = document.getElementById('broadcastLog');
+                    broadcastLog.textContent += `📡 Broadcasted ${capsule.id} at ${new Date().toLocaleTimeString()}\n`;
+                    broadcastLog.scrollTop = broadcastLog.scrollHeight;
+                    
+                    logToTerminal(`Broadcasted ${capsule.id}`, 'success');
+                    
+                } catch (error) {
+                    logToTerminal(`Failed to broadcast ${capsule.id}: ${error.message}`, 'error');
+                }
+            }
+
+            updateStats();
+            logToTerminal('Broadcast process completed', 'success');
+        }
+
+        // Get vault feed statistics
+        async function getVaultFeedStats() {
+            await checkVaultFeedStatus();
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all capsule data?')) {
+                if (cosmicTerminal) {
+                    cosmicTerminal.testCapsules.clear();
+                    cosmicTerminal.liveCapsules.clear();
+                    cosmicTerminal.testResults.clear();
+                }
+                
+                generatedCapsules = 0;
+                broadcastCount = 0;
+                totalStability = 0;
+                stabilityCount = 0;
+                
+                updateCapsulesList();
+                updateStats();
+                
+                logToTerminal('All capsule data cleared', 'info');
+                document.getElementById('controlStatus').innerHTML = 'System reset - ready for new operations';
+                document.getElementById('controlStatus').className = 'status info';
+            }
+        }
+
+        // Initialize on page load
+        window.onload = async function() {
+            logToTerminal('Cosmic Replay Terminal v2.0 - Ascension Edition', 'info');
+            logToTerminal('System ready for initialization...', 'info');
+            
+            // Auto-initialize after a short delay
+            setTimeout(initializeTerminal, 1000);
+        };
+    </script>
+</body>
+</html>
