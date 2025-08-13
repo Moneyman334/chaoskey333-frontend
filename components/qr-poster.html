@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 - QR Evolution Poster</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="qr-poster.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="poster-container">
+    <!-- Main Poster Canvas -->
+    <div class="poster-canvas" id="posterCanvas">
+      <!-- Background Elements -->
+      <div class="poster-bg-grid"></div>
+      <div class="poster-bg-particles"></div>
+      
+      <!-- Header Section -->
+      <div class="poster-header">
+        <div class="poster-logo">
+          <div class="logo-symbol">⬢</div>
+          <div class="logo-text">CHAOSKEY333</div>
+        </div>
+        <div class="poster-tagline">PERMANENT RELIC EVOLUTION PROTOCOL</div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="poster-main">
+        <!-- Left Side: Relic Visual -->
+        <div class="relic-showcase">
+          <div class="relic-container">
+            <div class="relic-core">
+              <div class="relic-symbol">◊</div>
+              <div class="energy-rings">
+                <div class="energy-ring ring-1"></div>
+                <div class="energy-ring ring-2"></div>
+                <div class="energy-ring ring-3"></div>
+              </div>
+            </div>
+            <div class="relic-data">
+              <div class="data-line">ORIGIN: <span class="data-value">VAULT_333</span></div>
+              <div class="data-line">STATUS: <span class="data-value">EVOLVING</span></div>
+              <div class="data-line">IMPRINT: <span class="data-value" id="relicImprint">CK333-XXXX</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: QR Code -->
+        <div class="qr-section">
+          <div class="qr-container">
+            <div class="qr-frame">
+              <canvas id="qrCanvas" width="200" height="200"></canvas>
+              <div class="qr-overlay">
+                <div class="scan-line"></div>
+              </div>
+            </div>
+            <div class="qr-instructions">
+              <div class="instruction-step">1. SCAN TO ACCESS</div>
+              <div class="instruction-step">2. CONNECT WALLET</div>
+              <div class="instruction-step">3. EVOLVE RELIC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Evolution Status -->
+        <div class="evolution-status">
+          <div class="status-panel">
+            <div class="panel-title">EVOLUTION METRICS</div>
+            <div class="metric-grid">
+              <div class="metric-item">
+                <div class="metric-label">ACTIVE RELICS</div>
+                <div class="metric-value" id="activeRelics">333</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">TOTAL EVOLVED</div>
+                <div class="metric-value" id="totalEvolved">1337</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">RESONANCE</div>
+                <div class="metric-value">333 Hz</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">SYNC RATE</div>
+                <div class="metric-value">99.7%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Section -->
+      <div class="poster-footer">
+        <div class="footer-left">
+          <div class="vault-url" id="vaultUrl">chaoskey333.vault.eth</div>
+          <div class="evolution-timer">
+            NEXT EVOLUTION: <span id="evolutionTimer">LOADING...</span>
+          </div>
+        </div>
+        
+        <div class="footer-center">
+          <div class="warning-text">⚠ WARNING: EVOLUTION IS IRREVERSIBLE ⚠</div>
+        </div>
+        
+        <div class="footer-right">
+          <div class="network-info">
+            <div class="network-label">NETWORK:</div>
+            <div class="network-name">ETHEREUM</div>
+            <div class="network-status active"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glitch Overlay Effects -->
+      <div class="glitch-overlay"></div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="poster-controls">
+      <div class="control-group">
+        <label class="control-label">Vault URL:</label>
+        <input type="text" id="urlInput" class="control-input" 
+               placeholder="Enter vault URL or evolution page" 
+               value="https://chaoskey333-vault.eth/">
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label">QR Style:</label>
+        <select id="qrStyle" class="control-select">
+          <option value="standard">Standard</option>
+          <option value="neon">Neon Glow</option>
+          <option value="matrix">Matrix Style</option>
+          <option value="chaos">Chaos Pattern</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label">Poster Theme:</label>
+        <select id="posterTheme" class="control-select">
+          <option value="cyberpunk">Cyberpunk</option>
+          <option value="neon">Neon Genesis</option>
+          <option value="dark">Dark Matter</option>
+          <option value="matrix">Matrix</option>
+        </select>
+      </div>
+      
+      <div class="control-buttons">
+        <button id="generateQR" class="control-btn primary">🔄 REGENERATE QR</button>
+        <button id="downloadPoster" class="control-btn secondary">💾 DOWNLOAD POSTER</button>
+        <button id="sharePoster" class="control-btn info">📤 SHARE</button>
+        <button id="printPoster" class="control-btn">🖨 PRINT</button>
+      </div>
+      
+      <div class="poster-info">
+        <div class="info-item">
+          <span class="info-label">Dimensions:</span>
+          <span class="info-value">1920x1080 (HD)</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Format:</span>
+          <span class="info-value">PNG/PDF</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">QR Data:</span>
+          <span class="info-value" id="qrDataInfo">Vault URL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="qr-poster.js"></script>
+</body>
+</html>

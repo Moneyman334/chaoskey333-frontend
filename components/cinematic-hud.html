@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 - Cinematic HUD</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="cinematic-hud.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Cinematic HUD Container -->
+  <div id="cinematicHUD" class="cinematic-hud">
+    <!-- Relic Evolution Protocol Header -->
+    <div class="protocol-header">
+      <h1 class="protocol-title">PERMANENT RELIC EVOLUTION PROTOCOL</h1>
+      <div class="protocol-status">INITIALIZING EVOLUTION SEQUENCE...</div>
+    </div>
+
+    <!-- Glyph Animation Grid -->
+    <div class="glyph-grid">
+      <div class="glyph glyph-1" data-glyph="◊">◊</div>
+      <div class="glyph glyph-2" data-glyph="⧫">⧫</div>
+      <div class="glyph glyph-3" data-glyph="◈">◈</div>
+      <div class="glyph glyph-4" data-glyph="⬟">⬟</div>
+      <div class="glyph glyph-5" data-glyph="⬢">⬢</div>
+      <div class="glyph glyph-6" data-glyph="⬡">⬡</div>
+    </div>
+
+    <!-- Solver Imprint Display -->
+    <div class="solver-imprint">
+      <div class="imprint-label">SOLVER IMPRINT</div>
+      <div class="imprint-data">
+        <span class="imprint-id">ID: CK333-SLVR-</span><span id="solverCode" class="imprint-code">INITIALIZING...</span>
+      </div>
+      <div class="imprint-timestamp">
+        <span id="evolutionTimestamp">EVOLUTION TIMESTAMP: PENDING</span>
+      </div>
+    </div>
+
+    <!-- Resonance Visualizer -->
+    <div class="resonance-visualizer">
+      <div class="resonance-label">RESONANCE FREQUENCY</div>
+      <div class="frequency-bars">
+        <div class="freq-bar" style="--delay: 0s"></div>
+        <div class="freq-bar" style="--delay: 0.1s"></div>
+        <div class="freq-bar" style="--delay: 0.2s"></div>
+        <div class="freq-bar" style="--delay: 0.3s"></div>
+        <div class="freq-bar" style="--delay: 0.4s"></div>
+        <div class="freq-bar" style="--delay: 0.5s"></div>
+        <div class="freq-bar" style="--delay: 0.6s"></div>
+        <div class="freq-bar" style="--delay: 0.7s"></div>
+      </div>
+      <div class="resonance-value">333 Hz</div>
+    </div>
+
+    <!-- Evolution Timeline -->
+    <div class="evolution-timeline">
+      <div class="timeline-label">EVOLUTION SEQUENCE</div>
+      <div class="timeline-track">
+        <div class="timeline-step active" data-step="1">
+          <div class="step-marker"></div>
+          <div class="step-label">INITIALIZATION</div>
+        </div>
+        <div class="timeline-step" data-step="2">
+          <div class="step-marker"></div>
+          <div class="step-label">GLYPH ACTIVATION</div>
+        </div>
+        <div class="timeline-step" data-step="3">
+          <div class="step-marker"></div>
+          <div class="step-label">RESONANCE SYNC</div>
+        </div>
+        <div class="timeline-step" data-step="4">
+          <div class="step-marker"></div>
+          <div class="step-label">EVOLUTION COMPLETE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="evolution-progress">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progressPercent">0%</span> EVOLUTION COMPLETE
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <button id="startEvolution" class="evolution-btn primary">
+        ⚡ INITIATE EVOLUTION
+      </button>
+      <button id="skipCinematic" class="evolution-btn secondary">
+        ⏭ SKIP TO VAULT
+      </button>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="resonanceTone" preload="auto" loop>
+    <source src="../assets/resonance-333hz.mp3" type="audio/mpeg">
+    <source src="../assets/resonance-333hz.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- Scripts -->
+  <script src="cinematic-hud.js"></script>
+</body>
+</html>
