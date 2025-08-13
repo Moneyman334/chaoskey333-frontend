@@ -91,15 +91,56 @@ class QRPosterGenerator {
   async generateQRCode() {
     if (!this.currentUrl) return;
     
-    const options = this.getQROptions();
-    
     try {
-      await QRCode.toCanvas(this.qrCanvas, this.currentUrl, options);
-      this.applyQRStyle();
+      // Check if QRCode library is available
+      if (typeof QRCode !== 'undefined') {
+        const options = this.getQROptions();
+        await QRCode.toCanvas(this.qrCanvas, this.currentUrl, options);
+        this.applyQRStyle();
+      } else {
+        // Fallback: Create a simple placeholder
+        this.generateQRPlaceholder();
+      }
     } catch (error) {
       console.error('QR Code generation failed:', error);
-      this.showError('Failed to generate QR code');
+      this.generateQRPlaceholder();
     }
+  }
+
+  generateQRPlaceholder() {
+    const ctx = this.qrCanvas.getContext('2d');
+    const size = 200;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, size, size);
+    
+    // Draw background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, size, size);
+    
+    // Draw border
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(10, 10, size - 20, size - 20);
+    
+    // Draw pattern
+    ctx.fillStyle = '#00ffff';
+    for (let x = 20; x < size - 20; x += 20) {
+      for (let y = 20; y < size - 20; y += 20) {
+        if ((x + y) % 40 === 0) {
+          ctx.fillRect(x, y, 10, 10);
+        }
+      }
+    }
+    
+    // Add text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '12px Orbitron';
+    ctx.textAlign = 'center';
+    ctx.fillText('QR CODE', size / 2, size / 2 - 10);
+    ctx.fillText('PLACEHOLDER', size / 2, size / 2 + 10);
+    
+    this.applyQRStyle();
   }
 
   getQROptions() {
