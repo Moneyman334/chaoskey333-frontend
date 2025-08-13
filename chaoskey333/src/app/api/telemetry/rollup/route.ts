@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     // Check if we have a pre-computed rollup
     const rollupKey = `telemetry:rollup:${dateKey}`;
-    const existingRollup = await kv.get<TelemetryRollup>(rollupKey);
+    const existingRollup = (await kv.get(rollupKey) as TelemetryRollup);
 
     if (existingRollup) {
       const response: TelemetryRollupResponse = {
