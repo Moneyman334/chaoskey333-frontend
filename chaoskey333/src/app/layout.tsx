@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// Remove Inter font import to avoid network dependency
 import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "ChaosKey333 - Telemetry Dashboard",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "ChaosKey333 frontend with telemetry tracking and admin dashboard",
 };
 
 export default function RootLayout({
@@ -18,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <ThirdwebProvider>{children}</ThirdwebProvider>
       </body>
     </html>
