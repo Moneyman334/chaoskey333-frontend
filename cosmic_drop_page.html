@@ -4,19 +4,206 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Drop Page</title>
+  <title>ChaosKey333 - Cinematic Evolution Drop</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="components/cinematic-hud.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Welcome to the Cosmic Drop</h1>
-  <p>Explore the cosmic wonders through our exclusive drops.</p>
-  <button onclick="startCosmicJourney()">Start Your Journey</button>
-  <div id="cosmicStatus">Prepare for launch...</div>
+  <!-- Cinematic HUD Component -->
+  <div id="cinematicHUD" class="cinematic-hud" style="display: none;">
+    <!-- Relic Evolution Protocol Header -->
+    <div class="protocol-header">
+      <h1 class="protocol-title">PERMANENT RELIC EVOLUTION PROTOCOL</h1>
+      <div class="protocol-status">INITIALIZING EVOLUTION SEQUENCE...</div>
+    </div>
 
+    <!-- Glyph Animation Grid -->
+    <div class="glyph-grid">
+      <div class="glyph glyph-1" data-glyph="◊">◊</div>
+      <div class="glyph glyph-2" data-glyph="⧫">⧫</div>
+      <div class="glyph glyph-3" data-glyph="◈">◈</div>
+      <div class="glyph glyph-4" data-glyph="⬟">⬟</div>
+      <div class="glyph glyph-5" data-glyph="⬢">⬢</div>
+      <div class="glyph glyph-6" data-glyph="⬡">⬡</div>
+    </div>
+
+    <!-- Solver Imprint Display -->
+    <div class="solver-imprint">
+      <div class="imprint-label">SOLVER IMPRINT</div>
+      <div class="imprint-data">
+        <span class="imprint-id">ID: CK333-SLVR-</span><span id="solverCode" class="imprint-code">INITIALIZING...</span>
+      </div>
+      <div class="imprint-timestamp">
+        <span id="evolutionTimestamp">EVOLUTION TIMESTAMP: PENDING</span>
+      </div>
+    </div>
+
+    <!-- Resonance Visualizer -->
+    <div class="resonance-visualizer">
+      <div class="resonance-label">RESONANCE FREQUENCY</div>
+      <div class="frequency-bars">
+        <div class="freq-bar" style="--delay: 0s"></div>
+        <div class="freq-bar" style="--delay: 0.1s"></div>
+        <div class="freq-bar" style="--delay: 0.2s"></div>
+        <div class="freq-bar" style="--delay: 0.3s"></div>
+        <div class="freq-bar" style="--delay: 0.4s"></div>
+        <div class="freq-bar" style="--delay: 0.5s"></div>
+        <div class="freq-bar" style="--delay: 0.6s"></div>
+        <div class="freq-bar" style="--delay: 0.7s"></div>
+      </div>
+      <div class="resonance-value">333 Hz</div>
+    </div>
+
+    <!-- Evolution Timeline -->
+    <div class="evolution-timeline">
+      <div class="timeline-label">EVOLUTION SEQUENCE</div>
+      <div class="timeline-track">
+        <div class="timeline-step active" data-step="1">
+          <div class="step-marker"></div>
+          <div class="step-label">INITIALIZATION</div>
+        </div>
+        <div class="timeline-step" data-step="2">
+          <div class="step-marker"></div>
+          <div class="step-label">GLYPH ACTIVATION</div>
+        </div>
+        <div class="timeline-step" data-step="3">
+          <div class="step-marker"></div>
+          <div class="step-label">RESONANCE SYNC</div>
+        </div>
+        <div class="timeline-step" data-step="4">
+          <div class="step-marker"></div>
+          <div class="step-label">EVOLUTION COMPLETE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="evolution-progress">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progressPercent">0%</span> EVOLUTION COMPLETE
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <button id="startEvolution" class="evolution-btn primary">
+        ⚡ INITIATE EVOLUTION
+      </button>
+      <button id="skipCinematic" class="evolution-btn secondary">
+        ⏭ SKIP TO VAULT
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Cosmic Drop Content -->
+  <div id="mainContent" class="cosmic-drop-main">
+    <div class="drop-container">
+      <h1 class="drop-title glow">⚡ CHAOSKEY333 COSMIC EVOLUTION DROP ⚡</h1>
+      <p class="drop-description pulse">Prepare for an immersive journey through the Permanent Relic Evolution Protocol</p>
+      
+      <div class="drop-features">
+        <div class="feature-card">
+          <div class="feature-icon">🎬</div>
+          <h3>Cinematic HUD Experience</h3>
+          <p>Immersive visual storytelling with glyph animations and resonance tones</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Meta-Update Logs</h3>
+          <p>Real-time tracking of metadata propagation and on-chain events</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>QR Evolution Poster</h3>
+          <p>Shareable poster with instant vault access for community engagement</p>
+        </div>
+      </div>
+
+      <div class="drop-actions">
+        <button id="launchCinematic" class="cosmic-btn primary">
+          🚀 LAUNCH CINEMATIC EXPERIENCE
+        </button>
+        <button id="viewLogs" class="cosmic-btn secondary">
+          📊 VIEW META LOGS
+        </button>
+        <button id="generatePoster" class="cosmic-btn info">
+          📱 CREATE QR POSTER
+        </button>
+        <button id="accessVault" class="cosmic-btn accent">
+          🏛️ ACCESS VAULT DIRECTLY
+        </button>
+      </div>
+
+      <div id="cosmicStatus" class="status-display">
+        Cosmic systems online. Ready for evolution sequence...
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="resonanceTone" preload="auto" loop>
+    <!-- Placeholder for resonance audio - would need actual audio files -->
+  </audio>
+
+  <!-- Scripts -->
+  <script src="components/cinematic-hud.js"></script>
   <script>
+    // Cosmic Drop Integration Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const launchButton = document.getElementById('launchCinematic');
+      const viewLogsButton = document.getElementById('viewLogs');
+      const generatePosterButton = document.getElementById('generatePoster');
+      const accessVaultButton = document.getElementById('accessVault');
+      const cosmicStatus = document.getElementById('cosmicStatus');
+      const mainContent = document.getElementById('mainContent');
+      const cinematicHUD = document.getElementById('cinematicHUD');
+
+      // Launch Cinematic Experience
+      launchButton.addEventListener('click', () => {
+        cosmicStatus.textContent = 'Launching cinematic evolution sequence...';
+        mainContent.style.display = 'none';
+        cinematicHUD.style.display = 'flex';
+        
+        // Initialize cinematic HUD if not already done
+        if (window.cinematicHUD) {
+          window.cinematicHUD.show();
+        }
+      });
+
+      // View Meta Logs
+      viewLogsButton.addEventListener('click', () => {
+        window.open('components/meta-logs.html', '_blank');
+      });
+
+      // Generate QR Poster
+      generatePosterButton.addEventListener('click', () => {
+        window.open('components/qr-poster.html', '_blank');
+      });
+
+      // Access Vault Directly
+      accessVaultButton.addEventListener('click', () => {
+        window.location.href = 'vault.html';
+      });
+
+      // Override skip cinematic to return to main content
+      document.addEventListener('click', (e) => {
+        if (e.target.id === 'skipCinematic') {
+          setTimeout(() => {
+            cinematicHUD.style.display = 'none';
+            mainContent.style.display = 'block';
+            cosmicStatus.textContent = 'Evolution sequence completed. Welcome to the cosmic realm.';
+          }, 1000);
+        }
+      });
+    });
+
+    // Legacy function for compatibility
     function startCosmicJourney() {
-      alert('Your cosmic journey has begun!');
-      document.getElementById('cosmicStatus').innerText = 'Journey in progress...';
+      document.getElementById('launchCinematic').click();
     }
   </script>
 </body>

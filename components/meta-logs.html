@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaosKey333 - Meta-Update Logs</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="meta-logs.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="meta-logs-container">
+    <!-- Header -->
+    <div class="logs-header">
+      <h1 class="logs-title">META-UPDATE PROPAGATION LOGS</h1>
+      <div class="system-status">
+        <span class="status-indicator active"></span>
+        <span class="status-text">SYSTEM ACTIVE</span>
+        <span class="timestamp" id="systemTimestamp">2024-01-01 00:00:00</span>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <button id="startLogging" class="log-btn primary">⚡ START LOGGING</button>
+      <button id="pauseLogging" class="log-btn secondary">⏸ PAUSE</button>
+      <button id="clearLogs" class="log-btn danger">🗑 CLEAR</button>
+      <button id="exportLogs" class="log-btn info">💾 EXPORT</button>
+      
+      <div class="filter-panel">
+        <select id="logLevel" class="log-filter">
+          <option value="all">All Levels</option>
+          <option value="info">Info</option>
+          <option value="warning">Warning</option>
+          <option value="error">Error</option>
+          <option value="critical">Critical</option>
+        </select>
+        
+        <select id="logSource" class="log-filter">
+          <option value="all">All Sources</option>
+          <option value="metadata">Metadata</option>
+          <option value="blockchain">Blockchain</option>
+          <option value="solver">Solver</option>
+          <option value="evolution">Evolution</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Statistics Panel -->
+    <div class="stats-panel">
+      <div class="stat-item">
+        <div class="stat-label">TOTAL EVENTS</div>
+        <div class="stat-value" id="totalEvents">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">MUTATIONS</div>
+        <div class="stat-value" id="totalMutations">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">ON-CHAIN EVENTS</div>
+        <div class="stat-value" id="onChainEvents">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">SOLVER IMPRINTS</div>
+        <div class="stat-value" id="solverImprints">0</div>
+      </div>
+    </div>
+
+    <!-- Log Stream -->
+    <div class="log-stream">
+      <div class="stream-header">
+        <span class="stream-title">LIVE EVENT STREAM</span>
+        <div class="stream-controls">
+          <label class="auto-scroll-label">
+            <input type="checkbox" id="autoScroll" checked>
+            Auto-scroll
+          </label>
+        </div>
+      </div>
+      
+      <div class="log-entries" id="logEntries">
+        <!-- Log entries will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <!-- Mutation Flow Visualizer -->
+    <div class="mutation-flow">
+      <div class="flow-header">
+        <span class="flow-title">METADATA MUTATION FLOW</span>
+        <button id="resetFlow" class="flow-btn">🔄 RESET</button>
+      </div>
+      
+      <div class="flow-diagram">
+        <div class="flow-node source" id="sourceNode">
+          <div class="node-label">SOURCE</div>
+          <div class="node-status">STABLE</div>
+        </div>
+        
+        <div class="flow-connection">
+          <div class="connection-line"></div>
+          <div class="flow-particles" id="flowParticles"></div>
+        </div>
+        
+        <div class="flow-node processor" id="processorNode">
+          <div class="node-label">PROCESSOR</div>
+          <div class="node-status">PROCESSING</div>
+        </div>
+        
+        <div class="flow-connection">
+          <div class="connection-line"></div>
+          <div class="flow-particles" id="flowParticles2"></div>
+        </div>
+        
+        <div class="flow-node destination" id="destinationNode">
+          <div class="node-label">VAULT</div>
+          <div class="node-status">SYNCHRONIZED</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blockchain Event Monitor -->
+    <div class="blockchain-monitor">
+      <div class="monitor-header">
+        <span class="monitor-title">ON-CHAIN EVENT MONITOR</span>
+        <div class="network-status">
+          <span class="network-label">NETWORK:</span>
+          <span class="network-name" id="networkName">Ethereum Mainnet</span>
+          <span class="network-indicator active"></span>
+        </div>
+      </div>
+      
+      <div class="event-timeline" id="eventTimeline">
+        <!-- Blockchain events will be displayed here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="meta-logs.js"></script>
+</body>
+</html>
