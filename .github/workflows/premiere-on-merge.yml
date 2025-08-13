@@ -1,0 +1,59 @@
+name: Vault Cinematic Premiere on PR #24 Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  trigger-premiere:
+    if: github.event.pull_request.number == 24 && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: chaoskey333/package-lock.json
+          
+      - name: Install dependencies
+        working-directory: chaoskey333
+        run: npm ci
+        
+      - name: Trigger Vault Cinematic Premiere
+        env:
+          VAULT_SECRET_KEY: ${{ secrets.VAULT_SECRET_KEY }}
+          PREMIERE_API_URL: ${{ secrets.PREMIERE_API_URL || 'https://your-domain.com' }}
+          GITHUB_EVENT_SIGNATURE: ${{ secrets.GITHUB_WEBHOOK_SECRET }}
+        run: |
+          # Generate event signature for security validation
+          EVENT_PAYLOAD='{"action":"merged","number":24,"pull_request":{"merged":true,"base":{"ref":"main"}},"repository":{"full_name":"${{ github.repository }}"}}'
+          SIGNATURE=$(echo -n "$EVENT_PAYLOAD" | openssl dgst -sha256 -hmac "$GITHUB_EVENT_SIGNATURE" | sed 's/^.* //')
+          
+          # Call the premiere trigger API
+          curl -X POST "$PREMIERE_API_URL/api/premiere-trigger" \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: sha256=$SIGNATURE" \
+            -H "X-Vault-Key: $VAULT_SECRET_KEY" \
+            -d "$EVENT_PAYLOAD" \
+            --fail-with-body \
+            --retry 3 \
+            --retry-delay 5
+            
+      - name: Rollback Safety Check
+        if: failure()
+        env:
+          PREMIERE_API_URL: ${{ secrets.PREMIERE_API_URL || 'https://your-domain.com' }}
+          VAULT_SECRET_KEY: ${{ secrets.VAULT_SECRET_KEY }}
+        run: |
+          echo "Premiere trigger failed, attempting rollback..."
+          curl -X POST "$PREMIERE_API_URL/api/premiere-trigger" \
+            -H "Content-Type: application/json" \
+            -H "X-Vault-Key: $VAULT_SECRET_KEY" \
+            -d '{"action":"rollback","reason":"workflow_failure"}' \
+            --fail-with-body || echo "Rollback failed - manual intervention required"
