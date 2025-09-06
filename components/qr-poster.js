@@ -93,9 +93,18 @@ class QRPosterGenerator {
     
     try {
       // Check if QRCode library is available
-      if (typeof QRCode !== 'undefined') {
-        const options = this.getQROptions();
-        await QRCode.toCanvas(this.qrCanvas, this.currentUrl, options);
+      if (typeof QRCode !== 'undefined' && typeof QRCode === 'function') {
+        // Use qrcode-generator API
+        // typeNumber: 0 (automatic), errorCorrectLevel: 'L' (low)
+        const qr = QRCode(0, 'L');
+        qr.addData(this.currentUrl);
+        qr.make();
+        // Render to canvas
+        const canvas = qr.createCanvas(8, 4); // cellSize=8, margin=4
+        // Copy the generated canvas to this.qrCanvas
+        const ctx = this.qrCanvas.getContext('2d');
+        ctx.clearRect(0, 0, this.qrCanvas.width, this.qrCanvas.height);
+        ctx.drawImage(canvas, 0, 0, this.qrCanvas.width, this.qrCanvas.height);
         this.applyQRStyle();
       } else {
         // Fallback: Create a simple placeholder
