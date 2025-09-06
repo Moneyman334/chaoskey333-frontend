@@ -200,17 +200,24 @@ class CinematicHUD {
     });
   }
 
+  setTimelineStepClass(stepElement, state) {
+    stepElement.classList.remove('active', 'completed');
+    if (state === 'completed') {
+      stepElement.classList.add('completed');
+    } else if (state === 'active') {
+      stepElement.classList.add('active');
+    }
+  }
+
   updateTimelineStep(step) {
     this.timelineSteps.forEach((stepElement, index) => {
       const stepNumber = index + 1;
       if (stepNumber < step) {
-        stepElement.classList.add('completed');
-        stepElement.classList.remove('active');
+        this.setTimelineStepClass(stepElement, 'completed');
       } else if (stepNumber === step) {
-        stepElement.classList.add('active');
-        stepElement.classList.remove('completed');
+        this.setTimelineStepClass(stepElement, 'active');
       } else {
-        stepElement.classList.remove('active', 'completed');
+        this.setTimelineStepClass(stepElement, 'default');
       }
     });
   }
