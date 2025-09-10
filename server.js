@@ -177,6 +177,24 @@ app.get('/config', (req, res) => {
   });
 });
 
+// Contracts configuration endpoint
+app.get('/contracts.json', (req, res) => {
+  try {
+    const fs = require('fs');
+    const contractsPath = path.join(__dirname, 'contracts.json');
+    
+    if (fs.existsSync(contractsPath)) {
+      const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+      res.json(contracts);
+    } else {
+      res.status(404).json({ error: 'Contracts configuration not found' });
+    }
+  } catch (error) {
+    console.error('❌ Error loading contracts:', error);
+    res.status(500).json({ error: 'Failed to load contracts configuration' });
+  }
+});
+
 const cors = require("cors");
 
 app.use(cors());

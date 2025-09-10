@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 Sigil Spinner Vault - Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      animation: backgroundFlash 6s infinite alternate;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    @keyframes backgroundFlash {
+      0% { background-color: #000; }
+      50% { background-color: #111; }
+      100% { background-color: #000; }
+    }
+
+    .resurrection-container {
+      text-align: center;
+      padding-top: 2vh;
+      animation: flicker 2s infinite alternate;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+
+    .glow {
+      animation: glitch 1.5s infinite, pulseGlow 2s infinite alternate;
+      font-size: 2.5rem;
+      color: #fff;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 0 20px #00ffff;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 2px red, 2px -2px blue; }
+      40% { text-shadow: 2px -2px red, -2px 2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 2px red, -2px -2px blue; }
+      100% { text-shadow: 0 0 red, 0 0 blue; }
+    }
+
+    @keyframes pulseGlow {
+      0% { text-shadow: 0 0 5px cyan; }
+      100% { text-shadow: 0 0 20px magenta; }
+    }
+
+    .spinner-container {
+      margin: 30px 0;
+      padding: 30px;
+      border: 2px solid #00ffff;
+      border-radius: 20px;
+      background: rgba(0, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .spinner-wheel {
+      width: 200px;
+      height: 200px;
+      border: 5px solid #ffd700;
+      border-radius: 50%;
+      margin: 20px auto;
+      position: relative;
+      background: conic-gradient(
+        from 0deg,
+        #ff0000 0deg 72deg,
+        #ff8800 72deg 144deg,
+        #ffff00 144deg 216deg,
+        #00ff00 216deg 288deg,
+        #0088ff 288deg 360deg
+      );
+      transition: transform 3s ease-out;
+    }
+
+    .spinner-wheel.spinning {
+      animation: spin 3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .spinner-wheel::after {
+      content: '⚡';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .spinner-pointer {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid #ffffff;
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(1800deg); }
+    }
+
+    .chaos-balance {
+      font-size: 1.2rem;
+      color: #ffd700;
+      margin: 10px 0;
+    }
+
+    .bet-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .bet-input {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 10px;
+      font-size: 1.1rem;
+      width: 120px;
+      text-align: center;
+    }
+
+    .spin-button, .vault-btn {
+      background: linear-gradient(45deg, #ff6600, #ff0099);
+      border: none;
+      border-radius: 15px;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 15px 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      margin: 10px;
+    }
+
+    .spin-button:hover:not(:disabled), .vault-btn:hover:not(:disabled) {
+      background: linear-gradient(45deg, #ff8800, #ff00bb);
+      transform: scale(1.05);
+    }
+
+    .spin-button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .vault-btn {
+      background: linear-gradient(45deg, #33ccff, #0099cc);
+      font-size: 1.1rem;
+      padding: 12px 20px;
+    }
+
+    .jackpot-display {
+      background: linear-gradient(45deg, #ffd700, #ffaa00);
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-weight: bold;
+      font-size: 1.2rem;
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 5px #ffd700; }
+      100% { box-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700; }
+    }
+
+    .result-display {
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .result-win {
+      background: linear-gradient(45deg, #00ff00, #00cc00);
+      color: #000;
+      animation: celebration 1s ease-in-out;
+    }
+
+    .result-jackpot {
+      background: linear-gradient(45deg, #ffd700, #ffaa00);
+      color: #000;
+      animation: jackpotWin 2s ease-in-out;
+    }
+
+    .result-lose {
+      background: linear-gradient(45deg, #666, #444);
+      color: #fff;
+    }
+
+    @keyframes celebration {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes jackpotWin {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.2) rotate(-5deg); }
+      75% { transform: scale(1.2) rotate(5deg); }
+    }
+
+    .pending-spin {
+      background: linear-gradient(45deg, #00ffff, #0099ff);
+      color: #000;
+      animation: pending 1.5s infinite ease-in-out alternate;
+    }
+
+    @keyframes pending {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    .mint-status {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #ffcc00;
+    }
+
+    .demo-info {
+      background: rgba(255, 255, 0, 0.1);
+      border: 2px dashed #ffff00;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      color: #ffff00;
+    }
+
+    @media (max-width: 600px) {
+      .glow {
+        font-size: 1.8rem;
+      }
+      
+      .spin-button, .vault-btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+      }
+      
+      .bet-controls {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="resurrection-container">
+    <h1 class="glow">⚡ ChaosKey333 Sigil Spinner Vault ⚡</h1>
+    
+    <div class="demo-info">
+      <h3>🎮 DEMO MODE 🎮</h3>
+      <p>This is a demonstration of the Sigil Spinner interface. Contract integration requires Base Sepolia testnet connection.</p>
+    </div>
+    
+    <!-- Wallet Connection Section -->
+    <div style="margin-bottom: 30px;">
+      <button id="connectWallet" class="vault-btn" onclick="demoConnectWallet()">🔌 Connect Wallet (Demo)</button>
+      <div id="walletStatus" class="mint-status">🔒 Connect wallet to access spinner</div>
+    </div>
+
+    <!-- CHAOS Token Balance & Allowance -->
+    <div id="chaosInfo" style="display: none;">
+      <div class="chaos-balance" id="chaosBalance">CHAOS Balance: 1,000.00 CHAOS (Demo)</div>
+      <div class="chaos-balance" id="chaosAllowance">Spinner Allowance: 500.00 CHAOS (Demo)</div>
+      <button id="approveButton" class="vault-btn" onclick="demoApprove()" style="display: none;">🔓 Approve CHAOS for Spinner</button>
+    </div>
+
+    <!-- Jackpot Display -->
+    <div id="jackpotDisplay" class="jackpot-display" style="display: none;">
+      🎰 Current Jackpot: <span id="jackpotAmount">12,500.75</span> CHAOS 🎰
+    </div>
+
+    <!-- Spinner Interface -->
+    <div id="spinnerContainer" class="spinner-container" style="display: none;">
+      <div class="spinner-pointer"></div>
+      <div id="spinnerWheel" class="spinner-wheel"></div>
+      
+      <div class="bet-controls">
+        <label>Bet Amount:</label>
+        <input type="number" id="betAmount" class="bet-input" placeholder="0" step="0.1" min="0" max="100">
+        <span>CHAOS</span>
+      </div>
+      
+      <button id="spinButton" class="spin-button" onclick="demoSpin()">🎰 SPIN THE SIGIL 🎰</button>
+      
+      <div id="spinnerStatus" class="result-display">
+        🎯 Enter bet amount and spin for glory! 🎯
+      </div>
+    </div>
+
+    <!-- Original Relic Minting Section -->
+    <div style="margin-top: 50px; padding-top: 30px; border-top: 2px dashed #666;">
+      <h3 style="color: #ffaa00;">🔥 Mint Vault Relic 🔥</h3>
+      <button class="vault-btn" onclick="demoMint()">⚡ Demo Relic Mint</button>
+      <div id="mintStatus" class="mint-status">💎 Demo relic minting available</div>
+    </div>
+  </div>
+
+  <script>
+    let demoConnected = false;
+    let demoSpinning = false;
+
+    function demoConnectWallet() {
+      if (demoConnected) return;
+      
+      demoConnected = true;
+      document.getElementById('connectWallet').innerText = '🟢 0xDemo...Addr';
+      document.getElementById('walletStatus').innerText = '✅ Demo wallet connected successfully';
+      document.getElementById('chaosInfo').style.display = 'block';
+      document.getElementById('jackpotDisplay').style.display = 'block';
+      document.getElementById('spinnerContainer').style.display = 'block';
+    }
+
+    function demoApprove() {
+      document.getElementById('approveButton').disabled = true;
+      document.getElementById('approveButton').innerText = '⏳ Approving...';
+      
+      setTimeout(() => {
+        document.getElementById('approveButton').style.display = 'none';
+        document.getElementById('walletStatus').innerText = '✅ CHAOS tokens approved for spinner!';
+        document.getElementById('walletStatus').style.color = '#00ff00';
+        
+        setTimeout(() => {
+          document.getElementById('walletStatus').style.color = '';
+          document.getElementById('walletStatus').innerText = '✅ Ready to spin!';
+        }, 2000);
+      }, 2000);
+    }
+
+    function demoSpin() {
+      if (demoSpinning) return;
+      
+      const betAmount = document.getElementById('betAmount').value;
+      if (!betAmount || parseFloat(betAmount) <= 0 || parseFloat(betAmount) > 100) {
+        alert('Please enter a bet amount between 0.1 and 100 CHAOS');
+        return;
+      }
+      
+      demoSpinning = true;
+      
+      // Start spinning animation
+      const wheel = document.getElementById('spinnerWheel');
+      wheel.classList.add('spinning');
+      
+      document.getElementById('spinButton').disabled = true;
+      document.getElementById('spinButton').innerText = '⏳ Spinning...';
+      
+      document.getElementById('spinnerStatus').className = 'result-display pending-spin';
+      document.getElementById('spinnerStatus').innerText = '⏳ Awaiting Chainlink VRF result... (Demo)';
+      
+      // Simulate VRF delay
+      setTimeout(() => {
+        wheel.classList.remove('spinning');
+        
+        // Random result
+        const random = Math.random();
+        const betAmountNum = parseFloat(betAmount);
+        
+        if (random < 0.05) {
+          // Jackpot (5% chance)
+          document.getElementById('spinnerStatus').className = 'result-display result-jackpot';
+          document.getElementById('spinnerStatus').innerText = `🎉 JACKPOT! 🎉 You won ${(betAmountNum * 50).toFixed(2)} CHAOS!`;
+          
+          // Simulate confetti
+          setTimeout(() => {
+            alert('🎊 JACKPOT CONFETTI ANIMATION! 🎊\n\nIn the real version, this would trigger a spectacular confetti animation!');
+          }, 500);
+          
+        } else if (random < 0.4) {
+          // Win (35% chance)
+          const multiplier = 2 + Math.random() * 3; // 2x to 5x
+          document.getElementById('spinnerStatus').className = 'result-display result-win';
+          document.getElementById('spinnerStatus').innerText = `🎊 You won ${(betAmountNum * multiplier).toFixed(2)} CHAOS! 🎊`;
+          
+        } else {
+          // Loss (60% chance)
+          document.getElementById('spinnerStatus').className = 'result-display result-lose';
+          document.getElementById('spinnerStatus').innerText = '💀 Better luck next time! 💀';
+        }
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          demoSpinning = false;
+          document.getElementById('spinButton').disabled = false;
+          document.getElementById('spinButton').innerText = '🎰 SPIN THE SIGIL 🎰';
+          document.getElementById('betAmount').value = '';
+          
+          setTimeout(() => {
+            document.getElementById('spinnerStatus').className = 'result-display';
+            document.getElementById('spinnerStatus').innerText = '🎯 Enter bet amount and spin for glory! 🎯';
+          }, 2000);
+        }, 3000);
+        
+      }, 4000); // 4 second spin
+    }
+
+    function demoMint() {
+      document.getElementById('mintStatus').innerText = '🌀 Demo minting in progress...';
+      
+      setTimeout(() => {
+        document.getElementById('mintStatus').innerText = '✅ Demo Origin Flare Relic minted to demo wallet!';
+        alert('🔥 Demo relic minted successfully!\n\nIn the real version, this would mint an actual NFT to your connected wallet.');
+      }, 2000);
+    }
+
+    // Auto-demo connection after 2 seconds
+    setTimeout(() => {
+      if (!demoConnected) {
+        demoConnectWallet();
+      }
+    }, 2000);
+  </script>
+</body>
+</html>

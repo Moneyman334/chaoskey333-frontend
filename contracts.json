@@ -1,0 +1,64 @@
+{
+  "baseSepolia": {
+    "chainId": 84532,
+    "rpcUrl": "https://sepolia.base.org",
+    "blockExplorer": "https://sepolia.basescan.org",
+    "contracts": {
+      "chaosToken": {
+        "address": "0x742D35CC6d4d4E5AFe87D5C1bb88e9d0000C0DE1",
+        "abi": [
+          "function approve(address spender, uint256 amount) external returns (bool)",
+          "function allowance(address owner, address spender) external view returns (uint256)",
+          "function balanceOf(address account) external view returns (uint256)",
+          "function decimals() external view returns (uint8)",
+          "function symbol() external view returns (string)"
+        ]
+      },
+      "sigilSpinner": {
+        "address": "0x5Pi117777A88BC0d3E1F84E7aD88E7FAB000C0DE2",
+        "abi": [
+          "function spin(uint256 betAmount) external",
+          "function getMinBet() external view returns (uint256)",
+          "function getMaxBet() external view returns (uint256)",
+          "function getCooldownPeriod() external view returns (uint256)",
+          "function getUserLastSpin(address user) external view returns (uint256)",
+          "function getCurrentJackpot() external view returns (uint256)",
+          "function getPendingSpin(address user) external view returns (bool pending, uint256 requestId)",
+          "event SpinRequested(address indexed user, uint256 indexed requestId, uint256 betAmount)",
+          "event SpinResult(address indexed user, uint256 indexed requestId, uint256 result, uint256 payout, bool jackpot)"
+        ]
+      }
+    }
+  },
+  "baseMainnet": {
+    "chainId": 8453,
+    "rpcUrl": "https://mainnet.base.org",
+    "blockExplorer": "https://basescan.org",
+    "contracts": {
+      "chaosToken": {
+        "address": "0x742D35CC6d4d4E5AFe87D5C1bb88e9d0000C0DE3",
+        "abi": [
+          "function approve(address spender, uint256 amount) external returns (bool)",
+          "function allowance(address owner, address spender) external view returns (uint256)",
+          "function balanceOf(address account) external view returns (uint256)",
+          "function decimals() external view returns (uint8)",
+          "function symbol() external view returns (string)"
+        ]
+      },
+      "sigilSpinner": {
+        "address": "0x5Pi117777A88BC0d3E1F84E7aD88E7FAB000C0DE4",
+        "abi": [
+          "function spin(uint256 betAmount) external",
+          "function getMinBet() external view returns (uint256)",
+          "function getMaxBet() external view returns (uint256)",
+          "function getCooldownPeriod() external view returns (uint256)",
+          "function getUserLastSpin(address user) external view returns (uint256)",
+          "function getCurrentJackpot() external view returns (uint256)",
+          "function getPendingSpin(address user) external view returns (bool pending, uint256 requestId)",
+          "event SpinRequested(address indexed user, uint256 indexed requestId, uint256 betAmount)",
+          "event SpinResult(address indexed user, uint256 indexed requestId, uint256 result, uint256 payout, bool jackpot)"
+        ]
+      }
+    }
+  }
+}
