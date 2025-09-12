@@ -1,0 +1,14 @@
+{
+  "bot":"Sanial",
+  "chain":"base-mainnet",
+  "base_ccy":"USD",
+  "updated_at":"1970-01-01T00:00:00Z",
+  "pnl_24h":0,
+  "pnl_7d":0,
+  "win_rate_24h":0,
+  "streak":0,
+  "equity_curve":[100000],
+  "positions_open":0,
+  "trades_24h":0,
+  "disclaimer":"Not financial advice. Past performance is not indicative of future results."
+}
