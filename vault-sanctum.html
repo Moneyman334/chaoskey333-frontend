@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gift of Life - ChaosKey333 Vault Sanctum</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="docs/css/eye.css">
+  
+  <!-- Fallback for local development -->
+  <style>
+    /* Fallback fonts and styles when external resources blocked */
+    body {
+      font-family: 'Orbitron', 'Arial', 'Helvetica', sans-serif;
+    }
+    
+    /* Progressive enhancement - ensure basic functionality */
+    .eye-sanctum {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  
+  <!-- Scripts -->
+  <script>
+    // Ethers.js fallback
+    if (typeof ethers === 'undefined') {
+      console.log('Ethers.js not loaded, using mock for demo');
+      window.ethers = {
+        providers: {
+          Web3Provider: function() {
+            return {
+              getSigner: () => ({
+                getAddress: () => Promise.resolve('0x1234567890abcdef1234567890abcdef12345678'),
+                signMessage: () => Promise.resolve('mock-signature')
+              })
+            };
+          }
+        },
+        Contract: function() {
+          return {
+            mint: () => Promise.resolve({ hash: '0xmocktransactionhash', wait: () => Promise.resolve() })
+          };
+        }
+      };
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Orbitron', 'Courier New', monospace;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #000000, #1a0033);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 1s ease-out;
+    }
+    
+    .loading-text {
+      font-size: 1.5rem;
+      color: #ff69b4;
+      text-align: center;
+      animation: loadingPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes loadingPulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    
+    /* Navigation back to main vault */
+    .vault-nav {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+    
+    .vault-nav a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #ff69b4;
+      border-radius: 25px;
+      color: #ff69b4;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .vault-nav a:hover {
+      background: rgba(255, 105, 180, 0.2);
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+    }
+    
+    /* Wallet status indicator */
+    .wallet-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #ffd700;
+      border-radius: 20px;
+      color: #ffd700;
+      font-size: 0.8rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .wallet-status.connected {
+      border-color: #4CAF50;
+      color: #4CAF50;
+    }
+    
+    .wallet-status.disconnected {
+      border-color: #f44336;
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-text">
+      Awakening the Vault's Sanctum...<br>
+      <small style="font-size: 0.8rem; opacity: 0.7;">Preparing the Gift of Life</small>
+    </div>
+  </div>
+  
+  <!-- Navigation -->
+  <div class="vault-nav">
+    <a href="index.html">← Return to Vault</a>
+  </div>
+  
+  <!-- Wallet Status -->
+  <div class="wallet-status" id="walletStatus">
+    ⏳ Detecting Wallet...
+  </div>
+  
+  <!-- Eye Sigil will be injected here by JavaScript -->
+  
+  <!-- Scripts -->
+  <script src="docs/js/eye-sigil.js"></script>
+  
+  <script>
+    // Wallet status monitoring
+    async function updateWalletStatus() {
+      const statusElement = document.getElementById('walletStatus');
+      
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            statusElement.textContent = `✅ Connected: ${accounts[0].substring(0, 8)}...`;
+            statusElement.className = 'wallet-status connected';
+          } else {
+            statusElement.textContent = '🔌 Click to Connect Wallet';
+            statusElement.className = 'wallet-status disconnected';
+            statusElement.style.cursor = 'pointer';
+            statusElement.onclick = connectWallet;
+          }
+        } catch (error) {
+          statusElement.textContent = '❌ Wallet Error';
+          statusElement.className = 'wallet-status disconnected';
+        }
+      } else {
+        statusElement.textContent = '❌ No Wallet Detected';
+        statusElement.className = 'wallet-status disconnected';
+      }
+    }
+    
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          updateWalletStatus();
+        } catch (error) {
+          console.error('Wallet connection failed:', error);
+        }
+      } else {
+        alert('Please install MetaMask or another Ethereum wallet to continue.');
+      }
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Update wallet status
+      updateWalletStatus();
+      
+      // Listen for wallet changes
+      if (typeof window.ethereum !== 'undefined') {
+        window.ethereum.on('accountsChanged', updateWalletStatus);
+        window.ethereum.on('chainChanged', updateWalletStatus);
+      }
+      
+      // Remove loading overlay after a delay
+      setTimeout(() => {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 1000);
+      }, 2000);
+    });
+    
+    // Analytics - track sanctum entry
+    console.log('🌟 Gift of Life Sanctum Initialized');
+    console.log('💖 "To see is illusion. To feel is truth. To love is life."');
+  </script>
+</body>
+</html>

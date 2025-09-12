@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "type": "heart_wisdom",
+    "text": "The gift is not to see, but to feel.",
+    "author": "Heart Seal",
+    "energy": "love"
+  },
+  {
+    "id": 2,
+    "type": "sight_truth",
+    "text": "Love is the true sight.",
+    "author": "Third Eye",
+    "energy": "perception"
+  },
+  {
+    "id": 3,
+    "type": "being_essence",
+    "text": "To be is enough.",
+    "author": "Gift of Being",
+    "energy": "existence"
+  },
+  {
+    "id": 4,
+    "type": "heart_wisdom",
+    "text": "The heart knows what the mind cannot grasp.",
+    "author": "Heart Seal",
+    "energy": "love"
+  },
+  {
+    "id": 5,
+    "type": "feeling_truth",
+    "text": "In feeling, we find the eternal truth.",
+    "author": "Resonance Gate",
+    "energy": "feeling"
+  },
+  {
+    "id": 6,
+    "type": "love_frequency",
+    "text": "Love is the frequency of the infinite.",
+    "author": "Heart Seal",
+    "energy": "love"
+  },
+  {
+    "id": 7,
+    "type": "presence_gift",
+    "text": "Your presence is the gift the world needs.",
+    "author": "Gift of Being",
+    "energy": "presence"
+  },
+  {
+    "id": 8,
+    "type": "heart_vision",
+    "text": "The eyes see surface, the heart sees souls.",
+    "author": "Third Eye",
+    "energy": "perception"
+  },
+  {
+    "id": 9,
+    "type": "love_essence",
+    "text": "Love is not something you do, it's something you are.",
+    "author": "Heart Seal",
+    "energy": "being"
+  },
+  {
+    "id": 10,
+    "type": "moment_eternity",
+    "text": "In this moment, you touch eternity.",
+    "author": "Gift of Being",
+    "energy": "presence"
+  }
+]

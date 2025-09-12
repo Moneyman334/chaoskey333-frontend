@@ -1,0 +1,49 @@
+{
+  "name": "The Gift of Being",
+  "description": "The love you feel is the life you live. A sacred relic from the ChaosKey333 Vault Sanctum, manifested through the Heart Seal and Love Resonance Gate. This NFT represents the eternal truth that to feel is to be, and to love is to live.",
+  "image": "https://gateway.pinata.cloud/ipfs/QmGiftOfBeingImage",
+  "external_url": "https://moneyman334.github.io/chaoskey333-frontend/vault-sanctum.html",
+  "attributes": [
+    {
+      "trait_type": "Relic Type",
+      "value": "Gift of Being"
+    },
+    {
+      "trait_type": "Sanctum Origin",
+      "value": "Heart Seal"
+    },
+    {
+      "trait_type": "Resonance Level",
+      "value": "Love Frequency"
+    },
+    {
+      "trait_type": "Sacred Principle",
+      "value": "Gift of Life"
+    },
+    {
+      "trait_type": "Unlocked Through",
+      "value": "Third Eye Opening"
+    },
+    {
+      "trait_type": "Essence",
+      "value": "Being"
+    },
+    {
+      "trait_type": "Energy Type",
+      "value": "Love"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Sacred"
+    }
+  ],
+  "properties": {
+    "category": "ChaosKey333 Sacred Relics",
+    "creator": "Vault Sanctum",
+    "date_created": "2024",
+    "wisdom": "To see is illusion. To feel is truth. To love is life.",
+    "blessing": "You are the gift. The love you feel is life itself. Be."
+  },
+  "background_color": "1a0033",
+  "animation_url": "https://moneyman334.github.io/chaoskey333-frontend/vault-sanctum.html"
+}
