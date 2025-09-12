@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChaosKey333 - AI Trading Dashboard</title>
+  <link rel="stylesheet" href="./css/vault.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    .vault-card {
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(5px);
+      margin: 1rem 0;
+    }
+    .vault-card.neon {
+      box-shadow: 0 0 1rem rgba(36,243,181,.3);
+      border-color: #24f3b5;
+    }
+    .card-head {
+      margin-bottom: 1rem;
+    }
+    .card-head h2 {
+      margin: 0;
+      color: #24f3b5;
+      font-size: 1.5rem;
+    }
+    .price-row {
+      margin: 1rem 0;
+    }
+    .price-row span {
+      display: block;
+      margin-bottom: .5rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="vault">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="color: #24f3b5; text-shadow: 0 0 1rem #24f3b5;">ChaosKey333 AI Dashboard</h1>
+  </div>
+
+  <section class="vault-card neon" id="ai-flex">
+    <header class="card-head">
+      <h2>Sanial AI — Live Treasury Flex</h2>
+      <span class="muted">Not financial advice</span>
+    </header>
+    <div class="flex-row" id="ai-flex-topline">
+      <div class="chip kpi" id="kpi-pnl24h">24h P&L: —</div>
+      <div class="chip kpi" id="kpi-winrate">Win-rate: —</div>
+      <div class="chip kpi" id="kpi-streak">Streak: —</div>
+      <canvas id="equity-spark" height="32"></canvas>
+    </div>
+    <div class="price-row" id="ai-flex-open">
+      <span class="muted">Open Positions</span>
+      <div id="open-positions" class="feed-grid"></div>
+    </div>
+    <div class="price-row" id="ai-flex-recent">
+      <span class="muted">Recent Trades</span>
+      <div id="recent-trades" class="feed-grid"></div>
+    </div>
+  </section>
+  <script src="./js/ai-feed.js"></script>
+</body>
+</html>
