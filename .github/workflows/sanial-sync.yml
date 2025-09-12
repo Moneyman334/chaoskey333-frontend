@@ -1,0 +1,35 @@
+name: Sync Sanial feed to Pages
+on:
+  schedule: 
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # Allow manual trigger
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch signal
+        env:
+          SANIAL_URL: ${{ secrets.SANIAL_URL }}
+        run: |
+          if [ -n "$SANIAL_URL" ]; then
+            curl -fsSL "$SANIAL_URL" -o docs/data/sanial-feed.json || echo '{"ts": 0, "pair": "CHAOS/ETH", "signal": 0.0, "confidence": 0.0}' > docs/data/sanial-feed.json
+          else
+            echo "SANIAL_URL secret not set, skipping update"
+            exit 0
+          fi
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/data/sanial-feed.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update Sanial feed"
+            git push
+          fi
